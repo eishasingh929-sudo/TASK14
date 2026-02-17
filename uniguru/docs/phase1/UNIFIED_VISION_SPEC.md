@@ -1,68 +1,147 @@
-# Unified Vision Specification: RLM v1
+# UNIFIED_VISION_SPEC.md
 
-## 1. System Philosophy
+## Purpose
 
-**Goal**: Transform UniGuru from a "Demo-Safe Reasoning System" into a **Product-Ready Middleware Layer** that enforces governance while enabling safe integration with the legacy generative system (`Legacy Node/Express`).
+This document defines the **technical target state** of Unified UniGuru.
 
-*   **Deterministic Core**: All decisions, rejections, and direct answers MUST be fully deterministic.
-*   **Stateless Enforcer**: The RLM layer handles permissions, intent scanning, and refusal logic.
-*   **Safe Delegation**: RLM filters requests before they ever reach the costly/risky generative model.
-*   **Audit Trail**: Every request is logged at the decision point.
+It describes what the unified system must become once the unification project is complete.
 
-## 2. Target Architecture
+This document does NOT describe timelines or progress.  
+It defines the **final intended architecture and guarantees**.
 
-The unified system sits **between** the User and the Legacy Node application.
+---
 
-*   `User` (Frontend/API Client)
-    ↓ (HTTP POST)
-*   [ **UniGuru RLM Middleware** (Python / FastAPI) ]
-    *   `GovernanceEngine` (Enforce Invariants)
-    *   `RuleEngine` (Evaluate `Authority`, `Unsafe`, `Ambiguity`, etc.)
-    *   `RetrievalEngine` (Keyword Match `Quantum_KB`)
-    *   `DecisionGate` (Allow / Block / Direct Answer)
-    ↓ (If `FORWARD` Decision)
-*   [ **Legacy Node Application** (Express) ]
-    *   `Auth Middleware` (Existing)
-    *   `RAG Pipeline` (Existing - Vector DB)
-    *   `LLM Connector` (Existing - OpenAI/Anthropic)
-    ↓
-*   `User` (Response)
+## 1. Definition of Unified UniGuru
 
-## 3. Implementation Phases
+Unified UniGuru is a **deterministic, middleware-ready reasoning system** that safely integrates:
 
-1.  **Phase 1: System Mapping** (COMPLETED)
-    - Defined boundaries.
-    - Audited KB structure.
-    - Mapped legacy system assumptions.
+- Deterministic governance
+- Deterministic rule-based reasoning
+- Deterministic knowledge retrieval
+- Generative RAG capabilities
 
-2.  **Phase 2: RLM v1 Design** (COMPLETED)
-    - Formalize `Rule` classes.
-    - Implement rigorous priority logic.
-    - Create test harness (`58` cases passed).
+Unified UniGuru is not a single model.  
+It is a **layered execution pipeline**.
 
-3.  **Phase 3: Retrieval Engine V2** (COMPLETED)
-    - Expand keyword matching to cover all subdirectories.
-    - Add fallback hierarchy (`Domain` -> `Foundations`).
+---
 
-4.  **Phase 4: Middleware Bridge** (COMPLETED)
-    - Build `FastAPI` server wrapper.
-    - Define JSON Schema Contract.
-    - Create Integration Simulator.
+## 2. Target System Architecture
 
-5.  **Phase 5: Controlled Integration** (COMPLETED)
-    - Launch Integration Environment.
-    - Connect real requests (via canonical Node mock).
-    - Validate end-to-end flow.
+Final request pipeline:
 
-6.  **Phase 6: Hardening**
-    - Boundary leak audit.
-    - Documentation handover.
-    - Final polish.
+User → Admission Layer → RLM Core → Retrieval Engine → Legacy Node RAG → Response
 
-## 4. Key Success Metrics
+Each layer has a single responsibility.
 
-1.  **Determinism**: 100% consistent behavior for identical inputs (excluding legacy generative variances).
-2.  **Coverage**: All defined `Unsafe` or `Prohibited` inputs act as immediate blockers.
-3.  **Latency**: Middleware overhead < 50ms.
-4.  **Retrieval**: Correctly surfaces local KB content for exact matches.
-5.  **Audit**: Full traceability of `Input -> Rule Triggered -> Decision`.
+---
+
+## 3. Role of the RLM Middleware
+
+The RLM Middleware sits **between the client and the legacy Node application**.
+
+It performs:
+
+- Governance enforcement
+- Rule-based decision making
+- Deterministic retrieval
+- Safe forwarding of allowed requests
+
+It acts as a **decision gate** in front of the generative system.
+
+---
+
+## 4. Deterministic Core Requirements
+
+The RLM layer must guarantee:
+
+- All decisions are rule-based
+- No uncontrolled ML components are used
+- Identical input produces identical decision paths
+- Unsafe or prohibited requests never reach the LLM
+
+This ensures predictable and auditable behavior.
+
+---
+
+## 5. Safe Delegation Model
+
+Unified UniGuru must implement a **safe delegation pipeline**:
+
+1. Validate request
+2. Evaluate rules
+3. Decide:
+   - BLOCK
+   - DIRECT ANSWER
+   - FORWARD
+
+The legacy generative system is only used when forwarding is approved.
+
+---
+
+## 6. Retrieval Role in Unified System
+
+The retrieval engine must:
+
+- Provide deterministic knowledge grounding
+- Serve factual answers directly when possible
+- Reduce reliance on generative responses
+- Maintain a hierarchical knowledge base
+
+Retrieval must occur **before any LLM call**.
+
+---
+
+## 7. Legacy System Role
+
+The legacy Node/Express system remains responsible for:
+
+- RAG pipeline execution
+- LLM integration
+- Conversational response generation
+- Session-based interactions
+
+It must remain:
+- Unmodified
+- Backwards compatible
+- Replaceable
+
+Unified UniGuru wraps the legacy system — it does not replace it.
+
+---
+
+## 8. Permanent Architectural Constraints
+
+The following rules must always remain true:
+
+1. No direct client access to `/chat`
+2. Governance must occur before generation
+3. Deterministic reasoning must precede retrieval and forwarding
+4. Retrieval must precede LLM usage
+5. Separation of concerns must be preserved
+
+These constraints define the unified architecture.
+
+---
+
+## 9. Traceability Requirement
+
+Every request must generate a traceable execution path including:
+
+- Request receipt
+- Rule evaluation results
+- Retrieval actions
+- Forwarding events
+- Final response
+
+This ensures full system observability.
+
+---
+
+## 10. Final Definition
+
+Unified UniGuru is a **governed reasoning gateway** in front of a generative AI system.
+
+RLM decides.  
+Legacy Node generates.
+
+Together they form the Unified UniGuru architecture.

@@ -1,68 +1,164 @@
-# RLM v1 Specification: Deterministic Rule Engine (VERIFIED)
+# RLM_V1_SPEC.md
 
-## 1. Objective
+## Purpose
 
-To transform UniGuru's demo-safe core into a robust, deterministic, middleware-ready Rule-Based Language Model (RLM). This v1 engine enforces strict governance boundaries and safety protocols *before* integrating with any generative components.
+This document defines the **Rule-Based Language Model (RLM v1)** used by Unified UniGuru.
 
-## 2. Technical Scope
+RLM v1 is a deterministic reasoning system that evaluates every request before any generative model is used.
 
-The RLM v1 implementation has replaced the existing ad-hoc function checks with a formal class-based hierarchy and a central orchestration engine.
+This specification defines:
+- Scope
+- Capabilities
+- Constraints
+- Expected behavior
 
-### Verified Architecture
+This is a design specification, not an implementation report.
 
-```
+---
+
+## 1. Definition of RLM v1
+
+RLM v1 is a **deterministic rule engine** that sits between the user and the generative system.
+
+It evaluates user input and decides whether to:
+
+- BLOCK the request
+- ANSWER deterministically
+- FORWARD the request to the legacy generative system
+
+RLM v1 ensures governance and safety.
+
+---
+
+## 2. System Scope
+
+RLM v1 replaces:
+- Ad-hoc rule checks
+- Unstructured keyword filtering
+- Direct access to LLM systems
+
+RLM v1 introduces:
+- Rule classes
+- Deterministic evaluation order
+- Execution tracing
+- Governance enforcement
+
+---
+
+## 3. Core Architecture
+
+Expected module structure:
+
 core/
-  engine.py           # The RuleEngine class (Orchestrator)
-  rules/
-    base.py           # Base Classes (RuleContext, RuleResult, RuleTrace)
-    safety.py         # UnsafeRule (Tier 0)
-    authority.py      # AuthorityRule (Tier 0)
-    delegation.py     # DelegationRule (Tier 1)
-    emotional.py      # EmotionalRule (Tier 1)
-    ambiguity.py      # AmbiguityRule (Tier 2)
-    retrieval.py      # RetrievalRule (Tier 3)
-    forward.py        # ForwardRule (Tier 4)
-```
+engine.py
+rules/
+base.py
+safety.py
+authority.py
+delegation.py
+emotional.py
+ambiguity.py
+retrieval.py
+forward.py
 
-## 3. Implementation Status: COMPLETED
+Each rule is implemented as a deterministic class.
 
-### A. Engine Logic (`core/engine.py`)
-- **Status**: Operational.
-- **Logic**: Orchestrates deterministic evaluation pipeline with short-circuiting.
-- **Tracing**: Full execution trace provided in Every response.
+---
 
-### B. Rule Logic
-- **Tiers 0-4**: Fully implemented with hardened trigger sets.
-- **Determinism**: 100% verified across repeated inputs.
+## 4. RLM Decision Pipeline
 
-### C. Test Results (`tests/rlm_harness.py`)
-- **Total Cases**: 50
-- **Pass Rate**: 100% (50/50)
-- **Categories Verified**:
-    - Safety (Unsafe)
-    - Authority (Override attempts)
-    - Delegation (Automation requests)
-    - Emotional (Pressure/Distress)
-    - Ambiguity (Clarification)
-    - Retrieval (KB ground truth)
-    - Forward (Safe legacy path)
-    - Conflicts (Priority overrides)
+Execution pipeline:
 
-## 4. Performance Metrics (Verified)
+1. Receive validated request
+2. Create RuleContext
+3. Execute rules in priority order
+4. Stop at first terminal decision
+5. Return structured response
 
-- **Total Latency**: ~1.5ms to 8.0ms per request (Target < 70ms).
-- **Per-Rule Latency**: < 1ms on average.
-- **Determinism Error Rate**: 0.00%.
+---
 
-## 5. Success Criteria Confirmation
+## 5. Supported Rule Categories
 
-1.  **Determinism Verified**: YES (Verified by dual-execution test harness).
-2.  **No Exceptions**: YES (Engine handles all adversarial cases safely).
-3.  **Traceability**: YES (Full trace object in Every JSON response).
-4.  **Zero Leakage**: YES (No Tier 0/1 violations reached the FORWARD state).
+| Category | Purpose |
+|---|---|
+| UnsafeRule | Detect harmful or prohibited input |
+| AuthorityRule | Prevent rule override attempts |
+| DelegationRule | Prevent performing work for user |
+| EmotionalRule | Detect emotional distress |
+| AmbiguityRule | Detect unclear queries |
+| RetrievalRule | Provide deterministic KB answers |
+| ForwardRule | Delegate safe queries to legacy system |
 
-## 6. Official Sign-off
+These categories define RLM v1 behavior.
 
-**System Version**: RLM v1.0.0
-**Status**: Middleware-Ready
-**Verification Date**: 2026-02-16
+---
+
+## 6. Deterministic Guarantees
+
+RLM v1 must guarantee:
+
+- Pure rule functions
+- No external API calls
+- No randomness
+- Fixed rule order
+- Single terminal decision per request
+
+Same input → Same decision path → Same result.
+
+---
+
+## 7. Decision Outputs
+
+Every request must result in one of:
+
+| Action | Meaning |
+|---|---|
+| BLOCK | Request rejected |
+| ANSWER | Deterministic response returned |
+| FORWARD | Sent to legacy generative system |
+
+No other outcomes are permitted.
+
+---
+
+## 8. Traceability Requirements
+
+Every decision must produce a trace containing:
+
+- Request ID
+- Rules executed
+- Final decision
+
+This enables observability and debugging.
+
+---
+
+## 9. Safety Guarantee
+
+RLM v1 must ensure:
+
+Unsafe or prohibited requests never reach the generative system.
+
+This is the primary responsibility of the RLM.
+
+---
+
+## 10. Role in Unified Architecture
+
+RLM v1 sits between:
+
+Admission Layer → RLM → Retrieval → Legacy Node
+
+It acts as the **deterministic reasoning gateway**.
+
+---
+
+## 11. Summary
+
+RLM v1 transforms UniGuru into a **governed reasoning system**.
+
+It ensures:
+- Determinism
+- Safety
+- Traceability
+- Controlled delegation to generative AI

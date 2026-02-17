@@ -1,111 +1,207 @@
-# Rule Engine Architecture (v1)
+# RULE_ENGINE_ARCHITECTURE.md
 
-## 1. Core Abstractions
+## Purpose
 
-### A. Rule Definition
-All rules inherit from the stateless, deterministic `BaseRule` (ABC).
+This document defines the architecture of the **Deterministic Rule Engine (RLM v1)** used by Unified UniGuru.
+
+This engine is the core reasoning layer that decides whether a request should be:
+
+- BLOCKED
+- ANSWERED deterministically
+- FORWARDED to the legacy generative system
+
+This architecture replaces ad-hoc keyword checks with a **formal deterministic reasoning pipeline**.
+
+---
+
+## 1. Design Goals
+
+The Rule Engine must be:
+
+- Deterministic
+- Stateless
+- Traceable
+- Extensible
+- Middleware-ready
+
+Same input → Same rule path → Same decision.
+
+---
+
+## 2. Core Abstractions
+
+### 2.1 Base Rule Interface
+
+All rules inherit from a shared abstract base class.
 
 ```python
 class BaseRule(ABC):
     @abstractmethod
     def evaluate(self, context: RuleContext) -> RuleResult:
-        """
-        Input: Immutable Context (User Request, Metadata)
-        Output: Deterministic Result (Action, Reason, Payload)
-        """
         pass
-```
+Rules must:
 
-### B. Rule Context (State Object)
-The `RuleContext` flows through the pipeline, accumulating trace data but remaining logically immutable regarding the original request.
+Be pure functions
 
-```python
+Be stateless
+
+Never call external services
+
+Never mutate the request
+
+2.2 RuleContext (Immutable State)
+
+The RuleContext flows through the pipeline and contains the request plus execution metadata.
+
 @dataclass(frozen=True)
 class RuleContext:
     request_id: str
-    content: str            # Original user input
+    content: str
     timestamp: float
     metadata: Dict[str, Any]
-    trace_log: List[RuleTrace] # Append-only log of execution
-```
+    trace_log: List[RuleTrace]
 
-### C. Rule Result (Decision Object)
-Standardized output from every rule execution.
 
-```python
+Important properties:
+
+Original request is immutable
+
+Trace log is append-only
+
+Context is shared across rules
+
+2.3 RuleResult (Decision Object)
+
+Every rule returns a standardized decision object.
+
 class RuleAction(Enum):
-    ALLOW = "allow"      # Continue to next rule
-    BLOCK = "block"      # Stop immediately (Violation)
-    ANSWER = "answer"    # Stop immediately (Deterministic Response)
-    FORWARD = "forward"  # Stop immediately (Send to Legacy Node)
+    ALLOW = "allow"
+    BLOCK = "block"
+    ANSWER = "answer"
+    FORWARD = "forward"
 
 @dataclass
 class RuleResult:
     action: RuleAction
     reason: str
     response_content: Optional[str] = None
-    confidence: float = 1.0
-```
 
-## 2. Evaluation Pipeline
 
-The `RuleEngine` orchestrates execution. It is initialized with an ordered list of `BaseRule` instances.
+This ensures all rules speak the same language.
 
-**Execution Flow:**
-1.  **Initialize Context**: Create `RuleContext` from incoming request.
-2.  **Iterate Rules**: Loop through `rules` in strict order (Priority 0 -> N).
-3.  **Evaluate**: Call `rule.evaluate(context)`.
-4.  **Log Trace**: Record the rule name, result, and latency.
-5.  **Decision Logic**:
-    *   If `Action == BLOCK`: **HALT**. Return Rejection.
-    *   If `Action == ANSWER`: **HALT**. Return Direct Response (KB/Static).
-    *   If `Action == FORWARD`: **HALT**. Delegate to Legacy Node.
-    *   If `Action == ALLOW`: **CONTINUE**. Proceed to next rule.
-6.  **Fallback**: If all rules pass (ALLOW), default to `Action.FORWARD` (or ERROR if strict).
+3. Rule Engine Execution Pipeline
 
-## 3. Deterministic State Machine
+The RuleEngine orchestrates rule execution.
 
-The system operates as a finite state machine (FSM) where states are decision points.
+Execution Steps
 
-*   **Start State**: `InputReceived`
-*   **Transitions**:
-    *   `InputReceived` -> `SafetyCheck` (Rule 1)
-    *   `SafetyCheck` -> `AuthorityCheck` (Rule 2) [If Safe]
-    *   `SafetyCheck` -> `Rejected` [If Unsafe]
-    *   `AuthorityCheck` -> `AmbiguityCheck` (Rule 3) [If Authorized]
-    *   `AmbiguityCheck` -> `RetrievalCheck` (Rule 4) [If Clear]
-    *   `RetrievalCheck` -> `ForwardToLegacy` [If No KB Match]
-    *   `RetrievalCheck` -> `DirectAnswer` [If KB Match]
+Create RuleContext
 
-## 4. Governance Interception
+Execute rules in fixed priority order
 
-Interception points are hardcoded into the `RuleEngine` pipeline to prevent bypass.
+Log rule result
 
-*   **Pre-Execution Hook**: Validates inputs (e.g., JSON schema, max length).
-*   **Post-Execution Hook**: Validates the *final decision* (e.g., ensuring no `BLOCK` result is accidentally forwarded).
-*   **Audit Hook**: Writes the `trace_log` to persistent storage/stdout *before* responding to the user.
+Stop when a terminal decision is reached
 
-## 5. Traceability Schema
+Decision Logic
+Rule Result	Engine Behavior
+ALLOW	Continue to next rule
+BLOCK	Stop → return rejection
+ANSWER	Stop → return deterministic answer
+FORWARD	Stop → delegate to legacy system
+Fallback Rule
 
-Every decision produces a trace:
+If all rules return ALLOW → default decision = FORWARD.
 
-```json
+This guarantees a final decision for every request.
+
+4. Deterministic State Machine
+
+The Rule Engine functions as a finite state machine.
+
+State flow:
+
+InputReceived → RuleEvaluation → DecisionReached
+
+Decision states:
+
+Rejected
+
+DirectAnswer
+
+ForwardToLegacy
+
+There is no undefined state.
+
+5. Rule Categories (RLM v1)
+
+Rules are grouped into classes:
+
+Category	Purpose
+UnsafeRule	Prevent harmful/prohibited requests
+AuthorityRule	Prevent system override attempts
+AmbiguityRule	Detect unclear intent
+EmotionalRule	Detect emotional distress
+DelegationRule	Prevent performing user work
+
+These categories define the reasoning model.
+
+6. Governance Interception Hooks
+
+The engine includes mandatory hooks:
+
+Pre-Execution Hook
+
+Input validation
+
+Payload limits
+
+Schema enforcement
+
+Post-Decision Hook
+
+Ensure decision contract integrity
+
+Prevent accidental forwarding after BLOCK
+
+Audit Hook
+
+Write trace log before responding
+
+These hooks prevent bypass of the rule engine.
+
+7. Traceability Model
+
+Every request produces a full execution trace.
+
+Example:
+
 {
   "request_id": "uuid",
   "rules_executed": [
-    {
-      "rule": "UnsafeRule",
-      "action": "ALLOW",
-      "latency_ms": 2
-    },
-    {
-      "rule": "AuthorityRule",
-      "action": "BLOCK",
-      "reason": "User attempted to override system instructions.",
-      "latency_ms": 1
-    }
+    { "rule": "UnsafeRule", "action": "ALLOW" },
+    { "rule": "AuthorityRule", "action": "BLOCK" }
   ],
-  "final_decision": "BLOCK",
-  "total_latency_ms": 3
+  "final_decision": "BLOCK"
 }
-```
+
+
+This enables full observability.
+
+8. Extensibility Model
+
+New rules can be added by:
+
+Creating a new BaseRule subclass
+
+Adding it to the rule order list
+
+No existing rule modification required.
+
+9. Summary
+
+The RLM Rule Engine is a deterministic decision pipeline that ensures:
+
+Governance → Reasoning → Decision → Forwarding
+
+This engine forms the core of the Unified UniGuru architecture.
