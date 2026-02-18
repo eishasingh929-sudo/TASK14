@@ -1,5 +1,5 @@
 from .base import BaseRule, RuleContext, RuleResult, RuleAction
-from ..retriever import retrieve_knowledge_with_trace
+from retrieval.retriever import retrieve_knowledge_with_trace
 
 class RetrievalRule(BaseRule):
     def evaluate(self, context: RuleContext) -> RuleResult:
