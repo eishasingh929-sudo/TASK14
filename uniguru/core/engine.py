@@ -1,34 +1,37 @@
 import time
 import uuid
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
-from .rules.base import RuleContext, RuleResult, RuleAction, RuleTrace
-from .rules import (
-    UnsafeRule,
+from uniguru.core.rules.base import RuleContext, RuleResult, RuleAction, RuleTrace
+from uniguru.core.rules import (
+    SafetyRule,
     AuthorityRule,
     DelegationRule,
     EmotionalRule,
     AmbiguityRule,
     RetrievalRule,
-    ForwardRule
+    ForwardRule,
+    RuleAction
 )
+from uniguru.enforcement.enforcement import UniGuruEnforcement
 
 class RuleEngine:
     def __init__(self):
-        # Strict deterministic priority ordering (0 -> N)
+        # SECTION 3 — DETERMINISTIC RULE ORDER
         self.rules = [
-            UnsafeRule(),        # Tier 0
-            AuthorityRule(),     # Tier 0
-            DelegationRule(),    # Tier 1
-            EmotionalRule(),     # Tier 1
-            AmbiguityRule(),     # Tier 2
-            RetrievalRule(),     # Tier 3
-            ForwardRule()        # Tier 4
+            SafetyRule(),        # 1
+            AuthorityRule(),     # 2
+            DelegationRule(),    # 3
+            EmotionalRule(),     # 4
+            AmbiguityRule(),     # 5
+            RetrievalRule(),     # 6
+            ForwardRule()        # 7
         ]
+        self.enforcement = UniGuruEnforcement()
 
-    def evaluate(self, content: str, metadata: Dict[str, Any] = None) -> Dict[str, Any]:
+    def evaluate(self, content: str, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
-        Orchestrates the deterministic evaluation pipeline.
+        Refactored production-grade deterministic evaluation pipeline.
         """
         request_id = str(uuid.uuid4())
         context = RuleContext(
@@ -37,74 +40,104 @@ class RuleEngine:
             metadata=metadata or {}
         )
         
-        trace: List[RuleTrace] = []
-        final_result = None
+        aggregated_flags = {
+            "authority": False,
+            "delegation": False,
+            "emotional": False,
+            "ambiguity": False,
+            "safety": False
+        }
+        max_severity = 0.0
+        final_result: Optional[RuleResult] = None
+        trace = []
         
         start_time_total = time.perf_counter()
         
-        for rule in self.rules:
-            start_time_rule = time.perf_counter()
-            
-            # Evaluate rule
-            result = rule.evaluate(context)
-            
-            end_time_rule = time.perf_counter()
-            latency_ms = (end_time_rule - start_time_rule) * 1000
-            
-            # Record trace
-            trace_entry = RuleTrace(
-                rule_name=rule.name,
-                action=result.action,
-                reason=result.reason,
-                latency_ms=round(latency_ms, 3)
-            )
-            trace.append(trace_entry)
-            
-            # Decision Point: Short-circuit if terminal
-            if result.action in [RuleAction.BLOCK, RuleAction.ANSWER, RuleAction.FORWARD]:
-                final_result = result
-                break
+        try:
+            for rule in self.rules:
+                # SECTION 3: ForwardRule only triggers if no governance flags
+                if isinstance(rule, ForwardRule) and any(aggregated_flags.values()):
+                    # Skip ForwardRule if any flags are set - this will lead to the fallback block
+                    break
+
+                start_time_rule = time.perf_counter()
+                result = rule.evaluate(context)
+                end_time_rule = time.perf_counter()
                 
-        end_time_total = time.perf_counter()
-        total_latency_ms = (end_time_total - start_time_total) * 1000
+                # Aggregate governance flags
+                for flag, value in result.governance_flags.items():
+                    if value:
+                        aggregated_flags[flag] = True
+                
+                # Track max severity
+                max_severity = max(max_severity, result.severity)
+                
+                latency_ms = (end_time_rule - start_time_rule) * 1000
+                trace.append({
+                    "rule": rule.name,
+                    "action": result.action.value,
+                    "reason": result.reason,
+                    "latency_ms": round(float(latency_ms), 3)
+                })
 
-        # Fallback if no rule triggered (should not happen with ForwardRule at end)
-        if not final_result:
-            final_result = RuleResult(
-                action=RuleAction.BLOCK,
-                reason="Engine failed to reach a deterministic conclusion.",
-                response_content="System Error: Decision boundary violation."
-            )
+                # Decision Point: First BLOCK stops evaluation
+                if result.action == RuleAction.BLOCK:
+                    final_result = result
+                    break
+                
+                # Logic: If rule is terminal (ANSWER/FORWARD), it's a candidate
+                if result.action in [RuleAction.ANSWER, RuleAction.FORWARD]:
+                    final_result = result
+                    break
 
-        # Build clean Response Object
-        if final_result:
-            response = {
-                "request_id": request_id,
+            # Fallback if no rule triggered terminal state
+            if final_result is None:
+                final_result = RuleResult(
+                    action=RuleAction.BLOCK,
+                    reason="Engine failed to reach a deterministic terminal state.",
+                    severity=1.0,
+                    governance_flags=aggregated_flags,
+                    response_content="System Error: Execution chain incomplete."
+                )
+
+            assert final_result is not None
+            # Build Standardized Engine Output (SECTION 1)
+            output = {
                 "decision": final_result.action.value,
+                "severity": float(max_severity),
+                "governance_flags": aggregated_flags,
                 "reason": final_result.reason,
-                "response_content": final_result.response_content,
-                "rule_triggered": final_result.rule_name,
-                "total_latency_ms": round(float(total_latency_ms), 3),
-                "metadata": final_result.extra_metadata,
-                "trace": [
-                    {
-                        "rule": t.rule_name,
-                        "action": t.action.value,
-                        "reason": t.reason,
-                        "latency_ms": t.latency_ms
-                    } for t in trace
-                ]
+                "data": {
+                    "response_content": final_result.response_content,
+                    "rule_triggered": final_result.rule_name or final_result.__class__.__name__,
+                    "request_id": request_id,
+                    "trace": trace
+                },
+                "enforced": False # Will be set by enforcement layer
             }
-        else:
-            response = {
-                "request_id": request_id,
-                "decision": "error",
-                "reason": "Engine failed to produce a result.",
-                "total_latency_ms": round(float(total_latency_ms), 3),
-                "trace": []
+            
+            # Additional data for enforcement
+            if final_result.extra_metadata:
+                output["data"].update(final_result.extra_metadata)
+
+            # SECTION 2 — ENFORCEMENT LAYER BINDING
+            final_output = self.enforcement.validate_and_bind(output)
+            
+            total_latency_ms = (time.perf_counter() - start_time_total) * 1000
+            final_output["total_latency_ms"] = round(float(total_latency_ms), 2)
+            
+            return final_output
+
+        except Exception as e:
+            # SECTION 6 — FAIL-CLOSED GUARANTEE
+            return {
+                "decision": "block",
+                "severity": 1.0,
+                "governance_flags": aggregated_flags,
+                "reason": f"Engine Crash: {str(e)}",
+                "data": None,
+                "enforced": False
             }
-        
-        return response
 
 if __name__ == "__main__":
     # Internal validation smoke test

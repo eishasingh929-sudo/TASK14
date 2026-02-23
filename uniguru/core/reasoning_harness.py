@@ -10,32 +10,39 @@ if project_root not in sys.path:
 # Correct Imports (No monkey-patches)
 from uniguru.core.core import UniGuruCoreRequest, UniGuruCoreResponse, PolicyDecision
 from uniguru.core.governance import GovernanceEngine, SafetyStatus
-from uniguru.core.updated_1m_logic import generate_safe_response, direct_response
+from uniguru.core.engine import RuleEngine
 from uniguru.enforcement.enforcement import UniGuruEnforcement
 
 class UniGuruHarness:
     """
     Final Hardened Reasoning Harness for UniGuru.
-    Pipeline: Input -> Governance -> updated_1m_logic -> Enforcement -> Response.
+    Pipeline: Input -> Governance -> Structured Rule Engine -> Enforcement -> Response.
     """
     
     def __init__(self):
         self.enforcement = UniGuruEnforcement()
+        self.engine = RuleEngine()
 
     def process_query(self, query):
         print(f"\n--- Query: {query} ---")
         
-        # STEP 1: Governance PRE-CHECK on user input
+        # STEP 1: Governance PRE-CHECK on user input (Technical Safety)
         status, reason = GovernanceEngine.evaluate_input(query)
         if status != SafetyStatus.ALLOWED:
             deny_msg = f"Forbidden input detected: {reason}"
             print(f"GOVERNANCE BLOCK: {deny_msg}")
             return {"status": "DENIED", "reason": reason, "response": deny_msg}
 
-        # STEP 2: Call updated_1m_logic (Deterministic Behavior + Grounding)
-        # This layer only runs if governance allowed the input.
+        # STEP 2: Call Structured Rule Engine (Behavioral + Grounding)
         try:
-            safeguarded_output = generate_safe_response(query, direct_response)
+            engine_output = self.engine.evaluate(query)
+            safeguarded_output = engine_output.get("response_content") or "No response generated."
+            decision = engine_output.get("decision")
+            
+            # If the engine blocked it, we follow that decision
+            if decision == "block":
+                print(f"RULE ENGINE BLOCK: {engine_output.get('reason')}")
+                # We still pass to enforcement for final seal if it's a block
         except Exception as e:
             safeguarded_output = "Internal logic failure."
             print(f"LOGIC ERROR: {e}")

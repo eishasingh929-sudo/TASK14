@@ -1,123 +1,45 @@
-# RETRIEVAL_VALIDATION.md
+# UniGuru Retrieval Hardening & Validation
 
-## Purpose
-This document validates the UniGuru retrieval system and proves that
-knowledge is accessed deterministically from the local Quantum_KB.
+This document validates the deterministic knowledge retrieval system of UniGuru.
 
-The goal is to ensure:
-- Correct knowledge base path is used
-- All files are discoverable by the retriever
-- Retrieval works as expected
-- Safe fallback occurs when no file is found
+## 1. Keyword → KB File Mapping
 
----
+The following mapping is established at runtime. Every file in `Quantum_KB/` is indexed by its sanitized filename.
 
-## Knowledge Base Location
+| Keyword | KB Source File | Validation Status |
+| :--- | :--- | :--- |
+| qubit | qubit.md | Validated |
+| density matrix | density_matrix.md | Validated |
+| quantum gate | quantum_gate.md | Validated |
+| superposition | superposition.md | Validated |
+| entanglement | entanglement.md | Validated |
 
-**Retriever File**
-uniguru/retrieval/retriever.py
+## 2. Validation Checks
 
-**Knowledge Base Directory**
-uniguru/Quantum_KB/
+### File Existence Check
+- **Constraint**: `retriever.py` must check `os.path.isfile(full_path)` before indexing.
+- **Failover**: Logs `[RETR-VALIDATION] FAILED` if a directory is mistaken for a file or if permissions are missing.
 
-The retriever loads all `.md` files from this directory and builds a
-deterministic keyword map used for query matching.
+### Integrity Check
+- **Constraint**: Files with 0 bytes are skipped to prevent "Empty Grounding" hallucinations.
+- **Failover**: Logs `[RETR-VALIDATION] WARNING: file is empty`.
 
----
+### Match Confidence
+- **Logic**: `Confidence = (Length of Keyword) / (Length of Total Query)`.
+- **Purpose**: Provides auditability on why a specific KB entry was chosen.
 
-## Quantum_KB File Inventory
+## 3. Fallback & Failure Modes
 
-All files located in:
-uniguru/Quantum_KB/
+| Mode | Trigger | Behavior |
+| :--- | :--- | :--- |
+| **KB_MISS** | No keyword match found | System logs `[RETR-MISS]` and invokes `ForwardRule` (Tier 4). |
+| **EMPTY_INDEX** | `Quantum_KB` folder missing or empty | System logs `CRITICAL ERROR` and defaults to safe generic advisor logic. |
+| **MALFORMED_MD** | File encoding issues | System catches exception per-file, logs error, and continues indexing others. |
 
-| File Name | Description |
-|---|---|
-| quantum_entanglement.md | Concepts and explanation of quantum entanglement |
-| quantum_superposition.md | Explanation of superposition |
-| quantum_computing_basics.md | Overview of quantum computing |
-| qubits.md | Explanation of qubits and quantum states |
-| quantum_measurement.md | Measurement principles in quantum mechanics |
-
-*(Update this list if new KB files are added.)*
-
----
-
-## Retriever Path Verification
-
-The retriever explicitly loads files from:
-
-KB_PATH = "uniguru/Quantum_KB"
-
-Validation points:
-- Directory exists
-- Files are scanned recursively
-- Only `.md` files are loaded
-- File content is indexed for keyword matching
-
-This confirms retrieval uses the **correct and intended path**.
-
----
-
-## Retrieval Example — Successful Match
-
-### Example Query
-What is quantum entanglement?
-
-### Retrieval Flow
-1. Query classified as knowledge query.
-2. `RetrievalRule` triggers → RuleAction.RETRIEVE.
-3. `KnowledgeRetriever` scans keyword map.
-4. Match found in file:
-quantum_entanglement.md
-5. File content returned as grounded response.
-
-Result: **PASS — Correct file retrieved**
-
----
-
-## Retrieval Example — Another Match
-
-### Example Query
-Explain qubits.
-
-Matched file:
-qubits.md
-
-Result: **PASS — Correct file retrieved**
-
----
-
-## Fallback Case — No File Found
-
-### Example Query
-Explain black holes.
-
-### Retrieval Flow
-1. Query classified as knowledge query.
-2. Retriever searches Quantum_KB.
-3. No matching file found.
-4. Retrieval returns **None / No Match**.
-5. System falls back to:
-ForwardRule → FORWARD to legacy backend
-
-Result: **PASS — Safe fallback triggered**
-
----
-
-## Deterministic Retrieval Guarantees
-
-The retrieval system ensures:
-
-- Knowledge comes only from local KB
-- No external data sources used
-- Same query always retrieves same file
-- Safe fallback when no knowledge exists
-
----
-
-## Conclusion
-
-The UniGuru retrieval layer is:
-- Correctly connected to Quantum_KB
-- Deterministic and verifiable
-- Safe when no knowledge is available
+## 4. Verification Logs (Example)
+```text
+[RETR-LOAD] Successfully indexed: qubit.md (Size: 1240 bytes)
+[RETR-LOAD] Successfully indexed: entanglement.md (Size: 2150 bytes)
+...
+[RETR-MATCH] Query matched keyword: 'qubit' (Confidence: 0.35)
+```

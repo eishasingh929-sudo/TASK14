@@ -28,6 +28,14 @@ class RuleTrace:
 class RuleResult:
     action: RuleAction
     reason: str
+    severity: float = 0.0
+    governance_flags: Dict[str, Any] = field(default_factory=lambda: {
+        "authority": False,
+        "delegation": False,
+        "emotional": False,
+        "ambiguity": False,
+        "safety": False
+    })
     response_content: Optional[str] = None
     rule_name: Optional[str] = None
     trace: List[RuleTrace] = field(default_factory=list)

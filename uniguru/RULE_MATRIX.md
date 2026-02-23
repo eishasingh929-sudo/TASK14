@@ -1,67 +1,37 @@
-# RULE_MATRIX.md
+# UniGuru Deterministic Rule Matrix
 
-## Purpose
-This document defines the deterministic behaviour rules of UniGuru.
-It acts as the single source of truth for how the system responds to
-different types of user queries.
+This document defines the formal rules used by the UniGuru Reasoning Layer to classify and respond to user queries.
 
-Each rule maps:
-Query Type → Detection Pattern → System Action → Implementing File
+| Rule ID | Name | Trigger Condition | Detection Layer | Decision Output | Enforcement Override |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **UG-001** | **SafetyRule** | Verboten patterns (sudo, rm -rf, SQLi, hack) | Enforcement/Safety | **BLOCK** | Always |
+| **UG-002** | **AuthorityRule** | Power dynamic detection (Boss, Teacher) + Coercion terms | Governance/Authority | **BLOCK** if Severity > 0.5 | If Severity > 0.8 |
+| **UG-003** | **DelegationRule** | Responsibility transfer (Academic, Technical, Legal) | Governance/Delegation | **BLOCK** | Always |
+| **UG-004** | **EmotionalRule** | Distress, Urgency, Hostility, Confusion triggers | Governance/Emotional | **ANSWER** (De-escalation) | Context Dependent |
+| **UG-005** | **AmbiguityRule** | Semantic/Contextual/Incomplete query patterns | Governance/Ambiguity | **ANSWER** (Clarification) | Never |
+| **UG-006** | **RetrievalRule** | Keyword match in `Quantum_KB` | Core/Retrieval | **ANSWER** (Grounded) | Output Audit |
+| **UG-007** | **ForwardRule** | No specific trigger (Catch-all) | Core/Forward | **FORWARD** (Legacy/Human) | Audit Required |
 
-This ensures predictable and governed behaviour.
+## Detection Definitions
 
----
+### Ambiguity Classes
+- **INCOMPLETE**: Tokens <= 1.
+- **CONTEXTUAL**: Only vague pronouns (e.g., "What about that?").
+- **SEMANTIC**: Vague action + vague pronoun (e.g., "Do it").
 
-## Rule Matrix
+### Delegation Categories
+- **ACADEMIC**: Requests to solve exams or homework.
+- **TECHNICAL**: Requests for system execution or automation.
+- **LEGAL/ETHICAL**: Requests for the system to make binding decisions.
 
-| Query Type | Rule Name | Trigger Pattern | Response Type | RuleAction | Implementing File | Description |
-|---|---|---|---|---|---|---|
-| Ambiguous Query | AmbiguityRule | Vague references (e.g., "tell me about it", "explain this", missing subject/context) | Clarification | ANSWER (clarification prompt) | `uniguru/governance/ambiguity.py` | Requests more context instead of guessing. Prevents hallucinations. |
-| Delegation Request | DelegationRule | User asks system to make life decisions (e.g., "decide for me", "choose my career") | Refusal | BLOCK | `uniguru/governance/delegation.py` | Prevents the system from taking responsibility for user decisions. |
-| Authority Assumption | AuthorityRule | User assumes system has official authority (e.g., "as an official advisor confirm...") | Correction | BLOCK / ANSWER | `uniguru/governance/authority.py` | Corrects false authority claims and prevents misinformation. |
-| Emotional Distress | EmotionalRule | Emotional language (e.g., "I feel lost", "I feel useless") | Acknowledgment | ANSWER | `uniguru/governance/emotional.py` | Provides supportive acknowledgement without giving harmful advice. |
-| Unsafe / Prohibited Query | UnsafeRule | Harmful or unsafe instructions | Refusal | BLOCK | `uniguru/enforcement/safety.py` | Stops unsafe or harmful requests at the governance layer. |
-| Knowledge Query | RetrievalRule | Questions matching knowledge base topics | Retrieval | RETRIEVE | `uniguru/retrieval/retriever.py` | Retrieves grounded answers from Quantum_KB. |
-| General Safe Query | ForwardRule | Queries not matching other rules | Forward to legacy system | FORWARD | `uniguru/core/engine.py` | Forwards safe queries to the legacy backend. |
+### Power Dynamics
+- **TECHNICAL**: Sudo/Root impersonation attempts.
+- **PROFESSIONAL**: Using workplace authority to bypass rules.
+- **ACADEMIC**: Using institutional authority.
+- **PERSONAL**: Emotional manipulation or trust-based pressure.
 
----
-
-## Deterministic Behaviour Summary
-
-The Rule Engine processes rules in a fixed order:
-
-1. Safety / Governance Rules  
-2. Ambiguity Detection  
-3. Emotional Support  
-4. Knowledge Retrieval  
-5. Forward to Legacy System  
-
-Only one final action is selected.
-
-This guarantees:
-- No randomness
-- No hidden behaviour
-- Same input → Same outcome
-
----
-
-## Rule Execution Flow
-
-User Query
-↓
-Governance Rules (BLOCK if unsafe)
-↓
-Ambiguity Rule (CLARIFY if unclear)
-↓
-Emotional Rule (ACKNOWLEDGE if emotional)
-↓
-Retrieval Rule (RETRIEVE if knowledge query)
-↓
-Forward Rule (FORWARD if general query)
-
----
-
-## Conclusion
-
-The rule matrix guarantees UniGuru behaves in a
-**predictable, governed, and deterministic manner.**
+### Emotional Matrix
+- **DISTRESS**: Signals of being overwhelmed or unable to cope.
+- **URGENCY**: High-speed demands (ASAP).
+- **HOSTILITY**: Aggressive or critical behavior.
+- **CONFUSION**: Explicit statements of being lost.

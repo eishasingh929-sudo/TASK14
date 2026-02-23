@@ -1,6 +1,6 @@
-from core.rules.base import BaseRule, RuleContext, RuleResult, RuleAction
+from uniguru.core.rules.base import BaseRule, RuleContext, RuleResult, RuleAction
 
-class UnsafeRule(BaseRule):
+class SafetyRule(BaseRule):
     def __init__(self):
         self.prohibited_terms = [
             "cheat",
@@ -23,6 +23,14 @@ class UnsafeRule(BaseRule):
                 return RuleResult(
                     action=RuleAction.BLOCK,
                     reason=f"Prohibited content detected: '{term}'",
+                    severity=1.0,
+                    governance_flags={
+                        "authority": False,
+                        "delegation": False,
+                        "emotional": False,
+                        "ambiguity": False,
+                        "safety": True
+                    },
                     response_content="I cannot assist with academic dishonesty, illegal activities, or system bypassing.",
                     rule_name=self.name
                 )

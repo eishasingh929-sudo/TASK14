@@ -20,6 +20,9 @@ class GovernanceEngine:
         r"system\(",
         r"DROP\sTABLE",
         r"INSERT\sINTO",
+        r"hack\s",
+        r"cheat",
+        r"exam\sanswers",
     ]
     
     AUTHORITY_PATTERNS = [

@@ -1,0 +1,31 @@
+STDOUT:
+[RETR-LOAD] Successfully indexed: density_matrix.md (Size: 1570 bytes)
+[RETR-LOAD] Successfully indexed: entanglement.md (Size: 1570 bytes)
+[RETR-LOAD] Successfully indexed: grover_algorithm.md (Size: 2615 bytes)
+[RETR-LOAD] Successfully indexed: KB_INDEX.md (Size: 1358 bytes)
+[RETR-LOAD] Successfully indexed: qubit.md (Size: 1570 bytes)
+[RETR-LOAD] Successfully indexed: README.md (Size: 861 bytes)
+[RETR-LOAD] Successfully indexed: shor_algorithm.md (Size: 2615 bytes)
+[RETR-LOAD] Successfully indexed: superposition.md (Size: 1570 bytes)
+[RETR-LOAD] Successfully indexed: quantum_algorithms_overview.md (Size: 2615 bytes)
+[RETR-LOAD] Successfully indexed: quantum_applications_overview.md (Size: 430 bytes)
+[RETR-LOAD] Successfully indexed: quantum_biology_overview.md (Size: 1333 bytes)
+[RETR-LOAD] Successfully indexed: quantum_chemistry_overview.md (Size: 1463 bytes)
+[RETR-LOAD] Successfully indexed: nielsen_chuang_core.md (Size: 1570 bytes)
+[RETR-LOAD] Successfully indexed: quantum_computing_overview.md (Size: 423 bytes)
+[RETR-LOAD] Successfully indexed: quantum_information_core.md (Size: 2059 bytes)
+[RETR-LOAD] Successfully indexed: quantum_hardware_overview.md (Size: 1619 bytes)
+[RETR-LOAD] Successfully indexed: quantum_math_foundations.md (Size: 1324 bytes)
+[RETR-LOAD] Successfully indexed: quantum_physics_overview.md (Size: 397 bytes)
+[RETR-LOAD] Successfully indexed: quantum_software_stack.md (Size: 1466 bytes)
+UniGuru Knowledge Base Loaded: 19 files indexed.
+
+STDERR:
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\Yass0\OneDrive\Desktop\TASK14\uniguru\core\engine.py", line 6, in <module>
+    from uniguru.core.rules import (
+    ...<8 lines>...
+    )
+ImportError: cannot import name 'RuleAction' from 'uniguru.core.rules' (C:\Users\Yass0\OneDrive\Desktop\TASK14\uniguru\core\rules\__init__.py)

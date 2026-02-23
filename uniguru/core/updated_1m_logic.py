@@ -1,4 +1,4 @@
-from .retriever import retrieve_knowledge
+from uniguru.retrieval.retriever import retrieve_knowledge
 
 
 def direct_response(text: str) -> str:
