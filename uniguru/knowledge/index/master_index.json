@@ -1,0 +1,303 @@
+{
+  "density matrix": [
+    {
+      "content": "Title: Nielsen & Chuang Core Concepts\nSource(s): Nielsen, M. A. & Chuang, I. L., \"Quantum Computation and Quantum Information\" (2010)\nAuthors: Michael A. Nielsen; Isaac L. Chuang (summarized)\nYear: 2010\nDomain: Quantum Foundations / Quantum Information\nIngestion date: 2026-02-06\n\nDefinitions\n- Qubit: Two-level quantum system represented by state vector $|\\psi\\rangle=\\alpha|0\\rangle+\\beta|1\\rangle$.\n- Density operator: $\\rho$ describing mixed states; $\\rho=\\sum_i p_i|\\psi_i\\rangle\\langle\\psi_i|$.\n- Unitary evolution: Closed-system dynamics described by $\\rho\\mapsto U\\rho U^{\\dagger}$.\n- Measurement (projective): Born rule $p_i=\\langle\\psi|\\Pi_i|\\psi\\rangle$ for projector $\\Pi_i$.\n- Entanglement: Non-separable joint states with correlations beyond classical mixtures.\n\nKey Concepts\n- State space: Hilbert space formalism and tensor-product composition.\n- Quantum gates: Reversible operations implemented by unitary matrices.\n- Quantum circuits: Composition of gates to implement algorithms.\n- Quantum error: Decoherence and noise motivating error correction.\n\nLight equation context\n- State normalization: $\\langle\\psi|\\psi\\rangle=1$.\n- Expectation value: $\\langle A\\rangle=\\mathrm{Tr}(\\rho A)$.\n\nConcept explanations\n- Superposition: Linear combination of basis states enabling interference.\n- Measurement collapse (operational): Probabilistic update of state post-measurement.\n- Quantum tomography (summary): Reconstruction of $\\rho$ from measurement statistics.\n\nCitations\n- Nielsen & Chuang (2010). Core textbook treatment of these foundational topics.SSSS\n\n",
+      "metadata": {
+        "source": "density_matrix.md",
+        "path": "Quantum_KB\\density_matrix.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "entanglement": [
+    {
+      "content": "Title: Nielsen & Chuang Core Concepts\nSource(s): Nielsen, M. A. & Chuang, I. L., \"Quantum Computation and Quantum Information\" (2010)\nAuthors: Michael A. Nielsen; Isaac L. Chuang (summarized)\nYear: 2010\nDomain: Quantum Foundations / Quantum Information\nIngestion date: 2026-02-06\n\nDefinitions\n- Qubit: Two-level quantum system represented by state vector $|\\psi\\rangle=\\alpha|0\\rangle+\\beta|1\\rangle$.\n- Density operator: $\\rho$ describing mixed states; $\\rho=\\sum_i p_i|\\psi_i\\rangle\\langle\\psi_i|$.\n- Unitary evolution: Closed-system dynamics described by $\\rho\\mapsto U\\rho U^{\\dagger}$.\n- Measurement (projective): Born rule $p_i=\\langle\\psi|\\Pi_i|\\psi\\rangle$ for projector $\\Pi_i$.\n- Entanglement: Non-separable joint states with correlations beyond classical mixtures.\n\nKey Concepts\n- State space: Hilbert space formalism and tensor-product composition.\n- Quantum gates: Reversible operations implemented by unitary matrices.\n- Quantum circuits: Composition of gates to implement algorithms.\n- Quantum error: Decoherence and noise motivating error correction.\n\nLight equation context\n- State normalization: $\\langle\\psi|\\psi\\rangle=1$.\n- Expectation value: $\\langle A\\rangle=\\mathrm{Tr}(\\rho A)$.\n\nConcept explanations\n- Superposition: Linear combination of basis states enabling interference.\n- Measurement collapse (operational): Probabilistic update of state post-measurement.\n- Quantum tomography (summary): Reconstruction of $\\rho$ from measurement statistics.\n\nCitations\n- Nielsen & Chuang (2010). Core textbook treatment of these foundational topics.SSSS\n\n",
+      "metadata": {
+        "source": "entanglement.md",
+        "path": "Quantum_KB\\entanglement.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "grover algorithm": [
+    {
+      "content": "Title: Quantum Algorithms Overview\nSource(s): \n\u2022 Shor, P. W. (1994) Algorithms for quantum computation: discrete logarithms and factoring.\n\u2022 Grover, L. K. (1996) A fast quantum mechanical algorithm for database search.\n\u2022 Nielsen & Chuang (2010) Quantum Computation and Quantum Information.\n\u2022 Farhi et al. (2014) A Quantum Approximate Optimization Algorithm (arXiv:1411.4028).\n\u2022 Peruzzo et al. (2014) A variational eigenvalue solver on a quantum processor.\n\nAuthors: Curated summary\nYear: 2026 (ingestion)\nDomain: Quantum Algorithms\nIngestion date: 2026-02-06\n\nDefinitions\n- Quantum algorithm: Algorithm exploiting quantum mechanical phenomena (superposition, interference, entanglement) to solve computational problems.\n- Oracle: Abstract subroutine used in many algorithmic formulations (e.g., Grover's search).\n\nKey Points\n- Quantum speedups: Proven exponential (Shor) and quadratic (Grover) advantages for specific problems.\n- Algorithm classes: Factoring and period-finding, unstructured search, simulation, optimization (VQE, QAOA).\n- Resource considerations: Qubit count, gate depth, error rates, and classical-quantum hybrid steps.\n\nConcept explanations\n- Shor's algorithm: Period-finding with quantum Fourier transform yields integer factoring speedup (cite Shor 1994).\n- Grover's search: Amplitude amplification producing $O(\\sqrt{N})$ queries for unstructured search.\n- Quantum simulation: Using quantum systems to simulate quantum chemistry and materials; basis for many near-term use cases.\n- Variational algorithms: Hybrid quantum-classical optimization using parameterized circuits (VQE, QAOA) for noisy hardware.\n\nLight equation context\n- Grover iteration amplitude scaling: After $k$ iterations, success amplitude scales approximately as $\\sin((2k+1)\\theta)$ where $\\sin(\\theta)=1/\\sqrt{N}$.\n- Quantum Fourier Transform (QFT): Linear transform mapping computational basis to frequency domain; implemented with $O(n^2)$ gates in textbook circuits.\n\nTitle: Quantum Algorithms Overview\nSource(s): \n\u2022 Shor, P. W. (1994) Algorithms for quantum computation: discrete logarithms and factoring.\n\u2022 Grover, L. K. (1996) A fast quantum mechanical algorithm for database search.\n\u2022 Nielsen & Chuang (2010) Quantum Computation and Quantum Information.\n\u2022 Farhi et al. (2014) A Quantum Approximate Optimization Algorithm (arXiv:1411.4028).\n\u2022 Peruzzo et al. (2014) A variational eigenvalue solver on a quantum processor.\n\nCitations\n\u2022 Shor (1994) \u2013 Factoring algorithm.\n\u2022 Grover (1996) \u2013 Quantum search.\n\u2022 Farhi et al. (2014) \u2013 QAOA.\n\u2022 Peruzzo et al. (2014) \u2013 VQE.\n\u2022 Nielsen & Chuang (2010) \u2013 Circuit model and QFT.\n\n",
+      "metadata": {
+        "source": "grover_algorithm.md",
+        "path": "Quantum_KB\\grover_algorithm.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "kb index": [
+    {
+      "content": "# Quantum Knowledge Base Index\n\n## 1. Structure Overview\n- **Root**: `Quantum_KB/`\n- **Total Domains**: 10\n- **Primary Source**: Trusted Academic Journals & Texts (Read-Only)\n\n## 2. Directory Tree\n### A. Foundations (Legacy/Phys)\n- [Nielsen & Chuang Core Concepts](Foundations/nielsen_chuang_core.md)\n\n### B. Quantum Physics (New)\n- [Overview](Quantum_Physics/quantum_physics_overview.md)\n\n### C. Quantum Computing (New)\n- [Overview](Quantum_Computing/quantum_computing_overview.md)\n\n### D. Quantum Algorithms\n- [Overview](Quantum_Algorithms/quantum_algorithms_overview.md)\n\n### E. Quantum Applications (New)\n- [Overview](Quantum_Applications/quantum_applications_overview.md)\n\n### F. Quantum Information\n- (Empty / Awaiting)\n\n### G. Quantum Mathematics\n- (Awaiting Ingestion)\n\n### H. Quantum Biology\n- [Overview](Quantum_Biology/quantum_biology_overview.md)\n\n### I. Quantum Chemistry\n- [Overview](Quantum_Chemistry/quantum_chemistry_overview.md)\n\n### J. Quantum Hardware\n- [Overview](Quantum_Hardware/quantum_hardware_overview.md)\n\n## 3. Ingestion Log\n- **2026-02-11**: Created folders for Physics, Computing, Applications.\n- **2026-02-11**: Added placeholder overviews.\n- **Old**: Existing overview files retained.\n\n## 4. Usage Requirements\n- **Read-Only**: Do not edit manually except via `integration/ingest_paper.py`.\n- **Sources**: Peer-reviewed only.\n",
+      "metadata": {
+        "source": "KB_INDEX.md",
+        "path": "Quantum_KB\\KB_INDEX.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "qubit": [
+    {
+      "content": "Title: Nielsen & Chuang Core Concepts\nSource(s): Nielsen, M. A. & Chuang, I. L., \"Quantum Computation and Quantum Information\" (2010)\nAuthors: Michael A. Nielsen; Isaac L. Chuang (summarized)\nYear: 2010\nDomain: Quantum Foundations / Quantum Information\nIngestion date: 2026-02-06\n\nDefinitions\n- Qubit: Two-level quantum system represented by state vector $|\\psi\\rangle=\\alpha|0\\rangle+\\beta|1\\rangle$.\n- Density operator: $\\rho$ describing mixed states; $\\rho=\\sum_i p_i|\\psi_i\\rangle\\langle\\psi_i|$.\n- Unitary evolution: Closed-system dynamics described by $\\rho\\mapsto U\\rho U^{\\dagger}$.\n- Measurement (projective): Born rule $p_i=\\langle\\psi|\\Pi_i|\\psi\\rangle$ for projector $\\Pi_i$.\n- Entanglement: Non-separable joint states with correlations beyond classical mixtures.\n\nKey Concepts\n- State space: Hilbert space formalism and tensor-product composition.\n- Quantum gates: Reversible operations implemented by unitary matrices.\n- Quantum circuits: Composition of gates to implement algorithms.\n- Quantum error: Decoherence and noise motivating error correction.\n\nLight equation context\n- State normalization: $\\langle\\psi|\\psi\\rangle=1$.\n- Expectation value: $\\langle A\\rangle=\\mathrm{Tr}(\\rho A)$.\n\nConcept explanations\n- Superposition: Linear combination of basis states enabling interference.\n- Measurement collapse (operational): Probabilistic update of state post-measurement.\n- Quantum tomography (summary): Reconstruction of $\\rho$ from measurement statistics.\n\nCitations\n- Nielsen & Chuang (2010). Core textbook treatment of these foundational topics.SSSS\n\n",
+      "metadata": {
+        "source": "qubit.md",
+        "path": "Quantum_KB\\qubit.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "readme": [
+    {
+      "content": "# UniGuru Quantum Knowledge Base Expansion\n\nThis repository contains documentation-only knowledge base expansion\nfor the UniGuru system.\n\n## Scope\nThis work expands the Quantum_KB with foundational and advanced\nquantum computing material using canonical textbooks, peer-reviewed\npapers, and university lecture notes.\n\n## Important Constraints\nThis repository contains:\n\u2022 Read-only documentation\n\u2022 Non-executable content\n\u2022 No runtime or behavioral changes\n\u2022 No tools or agents\n\n## Domains Covered\n\u2022 Quantum Computation & Information\n\u2022 Quantum Algorithms\n\u2022 Quantum Information Theory\n\u2022 Quantum Hardware\n\u2022 Quantum Software Toolchains\n\u2022 Quantum Mathematics\n\u2022 Quantum Biology\n\u2022 Quantum Chemistry\n\n## Sources\nCanonical textbooks, peer-reviewed research papers, university\nlecture notes, and arXiv publications.\n\n## Purpose\nKnowledge Base Deepening Phase for UniGuru.\n",
+      "metadata": {
+        "source": "README.md",
+        "path": "Quantum_KB\\README.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "shor algorithm": [
+    {
+      "content": "Title: Quantum Algorithms Overview\nSource(s): \n\u2022 Shor, P. W. (1994) Algorithms for quantum computation: discrete logarithms and factoring.\n\u2022 Grover, L. K. (1996) A fast quantum mechanical algorithm for database search.\n\u2022 Nielsen & Chuang (2010) Quantum Computation and Quantum Information.\n\u2022 Farhi et al. (2014) A Quantum Approximate Optimization Algorithm (arXiv:1411.4028).\n\u2022 Peruzzo et al. (2014) A variational eigenvalue solver on a quantum processor.\n\nAuthors: Curated summary\nYear: 2026 (ingestion)\nDomain: Quantum Algorithms\nIngestion date: 2026-02-06\n\nDefinitions\n- Quantum algorithm: Algorithm exploiting quantum mechanical phenomena (superposition, interference, entanglement) to solve computational problems.\n- Oracle: Abstract subroutine used in many algorithmic formulations (e.g., Grover's search).\n\nKey Points\n- Quantum speedups: Proven exponential (Shor) and quadratic (Grover) advantages for specific problems.\n- Algorithm classes: Factoring and period-finding, unstructured search, simulation, optimization (VQE, QAOA).\n- Resource considerations: Qubit count, gate depth, error rates, and classical-quantum hybrid steps.\n\nConcept explanations\n- Shor's algorithm: Period-finding with quantum Fourier transform yields integer factoring speedup (cite Shor 1994).\n- Grover's search: Amplitude amplification producing $O(\\sqrt{N})$ queries for unstructured search.\n- Quantum simulation: Using quantum systems to simulate quantum chemistry and materials; basis for many near-term use cases.\n- Variational algorithms: Hybrid quantum-classical optimization using parameterized circuits (VQE, QAOA) for noisy hardware.\n\nLight equation context\n- Grover iteration amplitude scaling: After $k$ iterations, success amplitude scales approximately as $\\sin((2k+1)\\theta)$ where $\\sin(\\theta)=1/\\sqrt{N}$.\n- Quantum Fourier Transform (QFT): Linear transform mapping computational basis to frequency domain; implemented with $O(n^2)$ gates in textbook circuits.\n\nTitle: Quantum Algorithms Overview\nSource(s): \n\u2022 Shor, P. W. (1994) Algorithms for quantum computation: discrete logarithms and factoring.\n\u2022 Grover, L. K. (1996) A fast quantum mechanical algorithm for database search.\n\u2022 Nielsen & Chuang (2010) Quantum Computation and Quantum Information.\n\u2022 Farhi et al. (2014) A Quantum Approximate Optimization Algorithm (arXiv:1411.4028).\n\u2022 Peruzzo et al. (2014) A variational eigenvalue solver on a quantum processor.\n\nCitations\n\u2022 Shor (1994) \u2013 Factoring algorithm.\n\u2022 Grover (1996) \u2013 Quantum search.\n\u2022 Farhi et al. (2014) \u2013 QAOA.\n\u2022 Peruzzo et al. (2014) \u2013 VQE.\n\u2022 Nielsen & Chuang (2010) \u2013 Circuit model and QFT.\n\n",
+      "metadata": {
+        "source": "shor_algorithm.md",
+        "path": "Quantum_KB\\shor_algorithm.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "superposition": [
+    {
+      "content": "Title: Nielsen & Chuang Core Concepts\nSource(s): Nielsen, M. A. & Chuang, I. L., \"Quantum Computation and Quantum Information\" (2010)\nAuthors: Michael A. Nielsen; Isaac L. Chuang (summarized)\nYear: 2010\nDomain: Quantum Foundations / Quantum Information\nIngestion date: 2026-02-06\n\nDefinitions\n- Qubit: Two-level quantum system represented by state vector $|\\psi\\rangle=\\alpha|0\\rangle+\\beta|1\\rangle$.\n- Density operator: $\\rho$ describing mixed states; $\\rho=\\sum_i p_i|\\psi_i\\rangle\\langle\\psi_i|$.\n- Unitary evolution: Closed-system dynamics described by $\\rho\\mapsto U\\rho U^{\\dagger}$.\n- Measurement (projective): Born rule $p_i=\\langle\\psi|\\Pi_i|\\psi\\rangle$ for projector $\\Pi_i$.\n- Entanglement: Non-separable joint states with correlations beyond classical mixtures.\n\nKey Concepts\n- State space: Hilbert space formalism and tensor-product composition.\n- Quantum gates: Reversible operations implemented by unitary matrices.\n- Quantum circuits: Composition of gates to implement algorithms.\n- Quantum error: Decoherence and noise motivating error correction.\n\nLight equation context\n- State normalization: $\\langle\\psi|\\psi\\rangle=1$.\n- Expectation value: $\\langle A\\rangle=\\mathrm{Tr}(\\rho A)$.\n\nConcept explanations\n- Superposition: Linear combination of basis states enabling interference.\n- Measurement collapse (operational): Probabilistic update of state post-measurement.\n- Quantum tomography (summary): Reconstruction of $\\rho$ from measurement statistics.\n\nCitations\n- Nielsen & Chuang (2010). Core textbook treatment of these foundational topics.SSSS\n\n",
+      "metadata": {
+        "source": "superposition.md",
+        "path": "Quantum_KB\\superposition.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "quantum algorithms overview": [
+    {
+      "content": "Title: Quantum Algorithms Overview\nSource(s): \n\u2022 Shor, P. W. (1994) Algorithms for quantum computation: discrete logarithms and factoring.\n\u2022 Grover, L. K. (1996) A fast quantum mechanical algorithm for database search.\n\u2022 Nielsen & Chuang (2010) Quantum Computation and Quantum Information.\n\u2022 Farhi et al. (2014) A Quantum Approximate Optimization Algorithm (arXiv:1411.4028).\n\u2022 Peruzzo et al. (2014) A variational eigenvalue solver on a quantum processor.\n\nAuthors: Curated summary\nYear: 2026 (ingestion)\nDomain: Quantum Algorithms\nIngestion date: 2026-02-06\n\nDefinitions\n- Quantum algorithm: Algorithm exploiting quantum mechanical phenomena (superposition, interference, entanglement) to solve computational problems.\n- Oracle: Abstract subroutine used in many algorithmic formulations (e.g., Grover's search).\n\nKey Points\n- Quantum speedups: Proven exponential (Shor) and quadratic (Grover) advantages for specific problems.\n- Algorithm classes: Factoring and period-finding, unstructured search, simulation, optimization (VQE, QAOA).\n- Resource considerations: Qubit count, gate depth, error rates, and classical-quantum hybrid steps.\n\nConcept explanations\n- Shor's algorithm: Period-finding with quantum Fourier transform yields integer factoring speedup (cite Shor 1994).\n- Grover's search: Amplitude amplification producing $O(\\sqrt{N})$ queries for unstructured search.\n- Quantum simulation: Using quantum systems to simulate quantum chemistry and materials; basis for many near-term use cases.\n- Variational algorithms: Hybrid quantum-classical optimization using parameterized circuits (VQE, QAOA) for noisy hardware.\n\nLight equation context\n- Grover iteration amplitude scaling: After $k$ iterations, success amplitude scales approximately as $\\sin((2k+1)\\theta)$ where $\\sin(\\theta)=1/\\sqrt{N}$.\n- Quantum Fourier Transform (QFT): Linear transform mapping computational basis to frequency domain; implemented with $O(n^2)$ gates in textbook circuits.\n\nTitle: Quantum Algorithms Overview\nSource(s): \n\u2022 Shor, P. W. (1994) Algorithms for quantum computation: discrete logarithms and factoring.\n\u2022 Grover, L. K. (1996) A fast quantum mechanical algorithm for database search.\n\u2022 Nielsen & Chuang (2010) Quantum Computation and Quantum Information.\n\u2022 Farhi et al. (2014) A Quantum Approximate Optimization Algorithm (arXiv:1411.4028).\n\u2022 Peruzzo et al. (2014) A variational eigenvalue solver on a quantum processor.\n\nCitations\n\u2022 Shor (1994) \u2013 Factoring algorithm.\n\u2022 Grover (1996) \u2013 Quantum search.\n\u2022 Farhi et al. (2014) \u2013 QAOA.\n\u2022 Peruzzo et al. (2014) \u2013 VQE.\n\u2022 Nielsen & Chuang (2010) \u2013 Circuit model and QFT.\n\n",
+      "metadata": {
+        "source": "quantum_algorithms_overview.md",
+        "path": "Quantum_KB\\Quantum_Algorithms\\quantum_algorithms_overview.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "quantum applications overview": [
+    {
+      "content": "# Introduction to Quantum Applications\n\n- **Source**: Current Research (Placeholder for detailed ingestion)\n- **Domain**: Quantum_Applications\n- **Ingestion Date**: 2026-02-11\n\n## Key Applications\n1. Cryptography / Security (QKD, Post-Quantum)\n2. Chemical Simulation / Materials Science\n3. Optimization\n4. Machine Learning (QML)\n5. Financial Modeling\n\n## Status\nAwaiting ingestion of trusted sources (e.g., NIST, Nature Quantum).\n",
+      "metadata": {
+        "source": "quantum_applications_overview.md",
+        "path": "Quantum_KB\\Quantum_Applications\\quantum_applications_overview.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "quantum biology overview": [
+    {
+      "content": "Title: Quantum Biology Overview\nSource(s): Source(s):\n\u2022 Lambert et al. (2013) Quantum biology.\n\u2022 Huelga & Plenio (2013) Vibrations, quanta and biology.\n\u2022 Ritz et al. (2000) A model for photoreceptor-based magnetoreception.\n\nYear: 2026 (ingestion)\nDomain: Quantum Biology\nIngestion date: 2026-02-06\n\nDefinitions\n- Quantum biology: Study of quantum phenomena in biological systems and their functional significance.\n- Exciton: Bound electron-hole pair important in energy transport in photosynthetic complexes.\n\nKey Points\n- Investigated phenomena: Quantum coherence in photosynthetic energy transfer, avian magnetoreception hypotheses, and tunneling in enzymatic reactions.\n- Evidence and debate: Experimental signatures of short-lived coherence exist; functional relevance remains an active research area.\n\nConcept explanations\n- Photosynthetic complexes: Coherent exciton transport can enhance energy transfer under certain conditions; models use open quantum systems techniques.\n- Magnetoreception: Radical-pair mechanism proposes spin-dependent chemical reactions as a compass.\n\nLight equation context\n- Open system dynamics: Master equations (Lindblad form) model environment-driven decoherence in biological contexts.\n\nCitations\n- Selected peer-reviewed reviews on quantum effects in biology (see journal articles and reviews).\n",
+      "metadata": {
+        "source": "quantum_biology_overview.md",
+        "path": "Quantum_KB\\Quantum_Biology\\quantum_biology_overview.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "quantum chemistry overview": [
+    {
+      "content": "Title: Quantum Chemistry Overview\nSource(s): Source(s):\n\u2022 Cao et al. (2019) Quantum chemistry in the age of quantum computing.\n\u2022 Aspuru-Guzik et al. (2005) Simulated quantum computation of molecular energies.\n\u2022 Peruzzo et al. (2014) VQE.\n\nAuthors: Curated summary\nYear: 2026 (ingestion)\nDomain: Quantum Chemistry / Simulation\nIngestion date: 2026-02-06\n\nDefinitions\n- Electronic structure problem: Determining ground and excited states of molecular Hamiltonians.\n- Second quantization: Formalism representing fermionic creation/annihilation operators for many-body systems.\n\nKey Points\n- Quantum simulation: Mapping molecular Hamiltonians to qubit operators for simulation on quantum hardware.\n- Algorithms: VQE and quantum phase estimation (QPE) are central approaches for chemistry problems.\n- Resource challenges: Hamiltonian sparsity, fermion-to-qubit encodings (Jordan\u2013Wigner, Bravyi\u2013Kitaev), and circuit depth.\n\nConcept explanations\n- VQE: Variational hybrid algorithm optimizing parameterized circuits to approximate ground states with classical optimizers.\n- QPE: High-precision eigenvalue estimation requiring deeper circuits and error-corrected hardware.\n\nLight equation context\n- Molecular Hamiltonian (second quantized form): $H=\\\\sum_{pq} h_{pq} a_p^{\\\\dagger} a_q + \\\\frac{1}{2} \\\\sum_{pqrs} h_{pqrs} a_p^{\\\\dagger} a_q^{\\\\dagger} a_r a_s$ (summary form).\n\nCitations\n- Reviews on quantum algorithms for chemistry and landmark papers on VQE and QPE.\n",
+      "metadata": {
+        "source": "quantum_chemistry_overview.md",
+        "path": "Quantum_KB\\Quantum_Chemistry\\quantum_chemistry_overview.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "nielsen chuang core": [
+    {
+      "content": "Title: Nielsen & Chuang Core Concepts\nSource(s): Nielsen, M. A. & Chuang, I. L., \"Quantum Computation and Quantum Information\" (2010)\nAuthors: Michael A. Nielsen; Isaac L. Chuang (summarized)\nYear: 2010\nDomain: Quantum Foundations / Quantum Information\nIngestion date: 2026-02-06\n\nDefinitions\n- Qubit: Two-level quantum system represented by state vector $|\\psi\\rangle=\\alpha|0\\rangle+\\beta|1\\rangle$.\n- Density operator: $\\rho$ describing mixed states; $\\rho=\\sum_i p_i|\\psi_i\\rangle\\langle\\psi_i|$.\n- Unitary evolution: Closed-system dynamics described by $\\rho\\mapsto U\\rho U^{\\dagger}$.\n- Measurement (projective): Born rule $p_i=\\langle\\psi|\\Pi_i|\\psi\\rangle$ for projector $\\Pi_i$.\n- Entanglement: Non-separable joint states with correlations beyond classical mixtures.\n\nKey Concepts\n- State space: Hilbert space formalism and tensor-product composition.\n- Quantum gates: Reversible operations implemented by unitary matrices.\n- Quantum circuits: Composition of gates to implement algorithms.\n- Quantum error: Decoherence and noise motivating error correction.\n\nLight equation context\n- State normalization: $\\langle\\psi|\\psi\\rangle=1$.\n- Expectation value: $\\langle A\\rangle=\\mathrm{Tr}(\\rho A)$.\n\nConcept explanations\n- Superposition: Linear combination of basis states enabling interference.\n- Measurement collapse (operational): Probabilistic update of state post-measurement.\n- Quantum tomography (summary): Reconstruction of $\\rho$ from measurement statistics.\n\nCitations\n- Nielsen & Chuang (2010). Core textbook treatment of these foundational topics.SSSS\n\n",
+      "metadata": {
+        "source": "nielsen_chuang_core.md",
+        "path": "Quantum_KB\\Quantum_Computing\\nielsen_chuang_core.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "quantum computing overview": [
+    {
+      "content": "# Introduction to Quantum Computing\n\n- **Source**: Standard Curriculum (Placeholder for detailed ingestion)\n- **Domain**: Quantum_Computing\n- **Ingestion Date**: 2026-02-11\n\n## Key Topics\n1. Universal Quantum Computers\n2. Quantum Turing Machines\n3. Quantum Complexity Classes (BQP)\n4. Quantum Circuit Model\n5. Quantum Supremacy / Advantage\n\n## Status\nAwaiting ingestion of trusted sources (e.g., Preskill, Scott Aaronson).\n",
+      "metadata": {
+        "source": "quantum_computing_overview.md",
+        "path": "Quantum_KB\\Quantum_Computing\\quantum_computing_overview.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "quantum information core": [
+    {
+      "content": "Title: Quantum Information Core\nSource(s): Source(s):\n\u2022 Nielsen & Chuang (2010)\n\u2022 Preskill Lecture Notes \u2013 Quantum Computation (Caltech)\n\u2022 Bennett et al. (1993) Teleporting an unknown quantum state.\n\u2022 Shor (1995) Scheme for reducing decoherence in quantum memory.\n\nAuthors: Curated summary\nYear: 2026 (ingestion)\nDomain: Quantum Information Theory\nIngestion date: 2026-02-06\n\nDefinitions\n- Von Neumann entropy: $S(\\rho)=-\\mathrm{Tr}(\\rho \\log \\rho)$ measuring quantum uncertainty.\n- Mutual information: $I(A:B)=S(\\rho_A)+S(\\rho_B)-S(\\rho_{AB})$.\n- Holevo bound: Limits accessible classical information from quantum states.\n- No-cloning theorem: Unknown quantum states cannot be copied exactly.\n\nKey Points\n- Entropy and information measures generalize classical definitions to quantum ensembles.\n- Quantum channels: Completely positive trace-preserving (CPTP) maps model noise and communication.\n- Entanglement measures: Concurrence, entanglement entropy, and operational tasks (teleportation, dense coding).\n\nConcept explanations\n- Quantum communication: Uses entanglement and quantum channels for tasks like teleportation and QKD.\n- Error correction: Quantum error-correcting codes protect logical qubits via redundancy and syndrome measurement.\n\nLight equation context\n- Channel action: $\\rho\\mapsto\\sum_k E_k\\rho E_k^{\\dagger}$ with $\\sum_k E_k^{\\dagger}E_k=I$ for CPTP maps.\nQuantum Teleportation\nQuantum teleportation enables transfer of an unknown quantum state using entanglement and classical communication.\nProtocol components:\n\u2022 Shared Bell pair\n\u2022 Bell-basis measurement\n\u2022 Classical communication of 2 bits\n\u2022 Conditional Pauli corrections\n\nQuantum Error Correction\nQuantum error correction protects logical qubits from decoherence.\nCore principles:\n\u2022 Redundancy via encoding\n\u2022 Syndrome measurement without collapsing logical state\n\u2022 Fault-tolerant operations\n\nExamples:\n\u2022 Shor code\n\u2022 Steane code\n\u2022 Surface code\n\n\nCitations\n- Nielsen & Chuang (2010); Preskill lecture notes (quantum information sections); peer-reviewed sources on specific topics.\n\n",
+      "metadata": {
+        "source": "quantum_information_core.md",
+        "path": "Quantum_KB\\Quantum_Computing\\quantum_information_core.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "quantum hardware overview": [
+    {
+      "content": "Title: Quantum Hardware Overview\nSource(s):\n\u2022 Preskill, J. (2018) Quantum Computing in the NISQ era and beyond.\n\u2022 Krantz et al. (2019) A quantum engineer\u2019s guide to superconducting qubits.\n\u2022 Blatt & Wineland (2008) Entangled states of trapped ions.\n\u2022 O\u2019Brien et al. (2009) Photonic quantum technologies.\nted \nAuthors: Curated summary\nYear: 2026 (ingestion)\nDomain: Quantum Hardware\nIngestion date: 2026-02-06\n\nDefinitions\n- Qubit modality: Physical implementation of a qubit (superconducting, trapped-ion, photonic, spin).\n- Coherence time: Timescale over which a qubit preserves quantum phase information (T1, T2).\n- Gate fidelity: Accuracy of implemented quantum gates relative to ideal unitaries.\n\nKey Points\n- Major platforms: Superconducting circuits, trapped ions, photonics, neutral atoms, and spin defects.\n- Performance metrics: Qubit count, coherence times, gate fidelities, connectivity, and readout accuracy.\n- Scaling challenges: Crosstalk, control electronics, cryogenics, system integration, and error correction overhead.\n\nConcept explanations\n- Superconducting qubits: Fast gates and integration with microwave control; cryogenic operation.\n- Trapped ions: Long coherence, high-fidelity gates, slower gate speeds relative to superconducting.\n- Photonic approaches: Room-temperature operation for certain tasks; advantages for communication.\n\nLight equation context\n- Error rates: Infidelity often expressed as $1-F$ where $F=|\\mathrm{Tr}(U^{\\dagger}V)|^2/\\text{dim}(U)$ for ideal $U$ and implemented $V$.\n\nCitations\n- Reviews and hardware-specific papers: platform overviews in peer-reviewed journals.\n",
+      "metadata": {
+        "source": "quantum_hardware_overview.md",
+        "path": "Quantum_KB\\Quantum_Hardware\\quantum_hardware_overview.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "quantum math foundations": [
+    {
+      "content": "Title: Quantum Mathematics Foundations\nSource(s): Source(s):\n\u2022 Nielsen & Chuang (2010)\n\u2022 Axler \u2013 Linear Algebra Done Right\n\u2022 Hall \u2013 Quantum Theory for Mathematicians\n\nAuthors: Curated summary\nYear: 2026 (ingestion)\nDomain: Mathematical foundations for quantum theory\nIngestion date: 2026-02-06\n\nDefinitions\n- Hilbert space: Complete inner-product space over complex numbers used for quantum states.\n- Linear operator: Maps between vectors in Hilbert space; observables are Hermitian operators.\n- Tensor product: Formalism for composite systems $\\mathcal{H}_{AB}=\\mathcal{H}_A\\otimes\\mathcal{H}_B$.\n\nKey Points\n- Linear algebra is central: eigenvalue problems, diagonalization, singular-value decomposition.\n- Operator algebra: Commutators $[A,B]=AB-BA$ and their role in uncertainty relations.\n- Spectral theorem: Self-adjoint operators have real eigenvalues and an orthonormal eigenbasis.\n\nConcept explanations\n- Basis and representation: Choice of basis affects matrix representation but not physical predictions.\n- Partial trace: Operation to obtain reduced states: $\\rho_A=\\mathrm{Tr}_B(\\rho_{AB})$.\n\nLight equation context\n- Uncertainty (Robertson): $\\Delta A\\,\\Delta B\\ge\\tfrac{1}{2}|\\langle[A,B]\\rangle|$.\n\nCitations\n- Standard linear algebra and functional analysis references; Nielsen & Chuang for applied context.\n",
+      "metadata": {
+        "source": "quantum_math_foundations.md",
+        "path": "Quantum_KB\\Quantum_Mathematics\\quantum_math_foundations.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "quantum physics overview": [
+    {
+      "content": "# Introduction to Quantum Physics\n\n- **Source**: Standard Model / General Physics (Placeholder for detailed ingestion)\n- **Domain**: Quantum_Physics\n- **Ingestion Date**: 2026-02-11\n\n## Key Topics\n1. Wave-Particle Duality\n2. Planck's Constant\n3. Schrdinger Equation\n4. Uncertainty Principle\n5. Spin and Angular Momentum\n\n## Status\nAwaiting ingestion of trusted sources (e.g., Griffiths, Sakurai).\n",
+      "metadata": {
+        "source": "quantum_physics_overview.md",
+        "path": "Quantum_KB\\Quantum_Physics\\quantum_physics_overview.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "quantum software stack": [
+    {
+      "content": "Title: Quantum Software Stack\nSource(s): \n\u2022 Qiskit documentation (IBM Quantum)\n\u2022 Cirq documentation (Google Quantum AI)\n\u2022 PennyLane documentation (Xanadu)\n\u2022 H\u00e4ner et al. (2018) Software methodology for compiling quantum programs.\n\nAuthors: Curated summary\nYear: 2026 (ingestion)\nDomain: Quantum Software / Tooling\nIngestion date: 2026-02-06\n\nDefinitions\n- Quantum SDK: Software development kit providing abstractions to build, transpile, and run quantum circuits.\n- Compiler/transpiler: Transforms logical circuits into hardware-native instructions respecting connectivity and gate sets.\n- Simulator: Classical emulation of quantum circuits for testing and benchmarking.\n\nKey Points\n- Stack layers: Algorithms \u2192 Circuit design \u2192 Compilation/transpilation \u2192 Pulse/control \u2192 Hardware.\n- Tooling considerations: Noise-aware compilation, error mitigation, profiling, and benchmarking.\n- Hybrid workflows: Classical optimizers interacting with parameterized quantum circuits.\n\nConcept explanations\n- Transpilation: Mapping logical gates to native gate set and qubit topology with resource-aware optimizations.\n- Error mitigation: Techniques (zero-noise extrapolation, probabilistic error cancellation) to improve results on noisy hardware.\n\nLight equation context\n- Circuit fidelity estimation: Model combining gate error rates and decoherence to predict output quality.\n\nCitations\n- SDK and compiler literature; peer-reviewed papers on compilation and error mitigation.\n",
+      "metadata": {
+        "source": "quantum_software_stack.md",
+        "path": "Quantum_KB\\Quantum_Software\\quantum_software_stack.md",
+        "author": "Unknown",
+        "publication": "Unknown",
+        "type": "markdown",
+        "category": "quantum"
+      }
+    }
+  ],
+  "nyaya logic": [
+    {
+      "content": "Nyaya is the school of logic and epistemology in Indian philosophy. \nIt defines four valid sources of knowledge (Pramanas):\n1. Pratyaksha (Perception)\n2. Anumana (Inference)\n3. Upamana (Comparison)\n4. Shabda (Word/Testimony)\n\nLogical reasoning involves a five-membered syllogism (Avayava):\n- Pratijna (Proposition)\n- Hetu (Reason)\n- Udaharana (Example)\n- Upanaya (Application)\n- Nigamana (Conclusion)",
+      "metadata": {
+        "source": "nyaya_logic.md",
+        "path": "knowledge/gurukul\\logic\\nyaya_logic.md",
+        "author": "Gurukul Traditional School",
+        "publication": "Gurukul Press",
+        "type": "markdown",
+        "title": "Logic and Reasoning (Nyaya)",
+        "category": "gurukul"
+      }
+    }
+  ],
+  "vedic math": [
+    {
+      "content": "In Gurukul tradition, Mathematics (Ganita) is approached through Vedic principles.\nKey concepts include:\n1. Ekadhikena Purvena: One more than the previous one.\n2. Nikhilam Navatashcaramam Dashatah: All from 9 and the last from 10.\n3. Urdhva-Tiryagbhyam: Vertically and crosswise.\n\nThese methods allow for rapid mental calculation and understanding of number theory.",
+      "metadata": {
+        "source": "vedic_math.md",
+        "path": "knowledge/gurukul\\mathematics\\vedic_math.md",
+        "author": "Gurukul Traditional School",
+        "publication": "Gurukul Press",
+        "type": "markdown",
+        "title": "Fundamentals of Gurukul Mathematics",
+        "category": "gurukul"
+      }
+    }
+  ],
+  "tattvartha sutra": [
+    {
+      "content": "The Tattvartha Sutra is the \"Manual of Jaina Principles\". \nIt begins with the famous sutra: \"Samyag-darshana-jnana-charitrani mokshamargah\" \n(Right faith, right knowledge, and right conduct constitute the path to liberation).\n\nThe text describes the seven Tattvas (realities):\n1. Jiva (Soul)\n2. Ajiva (Non-soul)\n3. Asrava (Inflow of karma)\n4. Bandha (Bondage of karma)\n5. Samvara (Stoppage of karma)\n6. Nirjara (Shedding of karma)\n7. Moksha (Liberation)\n---\nUniGuru Citation: Acharya Umaswati, Tattvartha Sutra, Sutra 1.1",
+      "metadata": {
+        "source": "tattvartha_sutra.md",
+        "path": "knowledge/jain\\tattvartha_sutra.md",
+        "author": "Acharya Umaswati",
+        "publication": "Public Domain",
+        "type": "markdown",
+        "category": "jain"
+      }
+    }
+  ],
+  "vachanamrut core": [
+    {
+      "content": "The Vachanamrut is the principal philosophical text of the Swaminarayan Sampradaya. \nIt is a compilation of 273 spiritual discourses delivered by Bhagwan Swaminarayan.\n\nKey Concept: Upasana\nUpasana is the belief that God is eternally 'par-kar' (possessing a divine form), 'sarvopari' (supreme), 'sarva-karta' (the all-doer), and 'pragat' (ever-present on earth).\n\nDiscourse Gadhada I-1:\nBhagwan Swaminarayan asks: \"What is the characteristic of an 'ekantik-bhakta'?\"\nThe answer given is that one who possesses the four pillars of dharma, jnan, vairagya, and bhakti is an ekantik-bhakta.\n---\nUniGuru Citation: Bhagwan Swaminarayan, Vachanamrut, Gadhada I-1",
+      "metadata": {
+        "source": "vachanamrut_core.md",
+        "path": "knowledge/swaminarayan\\vachanamrut_core.md",
+        "author": "Bhagwan Swaminarayan",
+        "publication": "Swaminarayan Heritage",
+        "type": "markdown",
+        "category": "swaminarayan"
+      }
+    }
+  ]
+}
