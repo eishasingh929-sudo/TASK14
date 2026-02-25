@@ -1,0 +1,7 @@
+{
+    "user_id": "u123",
+    "action": "query_grades",
+    "payload": {
+        "sem": 5
+    }
+}

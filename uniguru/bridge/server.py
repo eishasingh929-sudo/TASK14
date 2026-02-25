@@ -1,5 +1,6 @@
 import time
 import uuid
+import os
 import requests
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -8,7 +9,7 @@ from uniguru.core.engine import RuleEngine
 app = FastAPI()
 engine = RuleEngine()
 
-LEGACY_URL = "http://127.0.0.1:8080/chat"
+LEGACY_URL = os.getenv("UNIGURU_BACKEND_URL", "http://localhost:8000/api/v1/chat/new")
 LEGACY_TIMEOUT = 5
 MAX_SEVERITY_FORWARD = 0.5  # Anything >= blocks forwarding
 
@@ -22,6 +23,11 @@ class ChatRequest(BaseModel):
 @app.get("/")
 async def health_check():
     return {"status": "UniGuru Bridge Running"}
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok", "service": "uniguru-bridge"}
 
 
 @app.post("/chat")

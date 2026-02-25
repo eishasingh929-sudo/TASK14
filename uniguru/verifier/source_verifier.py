@@ -28,3 +28,19 @@ class SourceVerifier:
             retrieval_result["verification_level"] = "LOW"
             
         return retrieval_result
+
+    @staticmethod
+    def verify_retrieval_trace(trace: Dict[str, Any], min_confidence: float = 0.5) -> Dict[str, Any]:
+        """
+        Normalizes retrieval trace output and runs verification with a confidence gate.
+        """
+        confidence = float(trace.get("confidence", 0.0) or 0.0)
+        source_file = trace.get("kb_file")
+        payload = {
+            "verified": bool(trace.get("match_found")) and confidence >= min_confidence and bool(source_file),
+            "source_file": source_file,
+            "author": "UniGuru KB",
+            "confidence": confidence,
+            "confidence_threshold": min_confidence
+        }
+        return SourceVerifier.verify(payload)

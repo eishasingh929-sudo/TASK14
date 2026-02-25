@@ -58,7 +58,14 @@ class KnowledgeRetriever:
         # Simple tokenization by whitespace and removal of punctuation
         clean_query = re.sub(r'[^\w\s]', '', query_lower)
         tokens = clean_query.split()
-        total_tokens = len(tokens)
+        stopwords = {
+            "a", "an", "and", "are", "as", "at", "be", "by", "can", "do", "for",
+            "from", "how", "i", "in", "is", "it", "of", "on", "or", "please",
+            "tell", "that", "the", "this", "to", "what", "when", "where", "which",
+            "who", "why"
+        }
+        meaningful_tokens = [t for t in tokens if t not in stopwords]
+        total_tokens = len(meaningful_tokens) if meaningful_tokens else len(tokens)
         
         if total_tokens == 0:
             return None
@@ -68,12 +75,9 @@ class KnowledgeRetriever:
         
         for kw in sorted_keywords:
             if kw in query_lower:
-                # matched_keywords is the number of tokens in the keyword
                 kw_tokens = kw.split()
-                # Simplified: Confidence is the ratio of matching tokens
-                # Actually user specified: matched_keywords / total_tokens
-                # If kw has multiple words, we count those words.
-                confidence = len(kw_tokens) / total_tokens
+                matched_count = sum(1 for t in kw_tokens if t in meaningful_tokens or t in tokens)
+                confidence = matched_count / max(total_tokens, 1)
                 
                 # Minimum threshold per SECTION 4
                 if confidence < 0.30:
