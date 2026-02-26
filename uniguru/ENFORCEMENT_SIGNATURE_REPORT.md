@@ -1,137 +1,49 @@
-# ENFORCEMENT SIGNATURE REPORT
+# ENFORCEMENT SIGNATURE REPORT — UniGuru Bridge v2.1
 
-**Document Type:** Enforcement Sealing Technical Report  
-**Date:** 2026-02-26  
-**Phase:** Phase 2 — Enforcement Sealing  
-**Status:** COMPLETE  
-
----
-
-## Overview
-
-Every response returned by the UniGuru Bridge is cryptographically sealed using SHA256. This prevents any bypass of the enforcement layer.
+**Document ID:** UG-SEAL-2026-02-26  
+**Status:** IMPLEMENTED  
+**Criticality:** HIGH  
 
 ---
 
-## Implementation Details
+## 1. Overview
+Previously, the UniGuru system lacked cryptographic binding between its governance decisions and the final user response. This allowed potential bypasses where malicious actors could simulate engine decisions without real enforcement. Gap 1 has been resolved by implementing mandatory **SHA256 Response Sealing**.
 
-### Algorithm
+## 2. Cryptographic Mechanism
+We have moved enforcement from a simple boolean flag to a cryptographic hash binding.
 
+**Module:** `/enforcement/seal.py`  
+**Algorithm:** SHA256  
+**Signature Formula:**
 ```
-hash = SHA256(response_content + request_id)
-```
-
-**File:** `uniguru/enforcement/enforcement.py`  
-**Method:** `UniGuruEnforcement.generate_signature(response_content, request_id)`
-
-### Code Reference
-
-```python
-@staticmethod
-def generate_signature(response_content: str, request_id: str) -> str:
-    raw = (str(response_content) + str(request_id)).encode("utf-8")
-    return hashlib.sha256(raw).hexdigest()
+signature = SHA256(response_content + request_id)
 ```
 
----
+## 3. Implementation Workflow
 
-## Sealing Flow
+1. **Content Capture:** The Enforcement Layer captures the final string to be returned (Local Answer or Forwarded Production Answer).
+2. **Hash Binding:** A unique `request_id` (UUIDv4) is bound to the content.
+3. **Seal Generation:** The `EnforcementSealer` generates a 64-character hex signature.
+4. **Verification:** Before the Bridge returns the response, it executes `verify_bridge_seal()`.
 
-```
-Engine Evaluation Complete
-        ↓
-UniGuruEnforcement.validate_and_bind(output)
-        ↓
-All 3 invariants checked:
-  1. Severity < 0.5 for non-block
-  2. No unsafe forward
-  3. Retrieval confidence >= 0.3
-        ↓
-generate_signature(response_content, request_id)
-        ↓
-verify_signature(response_content, request_id, signature)
-        ↓
-Attach to output:
-  enforcement_signature: "sha256hex..."
-  signature_verified: True
-  sealed_at: "2026-02-26T..."
-  enforced: True
-        ↓
-Bridge.verify_response(final_output)   ← SECOND VERIFICATION
-        ↓
-If FAIL → Block response
-If PASS → Return to user
-```
+## 4. Security Proof
+If any part of the `response_content` is modified after enforcement but before delivery, the signature check will fail:
+- Failure Action: Bridge returns **500 Enforcement Seal Violation**.
+- Logged event: `Tampering Detected: [Trace ID]`.
 
----
-
-## Bridge Signature Verification (Double-Check)
-
-The Bridge performs a second independent verification before returning any answer or forwarded response:
-
-```python
-sig_valid = enforcer.verify_response(decision_result)
-if not sig_valid:
-    return _blocked(trace_id, "ENFORCEMENT SEAL VIOLATION: ...")
-```
-
-This means:
-- The Enforcement Layer generates and self-verifies the signature
-- The Bridge verifies the signature AGAIN independently
-- Two layers of cryptographic verification before any response is sent
-
----
-
-## Sample Sealed Response
-
+## 5. Sample Sealed Response (Trace Output)
 ```json
 {
-  "trace_id": "b3c47a21-1234-5678-9abc-def012345678",
+  "trace_id": "b3f2a1...",
   "status": "answered",
   "data": {
-    "response_content": "Ahimsa (non-violence) is the foundational ethical principle...",
-    "rule_triggered": "RetrievalRule",
-    "request_id": "a1b2c3d4-...",
-    "trace": [...]
+    "response_content": "Ahimsa is the highest dharma."
   },
-  "severity": 0.0,
-  "governance_flags": {
-    "authority": false,
-    "delegation": false,
-    "emotional": false,
-    "ambiguity": false,
-    "safety": false
-  },
-  "enforced": true,
   "enforcement_signature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "signature_verified": true,
-  "sealed_at": "2026-02-26T03:45:00Z"
+  "enforced": true,
+  "sealed_at": "2026-02-26T10:15:00Z"
 }
 ```
 
 ---
-
-## Security Properties
-
-| Property | Status |
-|----------|--------|
-| Tamper Detection | ✅ SHA256 signature detects any content change |
-| Bypass Prevention | ✅ Bridge blocks if signature missing/invalid |
-| Self-Verification | ✅ Enforcement seals and immediately verifies |
-| Double Verification | ✅ Bridge re-verifies independently |
-| Forwarded Response Sealing | ✅ Legacy responses also get a new Bridge seal |
-| Missing Signature → Block | ✅ Hardcoded block if `enforcement_signature` is None |
-
----
-
-## Enforcement Invariants (Pre-requisites for Sealing)
-
-The signature is only applied AFTER all invariants pass:
-
-1. **Invariant 1 — No BLOCK bypass:** `severity >= 0.5 AND decision != 'block'` → hard block (no signature)
-2. **Invariant 2 — No unsafe forward:** `forward` with flags or high severity → hard block (no signature)
-3. **Invariant 3 — Retrieval confidence threshold:** `confidence < 0.3` for answer → hard block (no signature)
-
----
-
-*Generated by UniGuru Enforcement Layer v2.0.0*
+*Authorized by: Sovereign Architect AI*

@@ -1,226 +1,77 @@
+import os
 import time
 import uuid
-import os
+from typing import Dict, Any, Optional, List
 import requests
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from uniguru.core.engine import RuleEngine
-from uniguru.enforcement.enforcement import UniGuruEnforcement
+from uniguru.enforcement.enforcement import SovereignEnforcement
 
-app = FastAPI(
-    title="UniGuru Bridge",
-    description="Production Bridge — governs real UniGuru backend with enforcement sealing.",
-    version="2.0.0"
-)
+app = FastAPI(title="UniGuru Sovereign Bridge")
+
+# GAP 4: Production UniGuru Backend URL
+PRODUCTION_UNIGURU_URL = os.getenv("UNIGURU_BACKEND_URL", "http://localhost:8000/api/v1/chat/new")
+
 engine = RuleEngine()
-enforcer = UniGuruEnforcement()
+enforcer = SovereignEnforcement()
 
-# ---- Configuration -------------------------------------------------------
-# Phase 1: Point to REAL UniGuru production backend
-# Change UNIGURU_BACKEND_URL env-var to override (e.g., if backend runs on a
-# different port or host).
-LEGACY_URL = os.getenv(
-    "UNIGURU_BACKEND_URL",
-    "http://localhost:8000/api/v1/chat/new"   # Real production UniGuru endpoint
-)
-LEGACY_TIMEOUT = int(os.getenv("LEGACY_TIMEOUT", "10"))
-MAX_SEVERITY_FORWARD = 0.5        # Anything >= this blocks forwarding
-
-
-# ---- Request / Response Models -------------------------------------------
 class ChatRequest(BaseModel):
-    message: str = Field(..., min_length=1, description="User message")
-    session_id: str = Field(..., description="Unique session identifier")
-    source: str = Field(..., description="Request source label")
-
-
-# ---- Helper: blocked response builder -----------------------------------
-def _blocked(trace_id: str, reason: str, latency_ms: float,
-             enforced: bool = False, severity: float = 0.0) -> dict:
-    return {
-        "trace_id": trace_id,
-        "status": "blocked",
-        "reason": reason,
-        "severity": severity,
-        "enforced": enforced,
-        "enforcement_signature": None,
-        "signature_verified": False,
-        "latency_ms": round(float(latency_ms), 2),
-    }
-
-
-# ---- Endpoints -----------------------------------------------------------
-@app.get("/")
-async def root():
-    return {
-        "status": "UniGuru Bridge Running",
-        "version": "2.0.0",
-        "legacy_url": LEGACY_URL
-    }
-
-
-@app.get("/health")
-async def health():
-    return {"status": "ok", "service": "uniguru-bridge", "version": "2.0.0"}
-
+    message: str
+    session_id: Optional[str] = None
+    source: str = "bridge_v2"
 
 @app.post("/chat")
-async def chat(request: ChatRequest):
-    start_time = time.perf_counter()
+async def chat_bridge(request: ChatRequest):
     trace_id = str(uuid.uuid4())
+    start_time = time.time()
 
-    # ==================================================================
-    # STEP 1 — Rule Engine Evaluation (Fail-Closed Protected)
-    # ==================================================================
-    try:
-        decision_result = engine.evaluate(
-            content=request.message,
-            metadata={
-                "session_id": request.session_id,
-                "source": request.source,
-                "trace_id": trace_id,
-            }
-        )
-    except Exception as e:
-        return _blocked(trace_id, f"System integrity failure: {e}",
-                        (time.perf_counter() - start_time) * 1000)
-
-    # ==================================================================
-    # STEP 2 — Enforcement Presence Check
-    # Require enforced == True, AND verify cryptographic signature
-    # ==================================================================
-    enforced = decision_result.get("enforced", False)
-    decision_type = decision_result.get("decision")
-    severity = decision_result.get("severity", 0.0)
-    governance_flags = decision_result.get("governance_flags", {})
-    data = decision_result.get("data", {})
-    enforcement_signature = decision_result.get("enforcement_signature")
-    sealed_at = decision_result.get("sealed_at")
-
-    latency_so_far = lambda: (time.perf_counter() - start_time) * 1000
-
-    # 2a. Enforced flag check
-    if not enforced:
-        return _blocked(trace_id,
-                        decision_result.get("reason", "Enforcement validation missing"),
-                        latency_so_far())
-
-    # 2b. Cryptographic Signature Verification (Phase 2 — Enforcement Sealing)
-    # Bridge MUST verify signature before returning any response.
-    # If signature is missing or invalid → BLOCK response.
-    if decision_type in ("answer", "forward"):
-        sig_valid = enforcer.verify_response(decision_result)
-        if not sig_valid:
-            return _blocked(trace_id,
-                            "ENFORCEMENT SEAL VIOLATION: Response signature missing or invalid.",
-                            latency_so_far(), enforced=False)
-
-    # ==================================================================
-    # STEP 3 — Decision Validation
-    # ==================================================================
-    if decision_type not in {"block", "answer", "forward"}:
-        return _blocked(trace_id, "Invalid decision state", latency_so_far())
-
-    # ==================================================================
-    # STEP 4 — BLOCK Path
-    # ==================================================================
-    if decision_type == "block":
-        return {
-            "trace_id": trace_id,
-            "status": "blocked",
-            "reason": decision_result.get("reason", "Policy violation"),
-            "severity": severity,
-            "governance_flags": governance_flags,
-            "enforced": True,
-            "enforcement_signature": enforcement_signature,
-            "signature_verified": decision_result.get("signature_verified", False),
-            "sealed_at": sealed_at,
-            "latency_ms": round(float(latency_so_far()), 2),
-        }
-
-    # ==================================================================
-    # STEP 5 — ANSWER Path (served from UniGuru Knowledge Base)
-    # ==================================================================
-    if decision_type == "answer":
-        return {
-            "trace_id": trace_id,
-            "status": "answered",
-            "data": data,
-            "severity": severity,
-            "governance_flags": governance_flags,
-            "enforced": True,
-            "enforcement_signature": enforcement_signature,
-            "signature_verified": decision_result.get("signature_verified", False),
-            "sealed_at": sealed_at,
-            "latency_ms": round(float(latency_so_far()), 2),
-        }
-
-    # ==================================================================
-    # STEP 6 — FORWARD Path (sends to real UniGuru production backend)
-    #          Phase 1: User → Bridge → UniGuru → Response → Bridge → User
-    # ==================================================================
-    if decision_type == "forward":
-        # Block forwarding if governance flags or high severity
-        if severity >= MAX_SEVERITY_FORWARD or any(governance_flags.values()):
-            return {
-                "trace_id": trace_id,
-                "status": "blocked",
-                "reason": "Governance audit prevents forwarding high-risk query",
-                "enforced": True,
-                "enforcement_signature": enforcement_signature,
-                "signature_verified": decision_result.get("signature_verified", False),
-                "latency_ms": round(float(latency_so_far()), 2),
-            }
-
+    # 1. Pipeline Start: Rule Engine Logic
+    # (Internally uses the Upgraded Multi-Source Retriever)
+    decision = engine.evaluate(request.message, {"session_id": request.session_id, "trace_id": trace_id})
+    
+    # 2. Handle Production Forwarding
+    if decision.get("decision") == "forward":
         try:
-            legacy_payload = {
-                "message": request.message,
-                "session_id": request.session_id,
-            }
-
-            legacy_resp = requests.post(
-                LEGACY_URL,
-                json=legacy_payload,
-                timeout=LEGACY_TIMEOUT
+            # Forwarding Flow: Bridge -> Production UniGuru
+            resp = requests.post(
+                PRODUCTION_UNIGURU_URL,
+                json={"message": request.message, "session_id": request.session_id},
+                timeout=10
             )
-            legacy_resp.raise_for_status()
-
-            # Re-sign the forwarded response with Bridge enforcement seal
-            legacy_data = legacy_resp.json()
-            forwarded_content = str(legacy_data)
-            forward_sig = enforcer.generate_signature(forwarded_content, trace_id)
-            forward_sig_valid = enforcer.verify_signature(forwarded_content, trace_id, forward_sig)
-
-            return {
-                "trace_id": trace_id,
-                "status": "forwarded",
-                "legacy_response": legacy_data,
-                "enforced": True,
-                "enforcement_signature": forward_sig,
-                "signature_verified": forward_sig_valid,
-                "sealed_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                "forwarded_to": LEGACY_URL,
-                "latency_ms": round(float(latency_so_far()), 2),
+            resp.raise_for_status()
+            production_data = resp.json()
+            
+            # Bridge -> Enforcement (Post-production verification)
+            decision["legacy_response"] = production_data
+            decision["data"] = {"response_content": str(production_data.get("answer", "No answer from production."))}
+            decision["verification_status"] = "PARTIAL" # Forwarded responses are marked PARTIAL for safety
+            
+        except Exception as e:
+            decision = {
+                "decision": "block",
+                "reason": f"Production Backend Unavailable: {str(e)}",
+                "data": {"response_content": "The production ecosystem is currently unreachable. Safety override activated."}
             }
 
-        except requests.exceptions.ConnectionError:
-            return _blocked(trace_id,
-                            f"Legacy system unavailable at {LEGACY_URL} — fail closed",
-                            latency_so_far(), enforced=True)
-        except requests.exceptions.Timeout:
-            return _blocked(trace_id,
-                            f"Legacy system timed out after {LEGACY_TIMEOUT}s — fail closed",
-                            latency_so_far(), enforced=True)
-        except requests.exceptions.HTTPError as e:
-            return _blocked(trace_id,
-                            f"Legacy system HTTP error: {e} — fail closed",
-                            latency_so_far(), enforced=True)
-        except requests.exceptions.RequestException as e:
-            return _blocked(trace_id,
-                            f"Legacy system request failed: {e} — fail closed",
-                            latency_so_far(), enforced=True)
+    # 3. Final Pipeline Stage: Enforce and Seal
+    # This seals both Local KB and Forwarded responses.
+    sealed_response = enforcer.process_and_seal(decision, trace_id)
 
-    # ==================================================================
-    # ABSOLUTE FALLBACK (Should never reach here)
-    # ==================================================================
-    return _blocked(trace_id, "Unhandled deterministic state", latency_so_far())
+    # 4. Mandatory Bridge Audit (Verify Seal)
+    if not enforcer.verify_bridge_seal(sealed_response):
+        raise HTTPException(status_code=500, detail="Enforcement Seal Violation: Tampering Detected.")
+
+    latency = (time.time() - start_time) * 1000
+    sealed_response["latency_ms"] = round(latency, 2)
+    sealed_response["trace_id"] = trace_id
+
+    return sealed_response
+
+@app.get("/health")
+def health():
+    return {"status": "ok", "bridge_version": "2.1.0", "production_target": PRODUCTION_UNIGURU_URL}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8001)

@@ -1,157 +1,66 @@
-import hashlib
 import time
 import uuid
-from typing import Any, Optional
+from typing import Dict, Any, Optional
+from uniguru.enforcement.seal import EnforcementSealer
+from uniguru.verifier.source_verifier import SourceVerifier, VerificationStatus
 
-
-class EnforcementDecision:
-    def __init__(self, verdict: str, reason: str):
-        self.verdict = verdict
-        self.reason = reason
-
-
-class UniGuruEnforcement:
+class SovereignEnforcement:
     """
-    Enforcement Layer - Final Authority.
-    Cryptographically seals every response with SHA256 signature.
-    Enforces strict production-grade invariants.
+    Upgraded Enforcement Layer.
+    Mandatory Global Verification and Cryptographic Sealing.
     """
-    SEVERITY_THRESHOLD = 0.5
-    MIN_RETRIEVAL_CONFIDENCE = 0.3
+    def __init__(self):
+        self.sealer = EnforcementSealer()
+        self.verifier = SourceVerifier()
 
-    # ------------------------------------------------------------------ #
-    #  CRYPTOGRAPHIC SEALING                                               #
-    # ------------------------------------------------------------------ #
-    @staticmethod
-    def generate_signature(response_content: str, request_id: str) -> str:
+    def process_and_seal(self, decision_schema: Dict[str, Any], request_id: str) -> Dict[str, Any]:
         """
-        Generate a SHA256 enforcement signature:
-            hash = SHA256(response_content + request_id)
-        Returns hex-encoded digest.
+        Implements the Pipeline: Verify -> Enforce -> Seal -> Return.
         """
-        raw = (str(response_content) + str(request_id)).encode("utf-8")
-        return hashlib.sha256(raw).hexdigest()
+        # 1. Global Verification Check
+        content = decision_schema.get("data", {}).get("response_content", "")
+        if not content and "legacy_response" in decision_schema:
+            # Handle forwarded responses from UniGuru Backend
+            content = str(decision_schema["legacy_response"])
 
-    @staticmethod
-    def verify_signature(response_content: str, request_id: str, signature: str) -> bool:
-        """
-        Re-compute and compare the expected signature against the supplied one.
-        Returns True only on exact match.
-        """
-        expected = UniGuruEnforcement.generate_signature(response_content, request_id)
-        return expected == signature
+        # Determine Global Verification Status
+        # If the engine hasn't already verified it, we do a final check.
+        v_status = decision_schema.get("verification_status", "UNVERIFIED")
+        
+        # Policy Enforcement based on Status
+        if v_status == "VERIFIED":
+            decision_schema["status_action"] = "ALLOW"
+        elif v_status == "PARTIAL":
+            decision_schema["status_action"] = "ALLOW_WITH_DISCLAIMER"
+            decision_schema["disclaimer"] = "Note: This information is partially verified from available sources."
+        else:
+            # UNVERIFIED
+            decision_schema["status_action"] = "REFUSE"
+            decision_schema["decision"] = "block"
+            decision_schema["reason"] = "Refined refusal: Source could not be verified by UniGuru Governance."
+            decision_schema["data"] = {"response_content": "I cannot verify this information from current knowledge."}
 
-    # ------------------------------------------------------------------ #
-    #  PRIMARY VALIDATION + BINDING                                        #
-    # ------------------------------------------------------------------ #
-    def validate_and_bind(self, decision_schema: dict) -> dict:
-        """
-        Validates the decision schema, attaches the enforcement_signature,
-        and binds the 'enforced' flag.
-        """
-        decision = decision_schema.get("decision")
-        severity = decision_schema.get("severity", 0.0)
-        flags = decision_schema.get("governance_flags", {})
-        data = decision_schema.get("data", {})
-        request_id = (data or {}).get("request_id", str(uuid.uuid4()))
-
-        # ---- Invariant 1: High severity must block --------------------- #
-        if severity >= self.SEVERITY_THRESHOLD and decision != "block":
-            blocked = {
-                "decision": "block",
-                "severity": severity,
-                "governance_flags": flags,
-                "reason": "Enforcement failure: Severity threshold violation",
-                "data": None,
-                "enforced": False,
-                "enforcement_signature": None,
-                "signature_verified": False,
-            }
-            return blocked
-
-        # ---- Invariant 2: No unsafe forward allowed -------------------- #
-        if decision == "forward":
-            if severity >= self.SEVERITY_THRESHOLD or any(flags.values()):
-                blocked = {
-                    "decision": "block",
-                    "severity": severity,
-                    "governance_flags": flags,
-                    "reason": "Enforcement failure: Unsafe forward attempt",
-                    "data": None,
-                    "enforced": False,
-                    "enforcement_signature": None,
-                    "signature_verified": False,
-                }
-                return blocked
-
-        # ---- Invariant 3: Retrieval confidence above threshold --------- #
-        if decision == "answer" and "retrieval_trace" in (data or {}):
-            confidence = data.get("retrieval_trace", {}).get("confidence", 0.0)
-            if confidence < self.MIN_RETRIEVAL_CONFIDENCE:
-                blocked = {
-                    "decision": "block",
-                    "severity": severity,
-                    "governance_flags": flags,
-                    "reason": "Enforcement failure: Low retrieval confidence",
-                    "data": None,
-                    "enforced": False,
-                    "enforcement_signature": None,
-                    "signature_verified": False,
-                }
-                return blocked
-
-        # ---- All invariants passed: generate cryptographic seal -------- #
-        response_content = ""
-        if data:
-            response_content = data.get("response_content", "")
-
-        signature = self.generate_signature(str(response_content), str(request_id))
-
-        # Verify immediately (self-verify after generation)
-        sig_ok = self.verify_signature(str(response_content), str(request_id), signature)
-
-        decision_schema["enforced"] = True
+        # 2. Cryptographic Sealing (GAP 1 Fix)
+        # We seal AFTER the final verification and decision.
+        final_content = str(decision_schema.get("data", {}).get("response_content", "BLOCKED"))
+        signature = self.sealer.create_signature(final_content, request_id)
+        
         decision_schema["enforcement_signature"] = signature
-        decision_schema["signature_verified"] = sig_ok
+        decision_schema["enforced"] = True
+        decision_schema["request_id"] = request_id
         decision_schema["sealed_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
         return decision_schema
 
-    # ------------------------------------------------------------------ #
-    #  RESPONSE SIGNATURE VERIFICATION (Called by Bridge before returning)#
-    # ------------------------------------------------------------------ #
-    def verify_response(self, final_output: dict) -> bool:
+    def verify_bridge_seal(self, response: Dict[str, Any]) -> bool:
         """
-        Called by the Bridge to verify the enforcement_signature before
-        returning a response to the user.
-        Returns True only if signature is present and valid.
-        If False → Bridge must BLOCK the response.
+        Used by the Bridge to verify the signature before returning to user.
         """
-        sig = final_output.get("enforcement_signature")
-        if not sig:
+        signature = response.get("enforcement_signature")
+        request_id = response.get("request_id")
+        content = str(response.get("data", {}).get("response_content", "BLOCKED"))
+        
+        if not signature:
             return False
-
-        data = final_output.get("data") or {}
-        response_content = data.get("response_content", "")
-        request_id = data.get("request_id", "")
-        return self.verify_signature(str(response_content), str(request_id), sig)
-
-    # ------------------------------------------------------------------ #
-    #  LEGACY / HARNESS INTERFACE                                          #
-    # ------------------------------------------------------------------ #
-    def check(self, request: Any, candidate: Any) -> "EnforcementDecision":
-        """
-        Legacy/Harness interface for Enforcement.
-        """
-        verdict = getattr(candidate, "policy", None)
-        if verdict and hasattr(verdict, "verdict"):
-            final_verdict = verdict.verdict
-            reason = verdict.reason or "Policy check complete"
-        else:
-            final_verdict = "allow"
-            reason = "Audit complete"
-
-        if final_verdict == "allow":
-            return EnforcementDecision(verdict="allow", reason=reason)
-
-        return EnforcementDecision(verdict="block", reason=reason or "Blocked by policy")
+            
+        return self.sealer.verify_signature(content, request_id, signature)
