@@ -108,3 +108,30 @@ def retrieve_advanced(query: str) -> Dict[str, Any]:
     retriever = AdvancedRetriever()
     results = retriever.retrieve_multi(query)
     return retriever.reason_and_compare(results)
+
+def retrieve_knowledge(query: str) -> Optional[str]:
+    result = retrieve_advanced(query)
+    return result.get("content") if result.get("decision") == "answer" else None
+
+def retrieve_knowledge_with_trace(query: str) -> Tuple[Optional[str], Dict[str, Any]]:
+    result = retrieve_advanced(query)
+    if result.get("decision") == "answer" and result.get("content"):
+        trace = {
+            "engine": "AdvancedRetriever_v1",
+            "kb_path": _KB_ROOT,
+            "match_found": True,
+            "confidence": 1.0,
+            "kb_file": (result.get("metadata") or {}).get("top_match"),
+            "sources_consulted": (result.get("metadata") or {}).get("sources_consulted", []),
+        }
+        return result.get("content"), trace
+
+    trace = {
+        "engine": "AdvancedRetriever_v1",
+        "kb_path": _KB_ROOT,
+        "match_found": False,
+        "confidence": 0.0,
+        "kb_file": None,
+        "sources_consulted": [],
+    }
+    return None, trace

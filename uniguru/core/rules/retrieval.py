@@ -41,15 +41,10 @@ class RetrievalRule(BaseRule):
 
         return RuleResult(
             action=RuleAction.ALLOW,
-            reason="No relevant knowledge found in local KB or confidence below 0.5.",
-            severity=0.0,
-            governance_flags={
-                "authority": False,
-                "delegation": False,
-                "emotional": False,
-                "ambiguity": False,
-                "safety": False
-            },
+            reason="No KB match found. Allowing forward decision.",
+            severity=0.1,
+            governance_flags={},
+            response_content="",
             rule_name=self.name,
             extra_metadata={"retrieval_trace": trace}
         )

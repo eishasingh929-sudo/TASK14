@@ -25,7 +25,16 @@ class SovereignEnforcement:
 
         # Determine Global Verification Status
         # If the engine hasn't already verified it, we do a final check.
-        v_status = decision_schema.get("verification_status", "UNVERIFIED")
+        v_status = decision_schema.get("verification_status")
+        if not v_status:
+            verification = decision_schema.get("data", {}).get("verification", {})
+            truth_decl = verification.get("truth_declaration")
+            if truth_decl in {"VERIFIED", "VERIFIED_PARTIAL"}:
+                v_status = "VERIFIED" if truth_decl == "VERIFIED" else "PARTIAL"
+            elif decision_schema.get("decision") == "forward":
+                v_status = "PARTIAL"
+            else:
+                v_status = "UNVERIFIED"
         
         # Policy Enforcement based on Status
         if v_status == "VERIFIED":
@@ -64,3 +73,15 @@ class SovereignEnforcement:
             return False
             
         return self.sealer.verify_signature(content, request_id, signature)
+
+class UniGuruEnforcement(SovereignEnforcement):
+    """
+    Backward-compatible adapter expected by the RuleEngine.
+    """
+    def validate_and_bind(self, decision_schema: Dict[str, Any]) -> Dict[str, Any]:
+        request_id = (
+            decision_schema.get("data", {}).get("request_id")
+            or decision_schema.get("request_id")
+            or str(uuid.uuid4())
+        )
+        return self.process_and_seal(decision_schema, request_id)

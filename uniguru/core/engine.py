@@ -13,6 +13,7 @@ from uniguru.core.rules import (
     ForwardRule,
     RuleAction
 )
+from uniguru.core.rules.web_retrieval_rule import WebRetrievalRule
 from uniguru.enforcement.enforcement import UniGuruEnforcement
 
 class RuleEngine:
@@ -24,8 +25,9 @@ class RuleEngine:
             DelegationRule(),    # 3
             EmotionalRule(),     # 4
             AmbiguityRule(),     # 5
-            RetrievalRule(),     # 6
-            ForwardRule()        # 7
+            RetrievalRule(),     # 6 (KB First)
+            WebRetrievalRule(),  # 7 (Web Retrieval fallback)
+            ForwardRule()        # 8 (Legacy fallback)
         ]
         self.enforcement = UniGuruEnforcement()
 
@@ -55,15 +57,16 @@ class RuleEngine:
         
         try:
             for rule in self.rules:
-                # SECTION 3: ForwardRule only triggers if no governance flags
-                if isinstance(rule, ForwardRule) and any(aggregated_flags.values()):
-                    # Skip ForwardRule if any flags are set - this will lead to the fallback block
+                # Only skip forwarding if safety risk exists
+                if isinstance(rule, ForwardRule) and aggregated_flags.get("safety"):
                     break
 
                 start_time_rule = time.perf_counter()
                 result = rule.evaluate(context)
                 end_time_rule = time.perf_counter()
                 
+                print(f"[DEBUG] Rule {rule.name} -> Action: {result.action}")
+
                 # Aggregate governance flags
                 for flag, value in result.governance_flags.items():
                     if value:
@@ -80,24 +83,21 @@ class RuleEngine:
                     "latency_ms": round(float(latency_ms), 3)
                 })
 
-                # Decision Point: First BLOCK stops evaluation
-                if result.action == RuleAction.BLOCK:
-                    final_result = result
-                    break
-                
-                # Logic: If rule is terminal (ANSWER/FORWARD), it's a candidate
-                if result.action in [RuleAction.ANSWER, RuleAction.FORWARD]:
+                if result.action == RuleAction.ALLOW:
+                    continue
+
+                if result.action in [RuleAction.ANSWER, RuleAction.FORWARD, RuleAction.BLOCK]:
                     final_result = result
                     break
 
             # Fallback if no rule triggered terminal state
             if final_result is None:
                 final_result = RuleResult(
-                    action=RuleAction.BLOCK,
-                    reason="Engine failed to reach a deterministic terminal state.",
-                    severity=1.0,
+                    action=RuleAction.FORWARD,
+                    reason="No KB match found, forwarding to production.",
+                    severity=0.3,
                     governance_flags=aggregated_flags,
-                    response_content="System Error: Execution chain incomplete."
+                    response_content=""
                 )
 
             assert final_result is not None

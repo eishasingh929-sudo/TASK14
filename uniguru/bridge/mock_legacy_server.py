@@ -1,3 +1,4 @@
+from typing import Dict, Any
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -8,13 +9,17 @@ class LegacyRequest(BaseModel):
     session_id: str
 
 @app.post("/chat")
-async def chat(request: LegacyRequest):
+async def chat(request: Dict[str, Any]):
+    # Flexible request handling
+    message = request.get("message") or request.get("query") or "No message"
     return {
-        "answer": f"Legacy Generative response for: {request.message}",
-        "source": "VectorDB_v1",
-        "confidence": 0.95
+        "groq_answer": f"Legacy Production Response for: {message}",
+        "retrieved_chunks": [
+            {"content": "Legacy source snippet", "source": "VectorDB_v1"}
+        ],
+        "status": "success"
     }
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8080)
+    uvicorn.run(app, host="0.0.0.0", port=8080)

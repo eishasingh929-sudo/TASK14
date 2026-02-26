@@ -1,0 +1,80 @@
+INFO:     Will watch for changes in these directories: ['C:\\Users\\Yass0\\OneDrive\\Desktop\\TASK14']
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [18164] using StatReload
+Process SpawnProcess-1:
+Traceback (most recent call last):
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\multiprocessing\process.py", line 320, in _bootstrap
+    self.run()
+    ~~~~~~~~^^
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    ~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\site-packages\uvicorn\server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\asyncio\runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\asyncio\runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\site-packages\uvicorn\server.py", line 71, in serve
+    await self._serve(sockets)
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\site-packages\uvicorn\server.py", line 78, in _serve
+    config.load()
+    ~~~~~~~~~~~^^
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\site-packages\uvicorn\config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+                      ~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\site-packages\uvicorn\importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "C:\Users\Yass0\AppData\Local\Programs\Python\Python314\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1398, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1371, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1342, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 938, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "C:\Users\Yass0\OneDrive\Desktop\TASK14\uniguru\bridge\server.py", line 8, in <module>
+    from uniguru.core.engine import RuleEngine
+  File "C:\Users\Yass0\OneDrive\Desktop\TASK14\uniguru\core\engine.py", line 16, in <module>
+    from uniguru.enforcement.enforcement import UniGuruEnforcement
+ImportError: cannot import name 'UniGuruEnforcement' from 'uniguru.enforcement.enforcement' (C:\Users\Yass0\OneDrive\Desktop\TASK14\uniguru\enforcement\enforcement.py)
+WARNING:  StatReload detected changes in 'uniguru\enforcement\enforcement.py'. Reloading...
+ INFO:     Started server process [20124]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:55519 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65069 - "POST /chat HTTP/1.1" 422 Unprocessable Content
+INFO:     127.0.0.1:65088 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65095 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65103 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65114 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65113 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52843 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52842 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63168 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64407 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59540 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59550 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59551 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59552 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59557 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56221 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56227 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56228 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56229 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49994 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49995 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49996 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65511 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65512 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65513 - "POST /chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65516 - "GET /health HTTP/1.1" 200 OK
