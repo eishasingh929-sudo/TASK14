@@ -231,8 +231,10 @@ class SourceVerifier:
         Legacy static interface: enhances retrieval result with verification metadata.
         """
         if not retrieval_result.get("verified"):
-            retrieval_result["truth_declaration"] = "UNVERIFIABLE"
+            retrieval_result["truth_declaration"] = "UNVERIFIED"
             retrieval_result["verification_status"] = VerificationStatus.UNVERIFIED.value
+            retrieval_result["formatted_response"] = "I cannot verify this information from current knowledge."
+            retrieval_result["allowed"] = False
             return retrieval_result
 
         source = retrieval_result.get("source_file")

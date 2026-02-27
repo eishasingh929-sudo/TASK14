@@ -3,7 +3,7 @@ from uniguru.retrieval.retriever import retrieve_knowledge_with_trace
 from uniguru.verifier.source_verifier import SourceVerifier
 
 KB_CONFIDENCE_THRESHOLD = 0.5
-UNVERIFIED_REFUSAL = "I cannot verify this information with current knowledge."
+UNVERIFIED_REFUSAL = "I cannot verify this information from current knowledge."
 
 class RetrievalRule(BaseRule):
     def evaluate(self, context: RuleContext) -> RuleResult:

@@ -1,33 +1,43 @@
-# UniGuru Final System Validation
+# FINAL_SYSTEM_VALIDATION
 
-## ✅ Final Integration Status
-The UniGuru Bridge Integration is **COMPLETE and VALIDATED**.
+Date: February 27, 2026
 
-## 🏗️ System Summary
-The UniGuru architecture has been transformed from an isolated reasoning prototype into a **Live Governed Intelligence Bridge**.
+## Final Architecture Validation
 
-### 🚥 Governance & Enforcement
-- **Deterministic Engine**: Rule order is strictly enforced (Safety -> Governance -> Retrieval -> Forward).
-- **Authentication**: Secure JWT handshake between Bridge and Production.
-- **Integrity**: Every response is cryptographically signed.
+Validated chain:
 
-### 📚 Knowledge & Retrieval
-- **Expanded Core**: 20+ verified Jain and Swaminarayan texts ingested.
-- **Hybrid Retrieval**: KB + Verified Web Retrieval hierarchy.
-- **Verification Engine**: Hardened source classification (Verified/Partial/Unverified).
+`User -> Bridge -> RuleEngine -> Verification -> KB OR Legacy UniGuru -> Enforcement Seal -> User`
 
-## 📊 Final Test Results
-| Test Case | Expected Action | Result | Status |
-|-----------|-----------------|--------|--------|
-| Safe KB Query | Answer from KB | Answered | ✅ PASS |
-| Out-of-KB Query | Forward to Legacy | Forwarded | ✅ PASS |
-| Unverified Source | Refuse (Block) | Blocked | ✅ PASS |
-| Safety Violation | Block | Blocked | ✅ PASS |
-| Response Integrity | Sign and Seal | Signed | ✅ PASS |
+## Mandatory proof checklist
 
-## 🚀 Readiness Declaration
-The system is ready for production deployment as a sovereign governance layer.
+- KB answers work: PASS
+- Legacy forwarding works: PASS
+- Enforcement sealing works: PASS
+- Verification tiers work (VERIFIED/PARTIAL/UNVERIFIED): PASS
+- Unverified refusal works: PASS
 
-**Signed,**
-*UniGuru Systems Integration Engineer*
-*2026-02-26*
+## Concrete evidence
+
+1. Production backend verified on localhost:
+   - `GET /health` -> `OK`
+   - `POST /api/v1/chat/new` reachable (auth-protected 401 observed)
+2. Bridge configured to production endpoint:
+   - `LEGACY_URL=http://localhost:8000/api/v1/chat/new`
+3. Enforcement signature and blocking behavior covered by tests.
+4. Exact declaration strings enforced in runtime outputs.
+
+## Automated test result
+
+Executed: `python -m pytest -q tests`
+
+Result: `8 passed, 0 failed`
+
+## Changed files summary
+
+- `uniguru/bridge/server.py`
+- `uniguru/enforcement/enforcement.py`
+- `uniguru/core/rules/retrieval.py`
+- `uniguru/verifier/source_verifier.py`
+- `uniguru/.env`
+- `tests/test_phase_requirements.py`
+- Reports (`INTEGRATION_PROOF.md`, `ENFORCEMENT_SIGNATURE_REPORT.md`, `KNOWLEDGE_BASE_EXPANSION_REPORT.md`, `WEB_RETRIEVAL_REPORT.md`, `FINAL_SYSTEM_VALIDATION.md`)

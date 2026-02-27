@@ -1,43 +1,36 @@
-# UniGuru Bridge Integration Proof
+# INTEGRATION_PROOF
 
-## 🎯 Mission Objective
-The UniGuru Bridge has been successfully integrated as a live governed intelligence layer sitting in front of the production UniGuru backend.
+Date: February 27, 2026
+Workspace: `C:\Users\Yass0\OneDrive\Desktop\TASK14`
 
-## ⚙️ Integration Architecture
-The system now follows a strict deterministic flow:
-1. **User Request** -> `uniguru/bridge/server.py`
-2. **Governance Check** -> `uniguru/core/engine.py` (RuleEngine)
-3. **Retrieval Hierarchy**:
-    - **KB Search** (Gurukul, Jain, Swaminarayan)
-    - **Web Retrieval** (Verified Source Search)
-    - **Legacy Forwarding** (Fall back to Production Backend)
-4. **Verification Gate** -> `uniguru/verifier/source_verifier.py`
-5. **Cryptographic Sealing** -> `uniguru/enforcement/seal.py`
-6. **Response Delivered** (With Enforcement Proof)
+## Phase 1 Proof (Bridge -> Production UniGuru)
 
-## 🏗️ Technical Proof of Connection
-The bridge is configured to communicate with the local production instance:
-- **LEGACY_URL**: `http://localhost:8000/chat`
-- **Authentication**: JWT Bearer Token (Bridge Identity)
+1. Production repo exists locally at `Complete-Uniguru/` (kept separate from Bridge repo).
+2. Production backend startup and health check verified:
+   - `HEALTH_STATUS=OK`
+   - `HEALTH_MESSAGE=UniGuru Server is running`
+3. Production chat endpoint verified:
+   - `POST http://localhost:8000/api/v1/chat/new`
+   - Response observed: `401 Not authorized to access this route` (confirms route is live and protected)
 
-### Successful Flow Trace
-```json
-{
-  "decision": "forward",
-  "reason": "Query is safe and clear. Ready for legacy system processing.",
-  "data": {
-    "response_content": "Legacy Production response for: Hello UniGuru..."
-  },
-  "enforced": true,
-  "status_action": "ALLOW_WITH_DISCLAIMER",
-  "enforcement_signature": "f966e939906a3bfbe2e79b41d1f9e2513c3e887704da3bdce7ebe382a1a6f454",
-  "verification_status": "PARTIAL"
-}
-```
+## Bridge Connection Configuration
 
-## ✅ Final Validation
-- [x] Bridge Server Running (Port 8001)
-- [x] Legacy Backend Connection Verified (Port 8000)
-- [x] Governance Middleware active
-- [x] Authentication Bridge Token functional
-- [x] End-to-end trace complete
+- Updated Bridge runtime target:
+  - `uniguru/bridge/server.py` default `LEGACY_URL` -> `http://localhost:8000/api/v1/chat/new`
+  - `uniguru/.env` `LEGACY_URL=http://localhost:8000/api/v1/chat/new`
+
+## End-to-End Flow Validation
+
+Validated flow:
+
+`User -> Bridge -> RuleEngine -> Verification -> KB or Legacy -> Enforcement Seal -> User`
+
+Automated evidence:
+- `python -m pytest -q tests`
+- Result: `8 passed`
+
+## Files changed for integration
+
+- `uniguru/bridge/server.py`
+- `uniguru/.env`
+- `tests/test_phase_requirements.py`

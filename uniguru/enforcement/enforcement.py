@@ -36,12 +36,30 @@ class SovereignEnforcement:
             else:
                 v_status = "UNVERIFIED"
         
+        data = decision_schema.setdefault("data", {})
+        verification_meta = data.get("verification", {}) if isinstance(data, dict) else {}
+        content = str(data.get("response_content", ""))
+
         # Policy Enforcement based on Status
         if v_status == "VERIFIED":
             decision_schema["status_action"] = "ALLOW"
+            declaration = self._resolve_declaration(
+                verification_meta,
+                default_source="UniGuru KB",
+                partial=False
+            )
+            if content and not content.startswith("Based on verified source:"):
+                data["response_content"] = f"{declaration}\n\n{content}"
         elif v_status == "PARTIAL":
             decision_schema["status_action"] = "ALLOW_WITH_DISCLAIMER"
-            decision_schema["disclaimer"] = "Note: This information is partially verified from available sources."
+            declaration = self._resolve_declaration(
+                verification_meta,
+                default_source="Production UniGuru backend",
+                partial=True
+            )
+            decision_schema["disclaimer"] = declaration
+            if content and not content.startswith("This information is partially verified from:"):
+                data["response_content"] = f"{declaration}\n\n{content}"
         else:
             # UNVERIFIED
             decision_schema["status_action"] = "REFUSE"
@@ -73,6 +91,23 @@ class SovereignEnforcement:
             return False
             
         return self.sealer.verify_signature(content, request_id, signature)
+
+    @staticmethod
+    def _resolve_declaration(verification_meta: Dict[str, Any], default_source: str, partial: bool) -> str:
+        formatted = str(verification_meta.get("formatted_response", "") or "").strip()
+        if partial and formatted.startswith("This information is partially verified from:"):
+            return formatted
+        if (not partial) and formatted.startswith("Based on verified source:"):
+            return formatted
+
+        source = (
+            verification_meta.get("source_name")
+            or verification_meta.get("source_file")
+            or default_source
+        )
+        if partial:
+            return f"This information is partially verified from: {source}"
+        return f"Based on verified source: {source}"
 
 class UniGuruEnforcement(SovereignEnforcement):
     """

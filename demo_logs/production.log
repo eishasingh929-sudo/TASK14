@@ -1,0 +1,6 @@
+⚠️  MongoDB connection bypassed for integration testing.
+🚀 UniGuru Server running on port 8000
+🌍 Environment: development
+📊 Health check: http://localhost:8000/health
+[0mGET /health [32m200[0m 3.698 ms - 120[0m
+[0mGET /health [32m200[0m 0.291 ms - 120[0m

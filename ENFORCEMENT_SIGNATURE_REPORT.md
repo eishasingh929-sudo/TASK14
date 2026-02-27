@@ -1,32 +1,37 @@
-# UniGuru Enforcement Signature Report
+# ENFORCEMENT_SIGNATURE_REPORT
 
-## 🛡️ Sovereign Security Protocol
-The UniGuru Bridge implements a cryptographic sealing layer that guarantees response integrity and source provenance.
+Date: February 27, 2026
 
-## 🔑 Sealing Mechanism
-- **Algorithm**: SHA-256 HMAC Simulation
-- **Key Binding**: `request_id` + `content`
-- **Output**: Forensic hex signature attached to every response header and body.
+## Implementation
 
-## 📊 Enforcement Metrics
-| Feature | Implementation | Status |
-|---------|----------------|--------|
-| Multi-Source Verification | `source_verifier.py` | ✅ ACTIVE |
-| Cryptographic Sealing | `seal.py` | ✅ ACTIVE |
-| Tamper-Evidence | Bound to Trace ID | ✅ ACTIVE |
-| Refusal Policy | Fall-closed on Unverified | ✅ ACTIVE |
+Cryptographic sealing is enforced in `uniguru/enforcement/seal.py`:
 
-## 🧪 Validation Sample
-**Request**: `What is the core of Jainism?`
-**Verification**: `VERIFIED` (Jain KB)
-**Signature**: `721e0a854b2bd22d3a04f48418c7ed62bb738afdecbae9a66e2f500b31c62a27`
-**Result**: **SEALED & VERIFIED**
+- Formula: `SHA256(response_content + request_id)`
+- Signature field: `enforcement_signature`
 
-## 🚫 Refusal Enforcement
-Attempts to solicit unverifiable information or bypass governance result in a `REFUSE` action with a `block` decision, preventing legacy leakage.
-```json
-{
-  "status_action": "REFUSE",
-  "reason": "Refined refusal: Source could not be verified by UniGuru Governance."
-}
-```
+Bridge verification gate in `uniguru/bridge/server.py`:
+
+- Bridge calls `enforcer.verify_bridge_seal(sealed_response)` before return.
+- If missing/invalid signature: HTTP 500 (`Enforcement Seal Violation`).
+
+## Enforcement Behavior
+
+Implemented in `uniguru/enforcement/enforcement.py`:
+
+- VERIFIED -> `ALLOW` and response prefixed with:
+  - `Based on verified source: [source]`
+- PARTIAL -> `ALLOW_WITH_DISCLAIMER` and response prefixed with:
+  - `This information is partially verified from: [source]`
+- UNVERIFIED -> `REFUSE` and response replaced with:
+  - `I cannot verify this information from current knowledge.`
+
+## Test Proof
+
+Executed: `python -m pytest -q tests`
+
+Included assertions in `tests/test_phase_requirements.py`:
+- Signature present on response
+- Tampering/invalid seal is blocked
+- UNVERIFIED response is refused with exact required text
+
+Result: `8 passed`

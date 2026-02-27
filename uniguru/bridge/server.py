@@ -11,8 +11,11 @@ from uniguru.bridge.auth import generate_bridge_token
 
 app = FastAPI(title="UniGuru Sovereign Bridge")
 
-# GAP 4: Production UniGuru Backend URL
-LEGACY_URL = os.getenv("LEGACY_URL", "http://localhost:8000/chat/new")
+# Production UniGuru Backend URL (Phase 1 target endpoint)
+LEGACY_URL = os.getenv(
+    "LEGACY_URL",
+    os.getenv("UNIGURU_BACKEND_URL", "http://localhost:8000/api/v1/chat/new")
+)
 BRIDGE_USER_ID = os.getenv("BRIDGE_USER_ID")
 BRIDGE_CHATBOT_ID = os.getenv("BRIDGE_CHATBOT_ID")
 
