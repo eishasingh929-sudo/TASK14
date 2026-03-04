@@ -1,0 +1,72 @@
+{
+  "concepts": [
+    {
+      "canonical_name": "Gurukul Knowledge Domain",
+      "concept_id": "70dedec2-fc86-41a0-ab4f-30299e4a5fb7",
+      "created_at": "2026-03-04T00:00:00Z",
+      "domain": "gurukul",
+      "immutable": true,
+      "parent_id": "8cb2fa29-2d7e-4bd0-af9d-080f3dd0459d",
+      "snapshot_version": 1,
+      "source_reference": "uniguru/knowledge/gurukul",
+      "truth_level": 3
+    },
+    {
+      "canonical_name": "UniGuru Canonical Root",
+      "concept_id": "8cb2fa29-2d7e-4bd0-af9d-080f3dd0459d",
+      "created_at": "2026-03-04T00:00:00Z",
+      "domain": "core",
+      "immutable": true,
+      "parent_id": null,
+      "snapshot_version": 1,
+      "source_reference": "uniguru/ontology/schema.py",
+      "truth_level": 4
+    },
+    {
+      "canonical_name": "Quantum Knowledge Domain",
+      "concept_id": "adf9434a-c8b9-4f5d-9d4b-8b7e3c286028",
+      "created_at": "2026-03-04T00:00:00Z",
+      "domain": "quantum",
+      "immutable": true,
+      "parent_id": "8cb2fa29-2d7e-4bd0-af9d-080f3dd0459d",
+      "snapshot_version": 1,
+      "source_reference": "uniguru/Quantum_KB/README.md",
+      "truth_level": 3
+    },
+    {
+      "canonical_name": "Jain Knowledge Domain",
+      "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+      "created_at": "2026-03-04T00:00:00Z",
+      "domain": "jain",
+      "immutable": true,
+      "parent_id": "8cb2fa29-2d7e-4bd0-af9d-080f3dd0459d",
+      "snapshot_version": 1,
+      "source_reference": "uniguru/knowledge/jain",
+      "truth_level": 3
+    },
+    {
+      "canonical_name": "Swaminarayan Knowledge Domain",
+      "concept_id": "eb517fbb-1585-4f83-8532-42489d0975d5",
+      "created_at": "2026-03-04T00:00:00Z",
+      "domain": "swaminarayan",
+      "immutable": true,
+      "parent_id": "8cb2fa29-2d7e-4bd0-af9d-080f3dd0459d",
+      "snapshot_version": 1,
+      "source_reference": "uniguru/knowledge/swaminarayan",
+      "truth_level": 3
+    },
+    {
+      "canonical_name": "UniGuru Unresolved Concept",
+      "concept_id": "f5e3a359-9ad5-4fcb-b483-598d0917f865",
+      "created_at": "2026-03-04T00:00:00Z",
+      "domain": "core",
+      "immutable": true,
+      "parent_id": "8cb2fa29-2d7e-4bd0-af9d-080f3dd0459d",
+      "snapshot_version": 1,
+      "source_reference": "uniguru/ontology/registry.py",
+      "truth_level": 0
+    }
+  ],
+  "snapshot_hash": "7b01e6aca6b9552affc74df475aa3aa252dd23bc6f36020158ccae4589570586",
+  "snapshot_version": 1
+}

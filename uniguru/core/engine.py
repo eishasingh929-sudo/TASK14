@@ -13,6 +13,7 @@ from uniguru.core.rules import (
     ForwardRule,
 )
 from uniguru.enforcement.enforcement import UniGuruEnforcement
+from uniguru.ontology.registry import OntologyRegistry
 
 
 class RuleEngine:
@@ -28,6 +29,7 @@ class RuleEngine:
             ForwardRule(),
         ]
         self.enforcement = UniGuruEnforcement()
+        self.ontology_registry = OntologyRegistry()
 
     def evaluate(self, content: str, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Production-grade deterministic evaluation pipeline."""
@@ -108,6 +110,11 @@ class RuleEngine:
 
             if final_result.extra_metadata:
                 output["data"].update(final_result.extra_metadata)
+
+            output["ontology_reference"] = self.ontology_registry.build_reference(
+                decision=output["decision"],
+                trace=output["data"].get("retrieval_trace"),
+            )
 
             final_output = self.enforcement.validate_and_bind(output)
 
