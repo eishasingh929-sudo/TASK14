@@ -16,6 +16,8 @@
       },
       "reasoning_trace": {
         "sources_consulted": [
+          "ontology_graph",
+          "ontology_registry",
           "quantum"
         ],
         "retrieval_confidence": 1.0,
@@ -40,10 +42,10 @@
       },
       "verification_status": "VERIFIED",
       "status_action": "ALLOW",
-      "enforcement_signature": "fdc3df894a0611a4f099a406207f734986018f3f9ff62773366bf2d3d911d789",
-      "request_id": "dff48fee-9124-40ad-920f-b49368b26e09",
-      "sealed_at": "2026-03-06T04:13:32Z",
-      "latency_ms": 7.31
+      "enforcement_signature": "ed8b7b370083b2d6af76c4915fcf0e1f46fbce8cb0ca76bd872ffb9f8281f186",
+      "request_id": "76fb6418-0e0a-40c5-8738-758291b1b2c8",
+      "sealed_at": "2026-03-07T05:38:43Z",
+      "latency_ms": 29.44
     }
   },
   {
@@ -63,6 +65,8 @@
       },
       "reasoning_trace": {
         "sources_consulted": [
+          "ontology_graph",
+          "ontology_registry",
           "swaminarayan"
         ],
         "retrieval_confidence": 0.6499999999999999,
@@ -87,10 +91,10 @@
       },
       "verification_status": "VERIFIED",
       "status_action": "ALLOW",
-      "enforcement_signature": "0bca06a944404b1356b7c5bd5fb461d9a0774d0d6e22fa0ee00747b0e6239f8c",
-      "request_id": "fe04e357-0a4f-4b77-b10c-f1e2358643ce",
-      "sealed_at": "2026-03-06T04:13:32Z",
-      "latency_ms": 7.52
+      "enforcement_signature": "b0742c934bba54e239d5453ee49f81cc71e77d9e52d1d667950e67b449145fb2",
+      "request_id": "3b4e6ae7-faf9-47e3-8107-65268dee4d8b",
+      "sealed_at": "2026-03-07T05:38:43Z",
+      "latency_ms": 12.25
     }
   },
   {
@@ -109,7 +113,10 @@
         "truth_level": 0
       },
       "reasoning_trace": {
-        "sources_consulted": [],
+        "sources_consulted": [
+          "ontology_registry",
+          "ontology_graph"
+        ],
         "retrieval_confidence": 0.0,
         "ontology_domain": "core",
         "verification_status": "UNVERIFIED",
@@ -132,10 +139,10 @@
       },
       "verification_status": "UNVERIFIED",
       "status_action": "REFUSE",
-      "enforcement_signature": "605fe0067aafd0a74548d2d8a65db3476532d306df3c43ae62ca20225cea0a7f",
-      "request_id": "ce8c05c7-49dc-4ab4-8a97-732dbb175c7a",
-      "sealed_at": "2026-03-06T04:13:32Z",
-      "latency_ms": 7.44
+      "enforcement_signature": "58d140ae9ec5ee59af62db56e6c986ac9ea5bd43caebfbcd8dbde556c2a4a565",
+      "request_id": "048220e0-99ad-4ed1-8a55-c610ad01db28",
+      "sealed_at": "2026-03-07T05:38:44Z",
+      "latency_ms": 19.48
     }
   },
   {
@@ -154,7 +161,10 @@
         "truth_level": 0
       },
       "reasoning_trace": {
-        "sources_consulted": [],
+        "sources_consulted": [
+          "ontology_registry",
+          "ontology_graph"
+        ],
         "retrieval_confidence": 0.0,
         "ontology_domain": "core",
         "verification_status": "UNVERIFIED",
@@ -177,10 +187,10 @@
       },
       "verification_status": "UNVERIFIED",
       "status_action": "REFUSE",
-      "enforcement_signature": "1fbbe7468fb2f6a36b8f31b24bba7f9ff33c37d0391295e7131925434a74fe06",
-      "request_id": "55d1086d-8d20-4892-8bc0-a693a4cdee4e",
-      "sealed_at": "2026-03-06T04:13:32Z",
-      "latency_ms": 8.04
+      "enforcement_signature": "0193ff93c4bcc3af8fb8d31bdc40b92cd3547ceb76e8d3522543778014c9e177",
+      "request_id": "6fcfff39-00ac-4bb5-b5d4-77041c6b2dcf",
+      "sealed_at": "2026-03-07T05:38:44Z",
+      "latency_ms": 13.1
     }
   }
 ]

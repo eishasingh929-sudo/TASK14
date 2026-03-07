@@ -1,0 +1,58 @@
+# UniGuru Ecosystem Service Report
+
+## Executive Summary
+UniGuru has transitioned from a standalone prototype into a stable, production-ready knowledge backbone for the BHIV ecosystem. This document outlines the hardened API layer, observability features, and deployment procedures required for internal system integration.
+
+## 1. API Architecture
+The service layer is built on **FastAPI** and provides a deterministic reasoning engine that enforces truth through an immutable ontology.
+
+### Canonical Contract
+The primary interaction point is the `POST /ask` endpoint, which follows a strict request/response contract:
+- **Strict Validation**: All requests are validated using Pydantic schemas. Malformed payloads or extra fields are rejected with `422 Unprocessable Content`.
+- **Query Classification**: Incoming queries are automatically classified into four categories: `knowledge_query`, `concept_query`, `explanation_query`, and `web_lookup`. This determines the retrieval logic and governance path.
+
+### Response Integrity
+Every response contains a cryptographic `enforcement_signature` and a [reasoning_trace](file:///c:/Users/Yass0/OneDrive/Desktop/TASK14/uniguru/service/live_service.py#164-185) that details exactly how the answer was derived from verified knowledge bases.
+
+## 2. Service Stability & Reliability
+Stability is ensured through several layers of protection:
+- **Rate Limiting**: Simple per-IP rate limiting prevents abuse and ensures service availability.
+- **Input Governance**: Pre-processing checks for character length and unsupported control characters.
+- **Output Governance**: Post-reasoning checks ensure no hallucinations, authority claims, or unsafe patterns are returned.
+- **Structured Logging**: Every request is logged as a JSON record containing `request_id`, `query_type`, `latency`, [verification_status](file:///c:/Users/Yass0/OneDrive/Desktop/TASK14/uniguru/service/live_service.py#186-195), and `decision` for easy auditing and monitoring.
+
+## 3. Observability
+The service exposes real-time state through:
+- `/health`: Overall service and component readiness.
+- `/metrics`: Prometheus-compatible metrics for RPM, success rate, and average latency.
+- `/monitoring/dashboard`: Real-time JSON telemetry for infrastructure dashboards.
+
+## 4. Deployment Instructions
+The system is fully containerized and can be started with a single command.
+
+### Local Development
+```powershell
+uvicorn uniguru.service.api:app --host 0.0.0.0 --port 8000
+```
+
+### Production Deployment
+The provided [Dockerfile](file:///c:/Users/Yass0/OneDrive/Desktop/TASK14/Dockerfile) and [docker-compose.yml](file:///c:/Users/Yass0/OneDrive/Desktop/TASK14/docker-compose.yml) enable rapid internal deployment.
+
+1. **Build Image**:
+   ```bash
+   docker build -t uniguru-service .
+   ```
+2. **Launch with Compose**:
+   ```bash
+   docker-compose up -d
+   ```
+
+## 5. System Integration Verification
+Integration tests have confirmed:
+1. **Ontology Consistency**: Correct concept mapping and reasoning paths.
+2. **Verification Logic**: Proper handling of verified KB hits, verified web results, and refusals for unverified information.
+3. **Governance Robustness**: Successful blocking of unsafe or non-deterministic queries.
+
+---
+**Status**: Stabilized & Ready for Internal Deployment.
+**Version**: 1.1.0-STABLE

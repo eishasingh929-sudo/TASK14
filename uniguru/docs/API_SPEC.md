@@ -1,25 +1,41 @@
-# UniGuru Live API Specification
+# UniGuru Canonical API Contract (BHIV Ecosystem)
 
-## Endpoint
-`POST /ask`
+## Service
+- Name: `uniguru-live-reasoning`
+- Base path: `/`
+- Primary endpoint: `POST /ask`
 
-## Request Body
+## Request Contract
 ```json
 {
-  "user_query": "What is a qubit?",
-  "session_id": "optional-session-id",
+  "query": "What is ahimsa?",
   "context": {
-    "caller": "bhiv-system"
+    "caller": "bhiv-assistant",
+    "channel": "api"
   },
-  "allow_web_retrieval": false
+  "allow_web": false,
+  "session_id": "optional-session-id"
 }
 ```
 
-## Response Body
+### Request Fields
+- `query` (string, required): user query payload.
+- `context` (object, optional): caller-provided metadata map.
+- `allow_web` (boolean, optional, default `false`): permits web fallback when allowed by governance and verification.
+- `session_id` (string, optional): caller correlation identifier.
+
+### Validation Rules
+- Extra fields are rejected.
+- Empty query is rejected.
+- Query length capped at 2000 chars.
+- Context size limited (max 64 keys, max 8KB serialized).
+- Unsupported control characters are rejected.
+
+## Response Contract
 ```json
 {
   "decision": "answer",
-  "answer": "Based on verified source: ...",
+  "answer": "UniGuru Deterministic Knowledge Retrieval: ...",
   "session_id": "optional-session-id",
   "reason": "Knowledge found in local KB and verified.",
   "ontology_reference": {
@@ -30,43 +46,51 @@
     "truth_level": 3
   },
   "reasoning_trace": {
-    "sources_consulted": ["quantum"],
-    "retrieval_confidence": 1.0,
+    "sources_consulted": ["quantum", "ontology_registry", "ontology_graph"],
+    "retrieval_confidence": 0.92,
     "ontology_domain": "quantum",
     "verification_status": "VERIFIED",
     "verification_details": "VERIFIED"
   },
-  "governance_flags": {
-    "authority": false,
-    "delegation": false,
-    "emotional": false,
-    "ambiguity": false,
-    "safety": false
-  },
   "governance_output": {
     "allowed": true,
     "reason": "Output governance passed.",
-    "flags": {
-      "output_authority_violation": false
-    }
+    "flags": {}
   },
   "verification_status": "VERIFIED",
-  "status_action": "ALLOW",
   "enforcement_signature": "sha256...",
+  "status_action": "ALLOW",
   "request_id": "uuid",
-  "sealed_at": "2026-03-06T00:00:00Z",
+  "sealed_at": "2026-03-07T00:00:00Z",
   "latency_ms": 12.4
 }
 ```
 
-## Health Endpoint
-`GET /health`
+### Response Fields (Required for System Integration)
+The following fields MUST be present and correctly typed in every successful `2xx` response:
+- `decision` (string): The final action taken by the system (`answer`, `block`).
+- `answer` (string): The generated response content or refusal message.
+- `ontology_reference` (object): Metadata linking the response to a specific concept in the UniGuru ontology.
+- `verification_status` (string): One of `VERIFIED`, `PARTIAL`, `UNVERIFIED`.
+- `reasoning_trace` (object): Details of the sources consulted and confidence scores.
+- `governance_output` (object): Results of the output governance checks.
+- `enforcement_signature` (string): Cryptographic seal ensuring response integrity.
+- `request_id` (string): Unique identifier for the transaction.
+- `latency_ms` (float): Processing time in milliseconds.
 
-Returns:
-```json
-{
-  "status": "ok",
-  "service": "uniguru-live-reasoning"
-}
-```
+## Health and Observability Endpoints
+UniGuru exposes standard health and metrics endpoints for infrastructure monitoring:
+- `GET /health`: Returns overall service status and sub-component health.
+- `GET /ready`: Readiness probe for load balancers.
+- `GET /metrics`: Prometheus-compatible runtime metrics (RPM, success rate, latency).
+- `GET /monitoring/dashboard`: JSON-structured live dashboard data.
 
+## Error Statuses
+- `422` for malformed request payloads.
+- `429` when request rate limit is exceeded.
+- `404` for unknown ontology concept lookup.
+
+## Backward Compatibility
+- Legacy fields are accepted and mapped:
+  - `user_query` -> `query`
+  - `allow_web_retrieval` -> `allow_web`

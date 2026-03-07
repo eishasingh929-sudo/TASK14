@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  uniguru-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: uniguru-service
+    ports:
+      - "8000:8000"
+    environment:
+      UNIGURU_RATE_LIMIT_WINDOW_SECONDS: "60"
+      UNIGURU_RATE_LIMIT_MAX_REQUESTS: "60"
+      UNIGURU_LOG_LEVEL: "INFO"
