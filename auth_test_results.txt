@@ -1,0 +1,85 @@
+﻿
+Testing GET /health...
+Status: 200
+Body: {
+  "status": "ok",
+  "service": "uniguru-live-reasoning",
+  "version": "1.1.0",
+  "uptime_seconds": 45.006,
+  "checks": {
+    "ontology_registry": "ok",
+    "reasoning_service": "ok"
+  }
+}
+
+Testing POST /ask...
+Status: 401
+Body: {
+  "detail": "Unauthorized"
+}
+
+Testing POST /ask...
+Status: 401
+Body: {
+  "detail": "Unauthorized"
+}
+
+Testing POST /ask...
+Status: 400
+Body: {
+  "detail": "caller identity is required via context.caller or X-Caller-Name"
+}
+
+Testing POST /ask...
+Status: 200
+Body: {
+  "decision": "answer",
+  "answer": "Based on verified source: qubit.md\n\nUniGuru Deterministic Knowledge Retrieval:\n\nTitle: Nielsen & Chuang Core Concepts\nSource(s): Nielsen, M. A. & Chuang, I. L., \"Quantum Computation and Quantum Information\" (2010)\nAuthors: Michael A. Nielsen; Isaac L. Chuang (summarized)\nYear: 2010\nDomain: Quantum Foundations / Quantum Information\nIngestion date: 2026-02-06\n\nDefinitions\n- Qubit: Two-level quantum system represented by state vector $|\\psi\\rangle=\\alpha|0\\rangle+\\beta|1\\rangle$.\n- Density operator: $\\rho$ describing mixed states; $\\rho=\\sum_i p_i|\\psi_i\\rangle\\langle\\psi_i|$.\n- Unitary evolution: Closed-system dynamics described by $\\rho\\mapsto U\\rho U^{\\dagger}$.\n- Measurement (projective): Born rule $p_i=\\langle\\psi|\\Pi_i|\\psi\\rangle$ for projector $\\Pi_i$.\n- Entanglement: Non-separable joint states with correlations beyond classical mixtures.\n\nKey Concepts\n- State space: Hilbert space formalism and tensor-product composition.\n- Quantum gates: Reversible operations implemented by unitary matrices.\n- Quantum circuits: Composition of gates to implement algorithms.\n- Quantum error: Decoherence and noise motivating error correction.\n\nLight equation context\n- State normalization: $\\langle\\psi|\\psi\\rangle=1$.\n- Expectation value: $\\langle A\\rangle=\\mathrm{Tr}(\\rho A)$.\n\nConcept explanations\n- Superposition: Linear combination of basis states enabling interference.\n- Measurement collapse (operational): Probabilistic update of state post-measurement.\n- Quantum tomography (summary): Reconstruction of $\\rho$ from measurement statistics.\n\nCitations\n- Nielsen & Chuang (2010). Core textbook treatment of these foundational topics.SSSS\n\n",
+  "session_id": null,
+  "reason": "Knowledge found in local KB and verified.",
+  "ontology_reference": {
+    "concept_id": "2200072c-5a0d-4f68-a56a-a0c807f6cf5e",
+    "domain": "quantum",
+    "snapshot_version": 1,
+    "snapshot_hash": "e7292c6b78cfa8c7fe0008b36f6916879af5b9c78d763a3cbf402d3e3d6895ad",
+    "truth_level": 3
+  },
+  "reasoning_trace": {
+    "sources_consulted": [
+      "ontology_graph",
+      "ontology_registry",
+      "quantum"
+    ],
+    "retrieval_confidence": 1.0,
+    "ontology_domain": "quantum",
+    "verification_status": "VERIFIED",
+    "verification_details": "VERIFIED"
+  },
+  "governance_flags": {
+    "authority": false,
+    "delegation": false,
+    "emotional": false,
+    "ambiguity": false,
+    "safety": false,
+    "output_authority_violation": false
+  },
+  "governance_output": {
+    "allowed": true,
+    "reason": "Output governance passed.",
+    "flags": {
+      "output_authority_violation": false
+    }
+  },
+  "verification_status": "VERIFIED",
+  "status_action": "ALLOW",
+  "enforcement_signature": "6c97386a1dcd559dc53eea68e921a0c45d8247603115cc2fc268e7e84f8a2218",
+  "request_id": "db689c04-e7f0-4833-9998-ae5e449fa4f0",
+  "sealed_at": "2026-03-09T04:11:34Z",
+  "latency_ms": 8.57
+}
+
+Testing GET /metrics...
+Status: 200
+Body: # TYPE uniguru_requests_total counter
+uniguru_requests_total 17
+# TYPE uniguru_ask_requests_total co

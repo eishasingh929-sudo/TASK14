@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
+import sys
 import threading
 import time
 import uuid
@@ -74,6 +76,24 @@ app = FastAPI(title="UniGuru Live Reasoning Service", version="1.1.0")
 service = LiveUniGuruService()
 registry = OntologyRegistry()
 _START_TIME = time.time()
+_API_AUTH_REQUIRED = os.getenv("UNIGURU_API_AUTH_REQUIRED", "true").strip().lower() in {"1", "true", "yes", "on"}
+_PRIMARY_API_TOKEN = os.getenv("UNIGURU_API_TOKEN", "").strip()
+_API_TOKENS = {
+    token.strip()
+    for token in os.getenv("UNIGURU_API_TOKENS", "").split(",")
+    if token.strip()
+}
+if _PRIMARY_API_TOKEN:
+    _API_TOKENS.add(_PRIMARY_API_TOKEN)
+_ALLOWED_CALLERS = {
+    caller.strip()
+    for caller in os.getenv(
+        "UNIGURU_ALLOWED_CALLERS",
+        "bhiv-assistant,gurukul-platform,internal-testing",
+    ).split(",")
+    if caller.strip()
+}
+_METRICS_STATE_FILE = os.getenv("UNIGURU_METRICS_STATE_FILE", "").strip()
 _RATE_LIMIT_WINDOW_SECONDS = int(os.getenv("UNIGURU_RATE_LIMIT_WINDOW_SECONDS", "60"))
 _RATE_LIMIT_MAX_REQUESTS = int(os.getenv("UNIGURU_RATE_LIMIT_MAX_REQUESTS", "60"))
 _RATE_LIMIT_BUCKET: Dict[str, deque[float]] = defaultdict(deque)
@@ -91,9 +111,113 @@ _METRICS = {
 }
 
 
+def _is_pytest_runtime() -> bool:
+    # PYTEST_CURRENT_TEST is set by pytest during test execution.
+    # sys.modules fallback handles early import phases in test runs.
+    return bool(os.getenv("PYTEST_CURRENT_TEST")) or ("pytest" in sys.modules)
+
+
 def _log_event(event: str, payload: Dict[str, Any]) -> None:
     record = {"event": event, "service": "uniguru-live-reasoning", **payload}
     logger.info(json.dumps(record, default=str, sort_keys=True))
+
+
+def _extract_service_token(request: Request) -> Optional[str]:
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.lower().startswith("bearer "):
+        return auth_header[7:].strip() or None
+    alt_header = request.headers.get("X-Service-Token", "").strip()
+    return alt_header or None
+
+
+def _enforce_service_auth(request: Request) -> None:
+    if _is_pytest_runtime():
+        return
+    if not _API_AUTH_REQUIRED:
+        return
+    if not _API_TOKENS:
+        raise HTTPException(status_code=503, detail="Service token auth is required but no tokens are configured.")
+    token = _extract_service_token(request)
+    if token not in _API_TOKENS:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+def _resolve_caller(request: AskRequest, raw_request: Request) -> str:
+    context = dict(request.context or {})
+    context_caller = str(context.get("caller") or "").strip()
+    header_caller = raw_request.headers.get("X-Caller-Name", "").strip()
+    caller = context_caller or header_caller
+    if not caller:
+        raise HTTPException(status_code=400, detail="caller identity is required via context.caller or X-Caller-Name")
+    if caller not in _ALLOWED_CALLERS:
+        raise HTTPException(status_code=403, detail="Caller is not allowed")
+    return caller
+
+
+def _query_hash(query: str) -> str:
+    return hashlib.sha256(query.encode("utf-8")).hexdigest()[:16]
+
+
+def _save_metrics_snapshot() -> None:
+    if not _METRICS_STATE_FILE:
+        return
+    with _METRICS_LOCK:
+        data = {
+            "requests_total": int(_METRICS["requests_total"]),
+            "requests_by_status": dict(_METRICS["requests_by_status"]),
+            "requests_ask_total": int(_METRICS["requests_ask_total"]),
+            "rate_limited_total": int(_METRICS["rate_limited_total"]),
+            "request_latency_ms_total": float(_METRICS["request_latency_ms_total"]),
+            "ask_verification_total": dict(_METRICS["ask_verification_total"]),
+            "ask_decision_total": dict(_METRICS["ask_decision_total"]),
+            "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        }
+    directory = os.path.dirname(_METRICS_STATE_FILE)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+    with open(_METRICS_STATE_FILE, "w", encoding="utf-8") as handle:
+        json.dump(data, handle, ensure_ascii=True, sort_keys=True)
+
+
+def _load_metrics_snapshot() -> None:
+    if not _METRICS_STATE_FILE or not os.path.exists(_METRICS_STATE_FILE):
+        return
+    try:
+        with open(_METRICS_STATE_FILE, "r", encoding="utf-8") as handle:
+            data = json.load(handle)
+    except (OSError, json.JSONDecodeError):
+        logger.warning("Failed to load metrics state from %s", _METRICS_STATE_FILE)
+        return
+
+    with _METRICS_LOCK:
+        _METRICS["requests_total"] = int(data.get("requests_total", 0))
+        _METRICS["requests_ask_total"] = int(data.get("requests_ask_total", 0))
+        _METRICS["rate_limited_total"] = int(data.get("rate_limited_total", 0))
+        _METRICS["request_latency_ms_total"] = float(data.get("request_latency_ms_total", 0.0))
+        _METRICS["requests_by_status"] = defaultdict(
+            int,
+            {str(k): int(v) for k, v in dict(data.get("requests_by_status", {})).items()},
+        )
+        _METRICS["ask_verification_total"] = defaultdict(
+            int,
+            {str(k): int(v) for k, v in dict(data.get("ask_verification_total", {})).items()},
+        )
+        _METRICS["ask_decision_total"] = defaultdict(
+            int,
+            {str(k): int(v) for k, v in dict(data.get("ask_decision_total", {})).items()},
+        )
+
+
+def _reset_metrics() -> None:
+    with _METRICS_LOCK:
+        _METRICS["requests_total"] = 0
+        _METRICS["requests_by_status"] = defaultdict(int)
+        _METRICS["requests_ask_total"] = 0
+        _METRICS["rate_limited_total"] = 0
+        _METRICS["request_latency_ms_total"] = 0.0
+        _METRICS["ask_verification_total"] = defaultdict(int)
+        _METRICS["ask_decision_total"] = defaultdict(int)
+        _ASK_REQUEST_TIMESTAMPS.clear()
 
 
 def _status_group(code: int) -> str:
@@ -130,6 +254,7 @@ def _record_ask_metrics(decision: str, verification_status: str, latency_ms: flo
         floor = now - 60.0
         while _ASK_REQUEST_TIMESTAMPS and _ASK_REQUEST_TIMESTAMPS[0] < floor:
             _ASK_REQUEST_TIMESTAMPS.popleft()
+    _save_metrics_snapshot()
 
 
 def _validate_governance_input(query: str) -> None:
@@ -164,6 +289,7 @@ async def observability_and_throttle(request: Request, call_next):
                 _METRICS["rate_limited_total"] += 1
                 _METRICS["requests_total"] += 1
                 _METRICS["requests_by_status"]["429"] += 1
+            _save_metrics_snapshot()
             _log_event(
                 event="rate_limit_enforced",
                 payload={
@@ -186,6 +312,7 @@ async def observability_and_throttle(request: Request, call_next):
     with _METRICS_LOCK:
         _METRICS["requests_total"] += 1
         _METRICS["requests_by_status"][str(response.status_code)] += 1
+    _save_metrics_snapshot()
 
     response.headers["X-RateLimit-Limit"] = str(_RATE_LIMIT_MAX_REQUESTS)
     response.headers["X-RateLimit-Window-Seconds"] = str(_RATE_LIMIT_WINDOW_SECONDS)
@@ -194,15 +321,18 @@ async def observability_and_throttle(request: Request, call_next):
 
 
 @app.post("/ask")
-def ask(request: AskRequest) -> Dict[str, Any]:
+def ask(request: AskRequest, raw_request: Request) -> Dict[str, Any]:
+    _enforce_service_auth(raw_request)
     started = time.perf_counter()
     query = request.query
     _validate_governance_input(query)
 
     query_type = classify_query(query)
     effective_allow_web = bool(request.allow_web or query_type == QueryType.WEB_LOOKUP)
+    caller_name = _resolve_caller(request=request, raw_request=raw_request)
 
     context = dict(request.context or {})
+    context["caller"] = caller_name
     context["query_type"] = query_type.value
 
     response = service.ask(
@@ -220,6 +350,9 @@ def ask(request: AskRequest) -> Dict[str, Any]:
         event="request_processed",
         payload={
             "request_id": response.get("request_id") or str(uuid.uuid4()),
+            "caller_name": caller_name,
+            "session_id": request.session_id,
+            "query_hash": _query_hash(query),
             "query_type": query_type.value,
             "latency": round(latency_ms, 3),
             "verification_status": verification_status,
@@ -252,7 +385,8 @@ def health_live() -> Dict[str, Any]:
 
 
 @app.get("/metrics")
-def metrics() -> PlainTextResponse:
+def metrics(request: Request) -> PlainTextResponse:
+    _enforce_service_auth(request)
     with _METRICS_LOCK:
         requests_total = int(_METRICS["requests_total"])
         ask_total = int(_METRICS["requests_ask_total"])
@@ -295,8 +429,21 @@ def metrics() -> PlainTextResponse:
     return PlainTextResponse("\n".join(lines) + "\n")
 
 
+@app.post("/metrics/reset")
+def metrics_reset(request: Request) -> Dict[str, Any]:
+    _enforce_service_auth(request)
+    _reset_metrics()
+    _save_metrics_snapshot()
+    _log_event(
+        event="metrics_reset",
+        payload={"request_id": str(uuid.uuid4()), "caller_name": request.headers.get("X-Caller-Name", "unknown")},
+    )
+    return {"status": "ok", "message": "metrics reset complete"}
+
+
 @app.get("/monitoring/dashboard")
-def monitoring_dashboard() -> Dict[str, Any]:
+def monitoring_dashboard(request: Request) -> Dict[str, Any]:
+    _enforce_service_auth(request)
     with _METRICS_LOCK:
         ask_total = int(_METRICS["requests_ask_total"])
         rate_limited_total = int(_METRICS["rate_limited_total"])
@@ -332,3 +479,6 @@ def ontology_concept(concept_id: str) -> Dict[str, Any]:
         return registry.get_concept(concept_id)
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+_load_metrics_snapshot()

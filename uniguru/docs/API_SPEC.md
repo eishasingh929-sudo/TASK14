@@ -21,6 +21,7 @@
 ### Request Fields
 - `query` (string, required): user query payload.
 - `context` (object, optional): caller-provided metadata map.
+- `context.caller` OR `X-Caller-Name` header (required for `POST /ask`): caller identity used for allowlist checks.
 - `allow_web` (boolean, optional, default `false`): permits web fallback when allowed by governance and verification.
 - `session_id` (string, optional): caller correlation identifier.
 
@@ -30,6 +31,31 @@
 - Query length capped at 2000 chars.
 - Context size limited (max 64 keys, max 8KB serialized).
 - Unsupported control characters are rejected.
+- Caller is required via `context.caller` or `X-Caller-Name`.
+- Caller must be in the allowed set (`bhiv-assistant`, `gurukul-platform`, `internal-testing`) unless overridden by env config.
+
+## Authentication
+- Protected endpoints require Bearer token authentication:
+  - `POST /ask`
+  - `GET /metrics`
+  - `POST /metrics/reset`
+  - `GET /monitoring/dashboard`
+- Health/readiness endpoints remain probeable without auth:
+  - `GET /health`
+  - `GET /ready`
+  - `GET /health/ready`
+  - `GET /health/live`
+
+### Auth Headers
+Use either:
+- `Authorization: Bearer <token>`
+- `X-Service-Token: <token>`
+
+### Auth Environment Variables
+- `UNIGURU_API_AUTH_REQUIRED` (`true|false`)
+- `UNIGURU_API_TOKEN` (primary single token)
+- `UNIGURU_API_TOKENS` (optional comma-separated fallback/rotation tokens)
+- `UNIGURU_ALLOWED_CALLERS` (comma-separated caller allowlist)
 
 ## Response Contract
 ```json
@@ -89,6 +115,8 @@ UniGuru exposes standard health and metrics endpoints for infrastructure monitor
 - `422` for malformed request payloads.
 - `429` when request rate limit is exceeded.
 - `404` for unknown ontology concept lookup.
+- `401` for missing/invalid token on protected endpoints.
+- `403` for unknown callers on `/ask`.
 
 ## Backward Compatibility
 - Legacy fields are accepted and mapped:

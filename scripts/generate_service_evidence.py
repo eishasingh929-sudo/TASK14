@@ -17,7 +17,7 @@ def main() -> None:
         "/ask",
         json={
             "query": "What is a qubit?",
-            "context": {"caller": "bhiv-simulated-system"},
+            "context": {"caller": "internal-testing"},
             "allow_web": False,
             "session_id": "evidence-valid-1",
         },
@@ -37,8 +37,11 @@ def main() -> None:
         api_module._RATE_LIMIT_MAX_REQUESTS = 1
         api_module._RATE_LIMIT_WINDOW_SECONDS = 60
         api_module._RATE_LIMIT_BUCKET.clear()
-        rl_first = client.post("/ask", json={"query": "Explain ahimsa"})
-        rl_second = client.post("/ask", json={"query": "Explain anekantavada"})
+        rl_first = client.post("/ask", json={"query": "Explain ahimsa", "context": {"caller": "internal-testing"}})
+        rl_second = client.post(
+            "/ask",
+            json={"query": "Explain anekantavada", "context": {"caller": "internal-testing"}},
+        )
     finally:
         api_module._RATE_LIMIT_MAX_REQUESTS = original_limit
         api_module._RATE_LIMIT_WINDOW_SECONDS = original_window

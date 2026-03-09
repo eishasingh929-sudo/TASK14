@@ -7,6 +7,10 @@ from uniguru.service.api import app
 client = TestClient(app)
 
 
+def _ask_payload(query: str) -> dict:
+    return {"query": query, "context": {"caller": "internal-testing"}}
+
+
 def test_bhiv_post_ask_returns_ontology_reference() -> None:
     response = client.post(
         "/ask",
@@ -14,6 +18,7 @@ def test_bhiv_post_ask_returns_ontology_reference() -> None:
             "user_query": "What is a qubit?",
             "session_id": "bhiv-integration-1",
             "allow_web_retrieval": False,
+            "context": {"caller": "internal-testing"},
         },
     )
     assert response.status_code == 200
@@ -34,7 +39,7 @@ def test_canonical_contract_request_shape_is_accepted() -> None:
             "query": "What is a qubit?",
             "session_id": "bhiv-integration-contract",
             "allow_web": False,
-            "context": {"origin": "bhiv-tests"},
+            "context": {"origin": "bhiv-tests", "caller": "internal-testing"},
         },
     )
     assert response.status_code == 200
@@ -62,7 +67,11 @@ def test_malformed_input_is_rejected() -> None:
 def test_public_ontology_endpoint_resolves_concept() -> None:
     ask_response = client.post(
         "/ask",
-        json={"user_query": "Explain ahimsa", "session_id": "bhiv-integration-2"},
+        json={
+            "user_query": "Explain ahimsa",
+            "session_id": "bhiv-integration-2",
+            "context": {"caller": "internal-testing"},
+        },
     )
     assert ask_response.status_code == 200
     concept_id = ask_response.json()["ontology_reference"]["concept_id"]
@@ -103,8 +112,8 @@ def test_rate_limit_is_enforced() -> None:
         api_module._RATE_LIMIT_WINDOW_SECONDS = 60
         api_module._RATE_LIMIT_BUCKET.clear()
 
-        first = client.post("/ask", json={"query": "What is a qubit?"})
-        second = client.post("/ask", json={"query": "Explain ahimsa"})
+        first = client.post("/ask", json=_ask_payload("What is a qubit?"))
+        second = client.post("/ask", json=_ask_payload("Explain ahimsa"))
 
         assert first.status_code == 200
         assert second.status_code == 429
@@ -112,3 +121,81 @@ def test_rate_limit_is_enforced() -> None:
         api_module._RATE_LIMIT_MAX_REQUESTS = original_limit
         api_module._RATE_LIMIT_WINDOW_SECONDS = original_window
         api_module._RATE_LIMIT_BUCKET.clear()
+
+
+def test_service_token_auth_can_be_enforced() -> None:
+    original_required = api_module._API_AUTH_REQUIRED
+    original_tokens = set(api_module._API_TOKENS)
+    original_pytest_runtime = api_module._is_pytest_runtime
+    try:
+        api_module._API_AUTH_REQUIRED = True
+        api_module._API_TOKENS = {"test-token"}
+        api_module._is_pytest_runtime = lambda: False
+
+        unauthorized = client.post("/ask", json=_ask_payload("What is a qubit?"))
+        assert unauthorized.status_code == 401
+
+        authorized = client.post(
+            "/ask",
+            json=_ask_payload("What is a qubit?"),
+            headers={"Authorization": "Bearer test-token"},
+        )
+        assert authorized.status_code == 200
+    finally:
+        api_module._API_AUTH_REQUIRED = original_required
+        api_module._API_TOKENS = original_tokens
+        api_module._is_pytest_runtime = original_pytest_runtime
+
+
+def test_metrics_endpoint_requires_token_when_auth_is_enabled() -> None:
+    original_required = api_module._API_AUTH_REQUIRED
+    original_tokens = set(api_module._API_TOKENS)
+    original_pytest_runtime = api_module._is_pytest_runtime
+    try:
+        api_module._API_AUTH_REQUIRED = True
+        api_module._API_TOKENS = {"test-token"}
+        api_module._is_pytest_runtime = lambda: False
+
+        unauthorized = client.get("/metrics")
+        assert unauthorized.status_code == 401
+
+        authorized = client.get("/metrics", headers={"Authorization": "Bearer test-token"})
+        assert authorized.status_code == 200
+    finally:
+        api_module._API_AUTH_REQUIRED = original_required
+        api_module._API_TOKENS = original_tokens
+        api_module._is_pytest_runtime = original_pytest_runtime
+
+
+def test_metrics_reset_endpoint_clears_counters() -> None:
+    api_module._reset_metrics()
+    first = client.post("/ask", json=_ask_payload("What is a qubit?"))
+    assert first.status_code == 200
+
+    before = client.get("/metrics")
+    assert "uniguru_ask_requests_total 1" in before.text
+
+    reset = client.post("/metrics/reset")
+    assert reset.status_code == 200
+
+    after = client.get("/metrics")
+    assert "uniguru_ask_requests_total 0" in after.text
+
+
+def test_missing_caller_is_rejected() -> None:
+    response = client.post("/ask", json={"query": "What is a qubit?"})
+    assert response.status_code == 400
+
+
+def test_unknown_caller_is_rejected() -> None:
+    response = client.post("/ask", json={"query": "What is a qubit?", "context": {"caller": "unknown-client"}})
+    assert response.status_code == 403
+
+
+def test_allowed_header_caller_is_accepted() -> None:
+    response = client.post(
+        "/ask",
+        json={"query": "What is a qubit?"},
+        headers={"X-Caller-Name": "internal-testing"},
+    )
+    assert response.status_code == 200
