@@ -250,3 +250,31 @@ def test_router_queue_limit_returns_503_when_full() -> None:
     finally:
         api_module._ASK_QUEUE_LIMIT = original_limit
         api_module._ASK_INFLIGHT = original_inflight
+
+
+def test_language_adapter_metadata_is_present() -> None:
+    response = client.post(
+        "/ask",
+        json={
+            "query": "What is a qubit?",
+            "context": {"caller": "internal-testing", "language": "en"},
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert "language_adapter" in payload
+    assert payload["language_adapter"]["source_language"] == "en"
+
+
+def test_core_alignment_metadata_is_present_and_read_only() -> None:
+    response = client.post(
+        "/ask",
+        json={
+            "query": "What is a qubit?",
+            "context": {"caller": "internal-testing"},
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert "core_alignment" in payload
+    assert payload["core_alignment"]["read_only"] is True

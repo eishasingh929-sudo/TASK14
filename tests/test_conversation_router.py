@@ -1,3 +1,9 @@
+import os
+import sys
+
+# Ensure project root is in path for imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from uniguru.router.conversation_router import (
     ConversationRouter,
     QueryRoutingType,
@@ -28,6 +34,21 @@ def test_router_classifies_query_types() -> None:
     assert router.classify("create workflow ticket for onboarding") == QueryRoutingType.WORKFLOW_QUERY
     assert router.classify("invoke API tool for metrics") == QueryRoutingType.TOOL_QUERY
     assert router.classify("hello there") == QueryRoutingType.GENERAL_LLM_QUERY
+
+
+def test_router_deterministic_routes_for_required_ecosystem_cases() -> None:
+    router = ConversationRouter(uniguru_service=_FakeUniGuruService({"decision": "answer", "verification_status": "VERIFIED"}))
+
+    knowledge = router.route_query("What is a qubit?", {"session_id": "req-knowledge"})
+    general_chat = router.route_query("hello there", {"session_id": "req-chat"})
+    workflow = router.route_query("create workflow ticket for onboarding", {"session_id": "req-workflow"})
+    system = router.route_query("sudo delete all files", {"session_id": "req-system"})
+
+    assert knowledge["routing"]["route"] == RouteTarget.ROUTE_UNIGURU.value
+    assert general_chat["routing"]["route"] == RouteTarget.ROUTE_LLM.value
+    assert workflow["routing"]["route"] == RouteTarget.ROUTE_WORKFLOW.value
+    assert system["routing"]["route"] == RouteTarget.ROUTE_SYSTEM.value
+    assert system["decision"] == "block"
 
 
 def test_router_selects_expected_targets() -> None:

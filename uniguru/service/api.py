@@ -18,6 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 from uniguru.ontology.registry import OntologyRegistry
 from uniguru.router.conversation_router import ConversationRouter
+from uniguru.integrations import BucketTelemetryClient, CoreReaderClient, LanguageAdapter, TelemetryEvent
 from uniguru.service.live_service import LiveUniGuruService
 from uniguru.service.query_classifier import QueryType, classify_query
 
@@ -77,6 +78,9 @@ app = FastAPI(title="UniGuru Live Reasoning Service", version="1.1.0")
 service = LiveUniGuruService()
 conversation_router = ConversationRouter(uniguru_service=service)
 registry = OntologyRegistry()
+language_adapter = LanguageAdapter()
+bucket_telemetry = BucketTelemetryClient()
+core_reader = CoreReaderClient()
 _START_TIME = time.time()
 _API_AUTH_REQUIRED = os.getenv("UNIGURU_API_AUTH_REQUIRED", "true").strip().lower() in {"1", "true", "yes", "on"}
 _PRIMARY_API_TOKEN = os.getenv("UNIGURU_API_TOKEN", "").strip()
@@ -285,6 +289,42 @@ def _record_route_metric(route: str) -> None:
     _save_metrics_snapshot()
 
 
+def _emit_bucket_events(
+    query_hash: str,
+    route: str,
+    verification_status: str,
+    latency_ms: float,
+    caller: Optional[str],
+    session_id: Optional[str],
+) -> None:
+    events = ["router_decision"]
+    route_upper = str(route or "").upper()
+    verification_upper = str(verification_status or "").upper()
+
+    if route_upper == "ROUTE_WORKFLOW":
+        events.append("workflow_delegation")
+    elif route_upper == "ROUTE_LLM":
+        events.append("llm_fallback")
+    elif route_upper == "ROUTE_UNIGURU":
+        if verification_upper in {"VERIFIED", "PARTIAL"}:
+            events.append("knowledge_verified")
+        else:
+            events.append("knowledge_unverified")
+
+    for event in events:
+        bucket_telemetry.emit(
+            TelemetryEvent(
+                event=event,
+                query_hash=query_hash,
+                route=route,
+                verification_status=verification_status,
+                latency=latency_ms,
+                caller=caller,
+                session_id=session_id,
+            )
+        )
+
+
 def _try_enter_ask_queue() -> bool:
     global _ASK_INFLIGHT
     with _QUEUE_LOCK:
@@ -375,22 +415,36 @@ def ask(request: AskRequest, raw_request: Request) -> Dict[str, Any]:
         started = time.perf_counter()
         query = request.query
         _validate_governance_input(query)
-
-        query_type = classify_query(query)
         caller_name = _resolve_caller(request=request, raw_request=raw_request)
 
         context = dict(request.context or {})
+        adapted = language_adapter.normalize_query(query=query, context=context)
+        normalized_query = adapted.normalized_query
+        query_type = classify_query(normalized_query)
+
         context["caller"] = caller_name
         context["query_type"] = query_type.value
         context["session_id"] = request.session_id
         context["allow_web"] = bool(request.allow_web or query_type == QueryType.WEB_LOOKUP)
+        context["source_language"] = adapted.source_language
 
-        response = conversation_router.route_query(query=query, context=context)
+        response = conversation_router.route_query(query=normalized_query, context=context)
+        response = language_adapter.localize_response(response=response, source_language=adapted.source_language)
         latency_ms = (time.perf_counter() - started) * 1000
 
         decision = str(response.get("decision") or "unknown")
         verification_status = str(response.get("verification_status") or "UNVERIFIED")
         route = str((response.get("routing") or {}).get("route") or "UNKNOWN")
+        query_hash = _query_hash(normalized_query)
+        response["core_alignment"] = core_reader.align_reference(response.get("ontology_reference") or {})
+        _emit_bucket_events(
+            query_hash=query_hash,
+            route=route,
+            verification_status=verification_status,
+            latency_ms=latency_ms,
+            caller=caller_name,
+            session_id=request.session_id,
+        )
         _record_ask_metrics(decision=decision, verification_status=verification_status, latency_ms=latency_ms)
         _record_route_metric(route=route)
         _log_event(
@@ -399,12 +453,13 @@ def ask(request: AskRequest, raw_request: Request) -> Dict[str, Any]:
                 "request_id": response.get("request_id") or str(uuid.uuid4()),
                 "caller_name": caller_name,
                 "session_id": request.session_id,
-                "query_hash": _query_hash(query),
+                "query_hash": query_hash,
                 "query_type": query_type.value,
                 "route": route,
                 "latency": round(latency_ms, 3),
                 "verification_status": verification_status,
                 "decision": decision,
+                "language_adapter_applied": adapted.adapter_applied,
             },
         )
         return response
