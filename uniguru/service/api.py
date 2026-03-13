@@ -21,6 +21,7 @@ from uniguru.router.conversation_router import ConversationRouter
 from uniguru.integrations import BucketTelemetryClient, CoreReaderClient, LanguageAdapter, TelemetryEvent
 from uniguru.service.live_service import LiveUniGuruService
 from uniguru.service.query_classifier import QueryType, classify_query
+from uniguru.stt import STTEngine, STTUnavailableError
 
 
 _LOG_LEVEL = os.getenv("UNIGURU_LOG_LEVEL", "INFO").upper()
@@ -81,6 +82,7 @@ registry = OntologyRegistry()
 language_adapter = LanguageAdapter()
 bucket_telemetry = BucketTelemetryClient()
 core_reader = CoreReaderClient()
+stt_engine = STTEngine()
 _START_TIME = time.time()
 _API_AUTH_REQUIRED = os.getenv("UNIGURU_API_AUTH_REQUIRED", "true").strip().lower() in {"1", "true", "yes", "on"}
 _PRIMARY_API_TOKEN = os.getenv("UNIGURU_API_TOKEN", "").strip()
@@ -95,7 +97,7 @@ _ALLOWED_CALLERS = {
     caller.strip()
     for caller in os.getenv(
         "UNIGURU_ALLOWED_CALLERS",
-        "bhiv-assistant,gurukul-platform,internal-testing",
+        "bhiv-assistant,gurukul-platform,internal-testing,uniguru-frontend",
     ).split(",")
     if caller.strip()
 }
@@ -352,6 +354,69 @@ def _validate_governance_input(query: str) -> None:
             raise HTTPException(status_code=400, detail="query contains unsupported control characters.")
 
 
+def _process_router_request(
+    *,
+    query: str,
+    context: Optional[Dict[str, Any]],
+    allow_web: bool,
+    session_id: Optional[str],
+    raw_request: Request,
+) -> Dict[str, Any]:
+    started = time.perf_counter()
+    _validate_governance_input(query)
+    caller_name = _resolve_caller(
+        request=AskRequest(query=query, context=context, allow_web=allow_web, session_id=session_id),
+        raw_request=raw_request,
+    )
+
+    context_map = dict(context or {})
+    adapted = language_adapter.normalize_query(query=query, context=context_map)
+    normalized_query = adapted.normalized_query
+    query_type = classify_query(normalized_query)
+
+    context_map["caller"] = caller_name
+    context_map["query_type"] = query_type.value
+    context_map["session_id"] = session_id
+    context_map["allow_web"] = bool(allow_web or query_type == QueryType.WEB_LOOKUP)
+    context_map["source_language"] = adapted.source_language
+
+    response = conversation_router.route_query(query=normalized_query, context=context_map)
+    response = language_adapter.localize_response(response=response, source_language=adapted.source_language)
+    latency_ms = (time.perf_counter() - started) * 1000
+
+    decision = str(response.get("decision") or "unknown")
+    verification_status = str(response.get("verification_status") or "UNVERIFIED")
+    route = str((response.get("routing") or {}).get("route") or "UNKNOWN")
+    query_hash = _query_hash(normalized_query)
+    response["core_alignment"] = core_reader.align_reference(response.get("ontology_reference") or {})
+    _emit_bucket_events(
+        query_hash=query_hash,
+        route=route,
+        verification_status=verification_status,
+        latency_ms=latency_ms,
+        caller=caller_name,
+        session_id=session_id,
+    )
+    _record_ask_metrics(decision=decision, verification_status=verification_status, latency_ms=latency_ms)
+    _record_route_metric(route=route)
+    _log_event(
+        event="request_processed",
+        payload={
+            "request_id": response.get("request_id") or str(uuid.uuid4()),
+            "caller_name": caller_name,
+            "session_id": session_id,
+            "query_hash": query_hash,
+            "query_type": query_type.value,
+            "route": route,
+            "latency": round(latency_ms, 3),
+            "verification_status": verification_status,
+            "decision": decision,
+            "language_adapter_applied": adapted.adapter_applied,
+        },
+    )
+    return response
+
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     _log_event(
@@ -412,56 +477,64 @@ def ask(request: AskRequest, raw_request: Request) -> Dict[str, Any]:
         raise HTTPException(status_code=503, detail="Router queue limit reached. Try again shortly.")
     _enforce_service_auth(raw_request)
     try:
-        started = time.perf_counter()
-        query = request.query
-        _validate_governance_input(query)
-        caller_name = _resolve_caller(request=request, raw_request=raw_request)
-
-        context = dict(request.context or {})
-        adapted = language_adapter.normalize_query(query=query, context=context)
-        normalized_query = adapted.normalized_query
-        query_type = classify_query(normalized_query)
-
-        context["caller"] = caller_name
-        context["query_type"] = query_type.value
-        context["session_id"] = request.session_id
-        context["allow_web"] = bool(request.allow_web or query_type == QueryType.WEB_LOOKUP)
-        context["source_language"] = adapted.source_language
-
-        response = conversation_router.route_query(query=normalized_query, context=context)
-        response = language_adapter.localize_response(response=response, source_language=adapted.source_language)
-        latency_ms = (time.perf_counter() - started) * 1000
-
-        decision = str(response.get("decision") or "unknown")
-        verification_status = str(response.get("verification_status") or "UNVERIFIED")
-        route = str((response.get("routing") or {}).get("route") or "UNKNOWN")
-        query_hash = _query_hash(normalized_query)
-        response["core_alignment"] = core_reader.align_reference(response.get("ontology_reference") or {})
-        _emit_bucket_events(
-            query_hash=query_hash,
-            route=route,
-            verification_status=verification_status,
-            latency_ms=latency_ms,
-            caller=caller_name,
+        return _process_router_request(
+            query=request.query,
+            context=request.context,
+            allow_web=request.allow_web,
             session_id=request.session_id,
+            raw_request=raw_request,
         )
-        _record_ask_metrics(decision=decision, verification_status=verification_status, latency_ms=latency_ms)
-        _record_route_metric(route=route)
-        _log_event(
-            event="request_processed",
-            payload={
-                "request_id": response.get("request_id") or str(uuid.uuid4()),
-                "caller_name": caller_name,
-                "session_id": request.session_id,
-                "query_hash": query_hash,
-                "query_type": query_type.value,
-                "route": route,
-                "latency": round(latency_ms, 3),
-                "verification_status": verification_status,
-                "decision": decision,
-                "language_adapter_applied": adapted.adapter_applied,
-            },
+    finally:
+        _leave_ask_queue()
+
+
+@app.post("/voice/query")
+async def voice_query(
+    raw_request: Request,
+) -> Dict[str, Any]:
+    if not _try_enter_ask_queue():
+        raise HTTPException(status_code=503, detail="Router queue limit reached. Try again shortly.")
+    _enforce_service_auth(raw_request)
+    try:
+        audio_bytes = await raw_request.body()
+        if not audio_bytes:
+            raise HTTPException(status_code=400, detail="Uploaded audio is empty.")
+        caller = raw_request.headers.get("X-Caller-Name")
+        session_id = raw_request.headers.get("X-Session-Id")
+        language = raw_request.headers.get("X-Voice-Language")
+        filename = raw_request.headers.get("X-Audio-Filename") or "voice-input"
+        allow_web = raw_request.headers.get("X-Allow-Web", "false").strip().lower() in {"1", "true", "yes", "on"}
+        try:
+            transcription = stt_engine.transcribe(
+                audio_bytes,
+                filename=filename,
+                content_type=raw_request.headers.get("content-type", "application/octet-stream"),
+                hinted_language=language,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except STTUnavailableError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+        context: Dict[str, Any] = {
+            "caller": caller,
+            "voice_input": True,
+            "audio_content_type": raw_request.headers.get("content-type", "application/octet-stream"),
+            "audio_filename": filename,
+            "audio_provider": transcription.get("provider"),
+            "audio_metadata": transcription.get("metadata", {}).get("audio"),
+        }
+        if transcription.get("language"):
+            context["language"] = transcription["language"]
+
+        response = _process_router_request(
+            query=str(transcription.get("text") or ""),
+            context=context,
+            allow_web=allow_web,
+            session_id=session_id,
+            raw_request=raw_request,
         )
+        response["transcription"] = transcription
         return response
     finally:
         _leave_ask_queue()

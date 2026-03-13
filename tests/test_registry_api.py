@@ -278,3 +278,65 @@ def test_core_alignment_metadata_is_present_and_read_only() -> None:
     payload = response.json()
     assert "core_alignment" in payload
     assert payload["core_alignment"]["read_only"] is True
+
+
+def test_voice_query_routes_transcribed_audio_through_router() -> None:
+    class _FakeSTTEngine:
+        def transcribe(self, _audio_bytes, *, filename, content_type, hinted_language=None):
+            return {
+                "text": "What is a qubit?",
+                "language": hinted_language or "en",
+                "confidence": 0.97,
+                "provider": "test-double",
+                "metadata": {
+                    "audio": {
+                        "filename": filename,
+                        "content_type": content_type,
+                    }
+                },
+            }
+
+    original_engine = api_module.stt_engine
+    api_module.stt_engine = _FakeSTTEngine()
+    try:
+        response = client.post(
+            "/voice/query",
+            content=b"RIFF....WAVEfmt ",
+            headers={
+                "content-type": "audio/wav",
+                "X-Caller-Name": "internal-testing",
+                "X-Voice-Language": "en",
+                "X-Session-Id": "voice-1",
+                "X-Audio-Filename": "voice.wav",
+            },
+        )
+        assert response.status_code == 200
+        payload = response.json()
+        assert payload["transcription"]["text"] == "What is a qubit?"
+        assert payload["routing"]["route"] == "ROUTE_UNIGURU"
+        assert payload["language_adapter"]["source_language"] == "en"
+    finally:
+        api_module.stt_engine = original_engine
+
+
+def test_voice_query_returns_503_when_stt_is_unavailable() -> None:
+    class _UnavailableSTTEngine:
+        def transcribe(self, *_args, **_kwargs):
+            raise api_module.STTUnavailableError("local STT unavailable")
+
+    original_engine = api_module.stt_engine
+    api_module.stt_engine = _UnavailableSTTEngine()
+    try:
+        response = client.post(
+            "/voice/query",
+            content=b"RIFF....WAVEfmt ",
+            headers={
+                "content-type": "audio/wav",
+                "X-Caller-Name": "internal-testing",
+                "X-Audio-Filename": "voice.wav",
+            },
+        )
+        assert response.status_code == 503
+        assert response.json()["detail"] == "local STT unavailable"
+    finally:
+        api_module.stt_engine = original_engine
