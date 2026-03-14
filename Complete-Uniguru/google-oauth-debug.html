@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google OAuth Debug Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background-color: #3367d6; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .google-btn {
+            margin: 10px 0;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Google OAuth Debug Tool</h1>
+        <p>This tool helps diagnose Google OAuth configuration issues.</p>
+
+        <div id="status-container">
+            <div class="status info">
+                <strong>Current URL:</strong> <span id="current-url"></span>
+            </div>
+        </div>
+
+        <h2>📋 Configuration Check</h2>
+        <div id="config-status"></div>
+
+        <h2>🧪 Tests</h2>
+        <button onclick="testGoogleScript()">Test Google Script Loading</button>
+        <button onclick="testClientId()">Test Client ID</button>
+        <button onclick="testOrigin()">Test Origin Configuration</button>
+        <button onclick="runAllTests()">Run All Tests</button>
+
+        <h2>🔑 Google Sign-In Button</h2>
+        <div id="google-signin-button" class="google-btn"></div>
+        <button onclick="initializeGoogleSignIn()">Initialize Google Sign-In</button>
+
+        <h2>📊 Test Results</h2>
+        <div id="test-results"></div>
+
+        <h2>🛠️ Recommended Actions</h2>
+        <div id="recommendations"></div>
+    </div>
+
+    <script>
+        const CLIENT_ID = '703541894985-8uu7qdduk6j5a9f8agiohc0fq6ib98eq.apps.googleusercontent.com';
+        let testResults = [];
+
+        // Display current URL
+        document.getElementById('current-url').textContent = window.location.href;
+
+        function addTestResult(test, status, message, details = '') {
+            testResults.push({ test, status, message, details });
+            updateTestResults();
+        }
+
+        function updateTestResults() {
+            const container = document.getElementById('test-results');
+            container.innerHTML = testResults.map(result => `
+                <div class="status ${result.status}">
+                    <strong>${result.test}:</strong> ${result.message}
+                    ${result.details ? `<pre>${result.details}</pre>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function updateRecommendations() {
+            const container = document.getElementById('recommendations');
+            const hasErrors = testResults.some(r => r.status === 'error');
+            
+            if (hasErrors) {
+                container.innerHTML = `
+                    <div class="status warning">
+                        <h3>🔧 Required Actions:</h3>
+                        <ol>
+                            <li><strong>Update Google Cloud Console:</strong>
+                                <ul>
+                                    <li>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a></li>
+                                    <li>Find OAuth 2.0 Client ID: ${CLIENT_ID}</li>
+                                    <li>Add to Authorized JavaScript Origins: <code>${window.location.origin}</code></li>
+                                    <li>Add to Authorized Redirect URIs: <code>${window.location.origin}</code></li>
+                                </ul>
+                            </li>
+                            <li><strong>Wait 5-10 minutes</strong> for changes to propagate</li>
+                            <li><strong>Clear browser cache</strong> and reload this page</li>
+                            <li><strong>Test again</strong> using the buttons above</li>
+                        </ol>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="status success">
+                        <strong>✅ Configuration looks good!</strong> You should be able to use Google OAuth.
+                    </div>
+                `;
+            }
+        }
+
+        function testGoogleScript() {
+            addTestResult('Google Script Loading', 'info', 'Testing...', '');
+            
+            if (window.google && window.google.accounts) {
+                addTestResult('Google Script Loading', 'success', 'Google Identity Services loaded successfully');
+            } else {
+                // Try to load the script
+                const script = document.createElement('script');
+                script.src = 'https://accounts.google.com/gsi/client';
+                script.async = true;
+                script.onload = () => {
+                    addTestResult('Google Script Loading', 'success', 'Google Identity Services loaded successfully');
+                };
+                script.onerror = () => {
+                    addTestResult('Google Script Loading', 'error', 'Failed to load Google Identity Services script');
+                };
+                document.head.appendChild(script);
+            }
+        }
+
+        function testClientId() {
+            if (!CLIENT_ID || CLIENT_ID === 'your-google-client-id-here') {
+                addTestResult('Client ID', 'error', 'Google Client ID not configured');
+            } else {
+                addTestResult('Client ID', 'success', `Client ID configured: ${CLIENT_ID.substring(0, 20)}...`);
+            }
+        }
+
+        function testOrigin() {
+            const currentOrigin = window.location.origin;
+            const allowedOrigins = [
+                'http://localhost:5173',
+                'http://127.0.0.1:5173',
+                'https://uni-guru.vercel.app',
+                'https://www.uni-guru.in'
+            ];
+
+            if (allowedOrigins.includes(currentOrigin)) {
+                addTestResult('Origin Check', 'success', `Current origin (${currentOrigin}) should be allowed`);
+            } else {
+                addTestResult('Origin Check', 'warning', 
+                    `Current origin (${currentOrigin}) may not be configured in Google Cloud Console`,
+                    `Add this origin to your OAuth client configuration: ${currentOrigin}`
+                );
+            }
+        }
+
+        function initializeGoogleSignIn() {
+            if (!window.google || !window.google.accounts) {
+                addTestResult('Google Sign-In Init', 'error', 'Google Identity Services not loaded');
+                return;
+            }
+
+            try {
+                window.google.accounts.id.initialize({
+                    client_id: CLIENT_ID,
+                    callback: (response) => {
+                        addTestResult('Google Sign-In', 'success', 'Authentication successful!', 
+                            `Received credential: ${response.credential ? 'Yes' : 'No'}`);
+                    },
+                    auto_select: false,
+                    cancel_on_tap_outside: true,
+                });
+
+                const buttonContainer = document.getElementById('google-signin-button');
+                buttonContainer.innerHTML = '';
+                
+                window.google.accounts.id.renderButton(buttonContainer, {
+                    theme: 'outline',
+                    size: 'large',
+                    text: 'continue_with',
+                    shape: 'rectangular',
+                    logo_alignment: 'left',
+                    width: '300',
+                });
+
+                addTestResult('Google Sign-In Init', 'success', 'Google Sign-In button rendered successfully');
+            } catch (error) {
+                addTestResult('Google Sign-In Init', 'error', 'Failed to initialize Google Sign-In', error.message);
+            }
+        }
+
+        function runAllTests() {
+            testResults = [];
+            testGoogleScript();
+            testClientId();
+            testOrigin();
+            
+            setTimeout(() => {
+                updateRecommendations();
+            }, 1000);
+        }
+
+        // Auto-run basic tests on load
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 500);
+        });
+    </script>
+</body>
+</html>

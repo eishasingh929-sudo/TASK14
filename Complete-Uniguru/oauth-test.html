@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google OAuth Test</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        .warning { background-color: #fff3cd; color: #856404; }
+        #google-button {
+            margin: 20px 0;
+            min-height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: left;
+            overflow-x: auto;
+            max-height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Google OAuth Test</h1>
+        <p>This page tests your Google OAuth configuration.</p>
+        
+        <div id="status" class="status info">
+            <strong>Status:</strong> Initializing...
+        </div>
+
+        <div id="current-url" class="status info">
+            <strong>Current URL:</strong> <span id="url-display"></span>
+        </div>
+
+        <div id="google-button"></div>
+
+        <div id="result-container" style="display: none;">
+            <h3>✅ Authentication Result:</h3>
+            <pre id="result"></pre>
+        </div>
+
+        <div id="instructions" class="status warning">
+            <h3>📋 If authentication fails:</h3>
+            <ol style="text-align: left;">
+                <li><strong>Add yourself as a test user</strong> in Google Cloud Console</li>
+                <li><strong>Add this URL to authorized origins:</strong> <code id="origin-url"></code></li>
+                <li><strong>Wait 5-10 minutes</strong> for changes to propagate</li>
+                <li><strong>Clear browser cache</strong> and reload this page</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const CLIENT_ID = '703541894985-8uu7qdduk6j5a9f8agiohc0fq6ib98eq.apps.googleusercontent.com';
+        
+        // Display current URL info
+        document.getElementById('url-display').textContent = window.location.href;
+        document.getElementById('origin-url').textContent = window.location.origin;
+
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = `<strong>Status:</strong> ${message}`;
+        }
+
+        function handleCredentialResponse(response) {
+            console.log("Google OAuth Response:", response);
+            
+            if (response.credential) {
+                updateStatus('✅ Authentication successful!', 'success');
+                
+                // Decode the JWT token (just for display, don't do this in production)
+                try {
+                    const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                    document.getElementById('result').textContent = JSON.stringify(payload, null, 2);
+                    document.getElementById('result-container').style.display = 'block';
+                    document.getElementById('instructions').style.display = 'none';
+                } catch (e) {
+                    document.getElementById('result').textContent = 'Token received but could not decode: ' + response.credential.substring(0, 100) + '...';
+                    document.getElementById('result-container').style.display = 'block';
+                }
+            } else {
+                updateStatus('❌ No credential received', 'error');
+            }
+        }
+
+        function initializeGoogleSignIn() {
+            try {
+                updateStatus('🔄 Initializing Google Sign-In...', 'info');
+                
+                window.google.accounts.id.initialize({
+                    client_id: CLIENT_ID,
+                    callback: handleCredentialResponse,
+                    auto_select: false,
+                    cancel_on_tap_outside: true,
+                });
+
+                // Render the sign-in button
+                window.google.accounts.id.renderButton(
+                    document.getElementById('google-button'),
+                    {
+                        theme: 'outline',
+                        size: 'large',
+                        text: 'continue_with',
+                        shape: 'rectangular',
+                        logo_alignment: 'left',
+                        width: 300
+                    }
+                );
+
+                updateStatus('✅ Google Sign-In button ready', 'success');
+                
+            } catch (error) {
+                console.error('Error initializing Google Sign-In:', error);
+                updateStatus(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialize when Google script loads
+        window.onload = function() {
+            if (window.google && window.google.accounts) {
+                initializeGoogleSignIn();
+            } else {
+                updateStatus('⏳ Waiting for Google script to load...', 'warning');
+                // Check every 500ms for Google script
+                const checkGoogle = setInterval(() => {
+                    if (window.google && window.google.accounts) {
+                        clearInterval(checkGoogle);
+                        initializeGoogleSignIn();
+                    }
+                }, 500);
+                
+                // Timeout after 10 seconds
+                setTimeout(() => {
+                    clearInterval(checkGoogle);
+                    if (!window.google) {
+                        updateStatus('❌ Failed to load Google Identity Services', 'error');
+                    }
+                }, 10000);
+            }
+        };
+    </script>
+</body>
+</html>
