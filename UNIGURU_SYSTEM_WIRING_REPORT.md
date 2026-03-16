@@ -18,6 +18,32 @@ Student UI
     -> UniGuru Python Engine (POST /ask)
   <- answer for Gurukul frontend
 ```
+Frontend / User
+  ↓
+Node UniGuru Backend (8001)
+  ↓
+Bridge Middleware (8002)
+  ↓
+Python UniGuru Engine / FastAPI (8000)
+  ↓
+Router
+  ↓
+Reasoning Engine / Knowledge Base / LLM
+  ↓
+Response to Bridge
+  ↓
+Response to Node
+  ↓
+Response to User
+
+Student UI
+  ↓
+Gurukul Backend (8003)
+  ↓
+UniGuru /ask (8000)
+  ↓
+Response to Gurukul
+
 
 ## Port Configuration
 

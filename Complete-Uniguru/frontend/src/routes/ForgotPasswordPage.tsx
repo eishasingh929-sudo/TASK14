@@ -11,6 +11,8 @@ import AuthButton from "../components/AuthButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8001";
+
 const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +43,7 @@ const ForgotPasswordPage: React.FC = () => {
     try {
       toast.loading("Sending reset email...", { id: "forgot-password" });
 
-      await axios.post("http://localhost:8000/api/v1/user/forgot-password", {
+      await axios.post(`${API_BASE_URL}/api/v1/user/forgot-password`, {
         email,
       });
 

@@ -9,6 +9,8 @@ import AuthButton from "../components/AuthButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8001";
+
 interface FieldErrors {
   password?: string;
   confirmPassword?: string;
@@ -57,8 +59,7 @@ const ResetPasswordPage: React.FC = () => {
     try {
       toast.loading("Resetting password...", { id: "reset-password" });
       
-      // Replace with your actual API endpoint
-      await axios.post("http://localhost:8000/api/v1/user/reset-password", {
+      await axios.post(`${API_BASE_URL}/api/v1/user/reset-password`, {
         token,
         password,
       });
