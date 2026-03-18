@@ -1,29 +1,51 @@
 # Python
 __pycache__/
-*.py[cod]
+*.pyc
 *.pyo
-.pytest_cache/
-.mypy_cache/
-
-# Virtual envs
 .venv/
 venv/
 
-# Env files
+# Environment files (never commit real secrets)
 .env
-.env.local
+.env.production
+uniguru/.env
+backend/.env
+backend/uniguru/.env
 
-# Logs and temp artifacts
+# Logs - never commit these
 *.log
-tmp/
-temp_*/
-*extract*/
-*extracted*/
+demo_logs/
+engine_log.txt
+trace.txt
+traceback_engine.txt
+auth_test_results.txt
+routing_test_output.txt
+bridge_clean.log
 
-# Node
+# Test output files
+test_results.json
+test_full_results.json
+integration_test_evidence.json
+web_test_results.json
+test_failures.txt
+test_results.txt
+
+# Metrics state (runtime generated)
+/var/lib/uniguru/
+metrics_state.json
+
+# Node / Frontend
 node_modules/
+frontend/dist/
+frontend/.env
 
-# OS/editor
+# Git backups - should never be committed
+*.git.backup/
+Complete-Uniguru.git.backup/
+
+# OS files
 .DS_Store
 Thumbs.db
 
+# Debug scripts output
+debug_*.py
