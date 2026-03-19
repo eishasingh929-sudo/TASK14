@@ -2,14 +2,16 @@
 
 ```mermaid
 flowchart LR
-    A[Frontend Chat] --> B[Node Backend<br/>/api/v1/chat/query]
-    G[Gurukul Backend] --> C[Node Backend<br/>/api/v1/gurukul/query]
-    B --> D[UniGuru API<br/>POST /ask]
-    C --> D
-    D --> E[Conversation Router]
-    E --> F[Deterministic Rule Engine]
-    E --> H[Safety / Governance]
-    E --> I[Bucket Telemetry]
+    A[Frontend Chat] --> B[NGINX :443]
+    G[Gurukul Backend] --> B
+    B --> C[Node Backend :8080<br/>/api/v1/chat/query<br/>/api/v1/gurukul/query]
+    C --> D[UniGuru API :8000<br/>POST /ask]
+    D --> E[Auth + Caller Validation]
+    E --> F[Conversation Router]
+    F --> R[Deterministic Rule Engine]
+    F --> H[Safety / Governance]
+    F --> I[Bucket Telemetry]
+    D --> J[Core Alignment]
 ```
 
 ## Request Contracts
@@ -34,3 +36,9 @@ flowchart LR
   }
 }
 ```
+
+## Runtime Ports
+
+- `nginx`: `80`, `443`
+- `node-backend`: `8080` (internal)
+- `uniguru-api`: `8000` (internal)

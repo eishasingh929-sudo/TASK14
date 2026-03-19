@@ -6,6 +6,38 @@ Date: 2026-03-19
 
 This integration activates UniGuru as a live shared reasoning service for BHIV product chat and Gurukul queries, without changing ontology or core reasoning logic.
 
+## Middleware / Bridge Layer Visibility
+
+### Node to Python bridge behavior
+- Bridge entrypoints:
+  - `POST /api/v1/chat/query` for product traffic (`caller=bhiv-assistant`)
+  - `POST /api/v1/gurukul/query` for Gurukul traffic (`caller=gurukul-platform`)
+- Bridge request builder enforces required payload contract before forwarding:
+```json
+{
+  "query": "...",
+  "context": {
+    "caller": "bhiv-assistant"
+  }
+}
+```
+- Additive fields passed through bridge:
+  - `session_id`
+  - `allow_web`
+  - Gurukul metadata (`student_id`, `class_id`)
+- Bridge timeout and error policy:
+  - Node call timeout controlled by `UNIGURU_REQUEST_TIMEOUT_MS`
+  - Upstream errors returned as deterministic `502` with integration message
+
+### Bridge code locations
+- Node middleware runtime:
+  - `node-backend/src/server.js`
+- Node request normalization + forwarding:
+  - `node-backend/src/uniguruClient.js`
+- BHIV-side integration wiring:
+  - `Complete-Uniguru/server/config/rag.js`
+  - `Complete-Uniguru/server/controller/chatController.js`
+
 ## Phase Delivery Summary
 
 ### Phase 1: Node to Python bridge
@@ -48,6 +80,39 @@ This integration activates UniGuru as a live shared reasoning service for BHIV p
 - Metadata emission is done in `backend/uniguru/service/api.py` through `BucketTelemetryClient`.
 - Added metadata-focused test coverage.
 
+## External Integration Points
+
+### Bucket telemetry flow
+- Emitted from `/ask` after router decision and verification resolution.
+- Event payload now carries:
+  - `event`
+  - `query_hash`
+  - `route`
+  - `routing`
+  - `verification_status`
+  - `ontology_reference`
+  - `decision`
+  - `caller`
+  - `session_id`
+- Implementation:
+  - `backend/uniguru/service/api.py` (`_emit_bucket_events`)
+  - `backend/uniguru/integrations/bucket_telemetry.py` (`TelemetryEvent`)
+
+### Core alignment flow
+- `core_alignment` is attached on every `/ask` response from:
+  - `backend/uniguru/service/api.py` (`core_reader.align_reference`)
+- This ensures returned payloads remain BHIV Core-compatible even when Core reader is disabled (`read_only=true` contract).
+
+### Auth + caller validation flow
+- Service token auth:
+  - `Authorization: Bearer <UNIGURU_API_TOKEN>`
+  - controlled by `UNIGURU_API_AUTH_REQUIRED`
+- Caller identity validation:
+  - primary source: `context.caller`
+  - fallback: `X-Caller-Name`
+  - allowlist: `UNIGURU_ALLOWED_CALLERS`
+- Unauthorized/invalid callers are rejected with deterministic `401/403`.
+
 ### Phase 5: Deployment readiness
 - `docker-compose.yml` now defines:
   - `uniguru-api`
@@ -71,6 +136,21 @@ This integration activates UniGuru as a live shared reasoning service for BHIV p
 ## Architecture Diagram
 
 - [UNIGURU_LIVE_INTEGRATION_ARCHITECTURE.md](/c:/Users/Yass0/OneDrive/Desktop/TASK14/docs/architecture/UNIGURU_LIVE_INTEGRATION_ARCHITECTURE.md)
+- [UNIGURU_BRIDGE_EXECUTION_FLOW.md](/c:/Users/Yass0/OneDrive/Desktop/TASK14/docs/reports/UNIGURU_BRIDGE_EXECUTION_FLOW.md)
+
+## Deployment Reality Layer
+
+| Service | Container | Internal Port | External Exposure | Depends On | Role |
+|---|---|---:|---|---|---|
+| `uniguru-api` | `uniguru-api` | `8000` | internal network | - | Python `/ask` reasoning API |
+| `node-backend` | `node-backend` | `8080` | internal network | `uniguru-api` | Product/Gurukul middleware bridge |
+| `nginx` | `uniguru-nginx` | `80/443` | public ingress | `uniguru-api`, `node-backend` | API gateway + TLS routing |
+
+### Service interaction map
+1. Client hits `nginx` public endpoint.
+2. `/api/v1/*` is proxied to `node-backend`.
+3. `node-backend` forwards to `uniguru-api:/ask`.
+4. `/ask` direct ingress is proxied to `uniguru-api`.
 
 ## Key Files Changed
 
@@ -88,6 +168,17 @@ This integration activates UniGuru as a live shared reasoning service for BHIV p
 - Deployment:
   - `docker-compose.yml`
   - `deploy/nginx/conf.d/uniguru.conf`
+
+## What Was Built (Task-Level)
+
+1. Built a live bridge service (`node-backend`) that enforces required request contract and forwards to UniGuru `/ask`.
+2. Added product chat middleware endpoint and routed frontend chat through Node middleware.
+3. Added Gurukul middleware endpoint with `student_id` propagation and caller separation.
+4. Rewired BHIV-side Node adapter/controller to standardized UniGuru call format.
+5. Extended telemetry payload schema to include ecosystem-required metadata fields.
+6. Added deployment topology for `uniguru-api + node-backend + nginx`.
+7. Added live activation automation script and generated evidence logs.
+8. Added integration report, architecture diagram, and live log summary docs.
 
 ## Request Flow
 

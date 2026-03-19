@@ -1,4 +1,4 @@
-Title: Nielsen & Chuang Core Concepts
+﻿Title: Nielsen & Chuang Core Concepts
 Source(s): Nielsen, M. A. & Chuang, I. L., "Quantum Computation and Quantum Information" (2010)
 Authors: Michael A. Nielsen; Isaac L. Chuang (summarized)
 Year: 2010
@@ -28,5 +28,6 @@ Concept explanations
 - Quantum tomography (summary): Reconstruction of $\rho$ from measurement statistics.
 
 Citations
-- Nielsen & Chuang (2010). Core textbook treatment of these foundational topics.SSSS
+- Nielsen & Chuang (2010). Core textbook treatment of these foundational topics.
+
 

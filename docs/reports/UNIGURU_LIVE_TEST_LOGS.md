@@ -13,7 +13,7 @@ Source log files:
 - HTTP status: `200`
 - Routing: `ROUTE_UNIGURU`
 - Verification status: `VERIFIED`
-- Request ID: `cbc3c6bf-334a-46ed-82be-322de17a2f7e`
+- Request ID: `f8bd164d-55c5-45b2-87c8-5508f9ed027d`
 
 ## Gurukul Student Query
 
@@ -24,7 +24,7 @@ Source log files:
 - Routing: `ROUTE_UNIGURU`
 - Verification status: `UNVERIFIED`
 - Status action: `REFUSE`
-- Request ID: `3fa74f78-42c4-4bba-bc17-c9b49b0666d3`
+- Request ID: `dd39bba0-9404-4292-b056-a2c9ef184f30`
 
 ## Full Activation Matrix
 
@@ -36,3 +36,6 @@ Scenarios executed:
 5. General chat query
 
 Result: `all_passed = true`
+
+Data quality check:
+- `SSSS` response artifact removed from source KB and regenerated activation logs.
