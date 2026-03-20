@@ -2,7 +2,13 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 
-import { buildUniGuruAskRequest, callUniGuruAsk, UNIGURU_ASK_URL } from "./uniguruClient.js";
+import { formatEngineResponse } from "./responseFormatter.js";
+import {
+  buildUniGuruAskRequest,
+  callUniGuruAsk,
+  UNIGURU_ASK_URL,
+  UniGuruUpstreamError
+} from "./uniguruClient.js";
 
 dotenv.config();
 
@@ -27,6 +33,17 @@ app.get("/health", (_req, res) => {
   });
 });
 
+app.get("/health/integration", (_req, res) => {
+  res.status(200).json({
+    status: "ok",
+    service: "node-backend",
+    checks: {
+      uniguru_ask_url_configured: Boolean(String(process.env.UNIGURU_ASK_URL || "").trim()),
+      uniguru_api_token_configured: Boolean(String(process.env.UNIGURU_API_TOKEN || "").trim())
+    }
+  });
+});
+
 app.post("/api/v1/chat/query", async (req, res) => {
   try {
     const query = req.body?.query ?? req.body?.message;
@@ -42,14 +59,15 @@ app.post("/api/v1/chat/query", async (req, res) => {
       context
     });
 
-    const engineResponse = await callUniGuruAsk(payload);
+    const engineResponse = formatEngineResponse(await callUniGuruAsk(payload));
     res.status(200).json({
       success: true,
       source: "uniguru-api",
       data: engineResponse
     });
   } catch (error) {
-    res.status(502).json({
+    const status = error instanceof UniGuruUpstreamError ? error.status : 502;
+    res.status(status).json({
       success: false,
       message: "Failed to process product chat query.",
       error: error.message
@@ -76,7 +94,7 @@ app.post("/api/v1/gurukul/query", async (req, res) => {
       }
     });
 
-    const engineResponse = await callUniGuruAsk(payload);
+    const engineResponse = formatEngineResponse(await callUniGuruAsk(payload));
     res.status(200).json({
       success: true,
       integration: "gurukul",
@@ -85,7 +103,8 @@ app.post("/api/v1/gurukul/query", async (req, res) => {
       data: engineResponse
     });
   } catch (error) {
-    res.status(502).json({
+    const status = error instanceof UniGuruUpstreamError ? error.status : 502;
+    res.status(status).json({
       success: false,
       message: "Failed to process Gurukul query.",
       error: error.message

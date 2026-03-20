@@ -6,6 +6,15 @@ const UNIGURU_ASK_URL = process.env.UNIGURU_ASK_URL || "http://uniguru-api:8000/
 const UNIGURU_API_TOKEN = process.env.UNIGURU_API_TOKEN || "";
 const REQUEST_TIMEOUT_MS = Number(process.env.UNIGURU_REQUEST_TIMEOUT_MS || 15000);
 
+class UniGuruUpstreamError extends Error {
+  constructor(message, status, bodyText) {
+    super(message);
+    this.name = "UniGuruUpstreamError";
+    this.status = status;
+    this.bodyText = bodyText;
+  }
+}
+
 function ensureQuery(query) {
   const normalized = String(query || "").trim();
   if (!normalized) {
@@ -72,7 +81,7 @@ export async function callUniGuruAsk(payload) {
 
     if (!response.ok) {
       const text = await response.text();
-      throw new Error(`UniGuru /ask error ${response.status}: ${text}`);
+      throw new UniGuruUpstreamError(`UniGuru /ask error ${response.status}: ${text}`, response.status, text);
     }
 
     return await response.json();
@@ -81,4 +90,4 @@ export async function callUniGuruAsk(payload) {
   }
 }
 
-export { UNIGURU_ASK_URL };
+export { UNIGURU_ASK_URL, UniGuruUpstreamError };

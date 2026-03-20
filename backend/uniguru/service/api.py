@@ -139,6 +139,9 @@ def _extract_service_token(request: Request) -> Optional[str]:
     auth_header = request.headers.get("Authorization", "")
     if auth_header.lower().startswith("bearer "):
         return auth_header[7:].strip() or None
+    service_token = request.headers.get("X-Service-Token", "").strip()
+    if service_token:
+        return service_token
     return None
 
 

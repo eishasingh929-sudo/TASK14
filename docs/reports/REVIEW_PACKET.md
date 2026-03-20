@@ -1,5 +1,8 @@
 # REVIEW_PACKET.md
 
+DO NOT USE FOR CURRENT INTEGRATION.
+Use root `REVIEW_PACKET.md` for the canonical integration-aware review.
+
 ## 1. ENTRY POINT
 
 **Frontend entry:**

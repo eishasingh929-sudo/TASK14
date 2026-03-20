@@ -147,6 +147,27 @@ def test_service_token_auth_can_be_enforced() -> None:
         api_module._is_pytest_runtime = original_pytest_runtime
 
 
+def test_service_token_header_can_be_enforced() -> None:
+    original_required = api_module._API_AUTH_REQUIRED
+    original_tokens = set(api_module._API_TOKENS)
+    original_pytest_runtime = api_module._is_pytest_runtime
+    try:
+        api_module._API_AUTH_REQUIRED = True
+        api_module._API_TOKENS = {"test-token"}
+        api_module._is_pytest_runtime = lambda: False
+
+        authorized = client.post(
+            "/ask",
+            json=_ask_payload("What is a qubit?"),
+            headers={"X-Service-Token": "test-token"},
+        )
+        assert authorized.status_code == 200
+    finally:
+        api_module._API_AUTH_REQUIRED = original_required
+        api_module._API_TOKENS = original_tokens
+        api_module._is_pytest_runtime = original_pytest_runtime
+
+
 def test_metrics_endpoint_requires_token_when_auth_is_enabled() -> None:
     original_required = api_module._API_AUTH_REQUIRED
     original_tokens = set(api_module._API_TOKENS)
