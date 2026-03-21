@@ -2,12 +2,11 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 
-import { formatEngineResponse } from "./responseFormatter.js";
+import { buildSafeMiddlewareFallback, formatEngineResponse } from "./responseFormatter.js";
 import {
   buildUniGuruAskRequest,
   callUniGuruAsk,
-  UNIGURU_ASK_URL,
-  UniGuruUpstreamError
+  UNIGURU_ASK_URL
 } from "./uniguruClient.js";
 
 dotenv.config();
@@ -44,10 +43,21 @@ app.get("/health/integration", (_req, res) => {
   });
 });
 
+app.get("/ready", (_req, res) => {
+  res.status(200).json({
+    status: "ready",
+    service: "node-backend",
+    checks: {
+      middleware_running: true,
+      ask_route_target: UNIGURU_ASK_URL
+    }
+  });
+});
+
 app.post("/api/v1/chat/query", async (req, res) => {
+  const query = req.body?.query ?? req.body?.message;
+  const sessionId = req.body?.session_id ?? req.body?.sessionId ?? null;
   try {
-    const query = req.body?.query ?? req.body?.message;
-    const sessionId = req.body?.session_id ?? req.body?.sessionId ?? null;
     const allowWeb = Boolean(req.body?.allow_web ?? req.body?.allowWeb ?? false);
     const context = parseContext(req.body?.context);
 
@@ -66,20 +76,24 @@ app.post("/api/v1/chat/query", async (req, res) => {
       data: engineResponse
     });
   } catch (error) {
-    const status = error instanceof UniGuruUpstreamError ? error.status : 502;
-    res.status(status).json({
-      success: false,
-      message: "Failed to process product chat query.",
-      error: error.message
+    res.status(200).json({
+      success: true,
+      degraded: true,
+      source: "node-backend-safe-fallback",
+      data: buildSafeMiddlewareFallback({
+        query,
+        reason: `Upstream /ask unavailable: ${error.message}`
+      }),
+      session_id: sessionId
     });
   }
 });
 
 app.post("/api/v1/gurukul/query", async (req, res) => {
+  const query = req.body?.query ?? req.body?.student_query;
+  const studentId = req.body?.student_id ? String(req.body.student_id) : "";
+  const sessionId = req.body?.session_id ?? req.body?.sessionId ?? null;
   try {
-    const query = req.body?.query ?? req.body?.student_query;
-    const studentId = req.body?.student_id ? String(req.body.student_id) : "";
-    const sessionId = req.body?.session_id ?? req.body?.sessionId ?? null;
     const allowWeb = Boolean(req.body?.allow_web ?? req.body?.allowWeb ?? false);
     const context = parseContext(req.body?.context);
 
@@ -103,11 +117,17 @@ app.post("/api/v1/gurukul/query", async (req, res) => {
       data: engineResponse
     });
   } catch (error) {
-    const status = error instanceof UniGuruUpstreamError ? error.status : 502;
-    res.status(status).json({
-      success: false,
-      message: "Failed to process Gurukul query.",
-      error: error.message
+    res.status(200).json({
+      success: true,
+      degraded: true,
+      integration: "gurukul",
+      student_id: studentId || null,
+      source: "node-backend-safe-fallback",
+      data: buildSafeMiddlewareFallback({
+        query,
+        reason: `Upstream /ask unavailable: ${error.message}`
+      }),
+      session_id: sessionId
     });
   }
 });

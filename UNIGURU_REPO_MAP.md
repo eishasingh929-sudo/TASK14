@@ -1,5 +1,7 @@
 # UNIGURU_REPO_MAP
 
+> Superseded by `CANONICAL_SYSTEM_DECISION.md` for canonical runtime scope.
+
 Note: This workspace has one git repository (`TASK14`) but multiple repo-like modules.  
 This map is integration-aware (engine + middleware + API consumer + Gurukul path).
 

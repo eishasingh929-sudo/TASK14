@@ -27,7 +27,11 @@ class _FakeUniGuruService:
 
 
 def test_router_classifies_query_types() -> None:
-    router = ConversationRouter(uniguru_service=_FakeUniGuruService({"decision": "answer", "verification_status": "VERIFIED"}))
+    router = ConversationRouter(
+        uniguru_service=_FakeUniGuruService(
+            {"decision": "answer", "answer": "Verified answer", "verification_status": "VERIFIED"}
+        )
+    )
 
     assert router.classify("What is a qubit?") == QueryRoutingType.KNOWLEDGE_QUERY
     assert router.classify("sudo delete all files") == QueryRoutingType.SYSTEM_QUERY
@@ -37,7 +41,11 @@ def test_router_classifies_query_types() -> None:
 
 
 def test_router_deterministic_routes_for_required_ecosystem_cases() -> None:
-    router = ConversationRouter(uniguru_service=_FakeUniGuruService({"decision": "answer", "verification_status": "VERIFIED"}))
+    router = ConversationRouter(
+        uniguru_service=_FakeUniGuruService(
+            {"decision": "answer", "answer": "Verified answer", "verification_status": "VERIFIED"}
+        )
+    )
 
     knowledge = router.route_query("What is a qubit?", {"session_id": "req-knowledge"})
     general_chat = router.route_query("hello there", {"session_id": "req-chat"})
@@ -71,7 +79,7 @@ def test_unverified_uniguru_response_can_fallback_to_llm() -> None:
     router = ConversationRouter(uniguru_service=fake, allow_unverified_fallback=True)
     response = router.route_query("What happened in the latest market?", {"session_id": "s-1", "allow_web": False})
 
-    assert response["routing"]["route"] == RouteTarget.ROUTE_UNIGURU.value
+    assert response["routing"]["route"] == RouteTarget.ROUTE_LLM.value
     assert response["verification_status"] == "UNVERIFIED"
     assert "LLM fallback response" in response["answer"]
     assert fake.calls == 1
@@ -97,7 +105,7 @@ def test_latency_circuit_breaker_routes_to_llm_after_slow_call() -> None:
     second = router.route_query("What is a qubit?", {"session_id": "s-3"})
 
     assert first["verification_status"] == "VERIFIED"
-    assert second["routing"]["route"] == RouteTarget.ROUTE_UNIGURU.value
+    assert second["routing"]["route"] == RouteTarget.ROUTE_LLM.value
     assert "circuit breaker active" in second["answer"]
     assert fake.calls == 1
 
@@ -122,7 +130,11 @@ def test_llm_route_uses_configured_endpoint(monkeypatch) -> None:
     monkeypatch.setenv("UNIGURU_LLM_MODEL", "llama3")
     monkeypatch.setattr("uniguru.router.conversation_router.requests.post", _fake_post)
 
-    router = ConversationRouter(uniguru_service=_FakeUniGuruService({"decision": "answer", "verification_status": "VERIFIED"}))
+    router = ConversationRouter(
+        uniguru_service=_FakeUniGuruService(
+            {"decision": "answer", "answer": "Verified answer", "verification_status": "VERIFIED"}
+        )
+    )
     response = router.route_query("hello there", {"session_id": "llm-1"})
 
     assert response["routing"]["route"] == RouteTarget.ROUTE_LLM.value

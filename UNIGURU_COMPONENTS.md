@@ -1,5 +1,7 @@
 # UNIGURU_COMPONENTS
 
+> Superseded by `CANONICAL_SYSTEM_DECISION.md` for final keep/remove decisions.
+
 Integration context (critical):
 - API Consumer (Product): Frontend / BHIV calls Node middleware.
 - API Consumer (Gurukul): Gurukul calls Node middleware.

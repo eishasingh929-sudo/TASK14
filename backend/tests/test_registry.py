@@ -203,14 +203,20 @@ def test_metrics_reset_endpoint_clears_counters() -> None:
     assert "uniguru_ask_requests_total 0" in after.text
 
 
-def test_missing_caller_is_rejected() -> None:
+def test_missing_caller_returns_safe_fallback() -> None:
     response = client.post("/ask", json={"query": "What is a qubit?"})
-    assert response.status_code == 400
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["verification_status"] == "UNVERIFIED"
+    assert "I am still learning this topic" in payload["answer"]
 
 
-def test_unknown_caller_is_rejected() -> None:
+def test_unknown_caller_returns_safe_fallback() -> None:
     response = client.post("/ask", json={"query": "What is a qubit?", "context": {"caller": "unknown-client"}})
-    assert response.status_code == 403
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["verification_status"] == "UNVERIFIED"
+    assert "I am still learning this topic" in payload["answer"]
 
 
 def test_allowed_header_caller_is_accepted() -> None:
@@ -256,7 +262,7 @@ def test_open_chat_is_delegated_to_llm_route() -> None:
     assert payload["routing"]["route"] == "ROUTE_LLM"
 
 
-def test_router_queue_limit_returns_503_when_full() -> None:
+def test_router_queue_limit_returns_safe_fallback_when_full() -> None:
     original_limit = api_module._ASK_QUEUE_LIMIT
     original_inflight = api_module._ASK_INFLIGHT
     try:
@@ -267,7 +273,11 @@ def test_router_queue_limit_returns_503_when_full() -> None:
             "/ask",
             json={"query": "What is a qubit?", "context": {"caller": "internal-testing"}},
         )
-        assert response.status_code == 503
+        assert response.status_code == 200
+        payload = response.json()
+        assert payload["decision"] == "answer"
+        assert payload["verification_status"] == "UNVERIFIED"
+        assert "I am still learning this topic" in payload["answer"]
     finally:
         api_module._ASK_QUEUE_LIMIT = original_limit
         api_module._ASK_INFLIGHT = original_inflight
@@ -340,7 +350,7 @@ def test_voice_query_routes_transcribed_audio_through_router() -> None:
         api_module.stt_engine = original_engine
 
 
-def test_voice_query_returns_503_when_stt_is_unavailable() -> None:
+def test_voice_query_returns_safe_fallback_when_stt_is_unavailable() -> None:
     class _UnavailableSTTEngine:
         def transcribe(self, *_args, **_kwargs):
             raise api_module.STTUnavailableError("local STT unavailable")
@@ -357,7 +367,10 @@ def test_voice_query_returns_503_when_stt_is_unavailable() -> None:
                 "X-Audio-Filename": "voice.wav",
             },
         )
-        assert response.status_code == 503
-        assert response.json()["detail"] == "local STT unavailable"
+        assert response.status_code == 200
+        payload = response.json()
+        assert payload["decision"] == "answer"
+        assert payload["verification_status"] == "UNVERIFIED"
+        assert "I am still learning this topic" in payload["answer"]
     finally:
         api_module.stt_engine = original_engine

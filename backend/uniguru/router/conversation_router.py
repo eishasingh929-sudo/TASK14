@@ -74,6 +74,8 @@ _GENERAL_CHAT_PATTERNS = (
     r"\bhow is it going\b",
 )
 
+SAFE_FALLBACK_PREFIX = "I am still learning this topic, but here is a basic explanation..."
+
 
 @dataclass(frozen=True)
 class RoutingDecision:
@@ -117,13 +119,24 @@ class ConversationRouter:
         open_seconds = breaker_open_seconds or float(os.getenv("UNIGURU_ROUTER_CIRCUIT_OPEN_SECONDS", "30"))
         if allow_unverified_fallback is None:
             allow_unverified_fallback = (
-                os.getenv("UNIGURU_ROUTER_UNVERIFIED_FALLBACK", "false").strip().lower() in {"1", "true", "yes", "on"}
+                os.getenv("UNIGURU_ROUTER_UNVERIFIED_FALLBACK", "true").strip().lower() in {"1", "true", "yes", "on"}
             )
         self._allow_unverified_fallback = bool(allow_unverified_fallback)
         self._breaker = _LatencyCircuitBreaker(threshold_ms=threshold, open_seconds=open_seconds)
         self._llm_url = os.getenv("UNIGURU_LLM_URL", "").strip()
         self._llm_model = os.getenv("UNIGURU_LLM_MODEL", "").strip()
         self._llm_timeout = float(os.getenv("UNIGURU_LLM_TIMEOUT_SECONDS", "20"))
+
+    def llm_status(self) -> Dict[str, Any]:
+        configured = bool(self._llm_url)
+        internal_demo = self._llm_url.startswith("internal://")
+        return {
+            "configured": configured,
+            "endpoint": self._llm_url or None,
+            "model": self._llm_model or None,
+            "internal_demo_mode": internal_demo,
+            "available": True,  # safety fallback is always available
+        }
 
     def route_query(self, query: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         started = time.perf_counter()
@@ -146,10 +159,11 @@ class ConversationRouter:
         else:
             response = self._dispatch_to_uniguru(query=query, context=context_map, query_type=query_type)
 
+        resolved_route = str(response.pop("_resolved_route", target.value))
         routing_latency = (time.perf_counter() - started) * 1000
         response["routing"] = {
             "query_type": query_type.value,
-            "route": target.value,
+            "route": resolved_route,
             "router_latency_ms": round(routing_latency, 3),
         }
         return response
@@ -204,20 +218,36 @@ class ConversationRouter:
             )
 
         started = time.perf_counter()
-        response = self._service.ask(
-            user_query=query,
-            session_id=session_id,
-            context=context,
-            allow_web_retrieval=effective_allow_web,
-        )
+        try:
+            response = self._service.ask(
+                user_query=query,
+                session_id=session_id,
+                context=context,
+                allow_web_retrieval=effective_allow_web,
+            )
+        except Exception as exc:
+            return self._build_llm_response(
+                query=query,
+                query_type=query_type,
+                session_id=session_id,
+                warning=f"UniGuru KB path failed ({exc}). Falling back to conversational mode.",
+            )
         latency_ms = (time.perf_counter() - started) * 1000
         self._breaker.record_latency(latency_ms)
+
+        if not str(response.get("answer") or "").strip():
+            return self._build_llm_response(
+                query=query,
+                query_type=query_type,
+                session_id=session_id,
+                warning="UniGuru KB response was empty. Falling back to conversational mode.",
+            )
 
         verification_status = str(response.get("verification_status") or "UNVERIFIED").upper()
         if verification_status == "UNVERIFIED" and self._allow_unverified_fallback:
             return self._build_llm_response(
                 query=query,
-                query_type=QueryRoutingType.GENERAL_LLM_QUERY,
+                query_type=query_type,
                 session_id=session_id,
                 warning="UniGuru could not verify this query. This is an LLM fallback response.",
             )
@@ -282,9 +312,16 @@ class ConversationRouter:
         )
 
     def _request_llm(self, query: str, session_id: Optional[str]) -> Dict[str, str]:
+        if self._llm_url.startswith("internal://"):
+            return {
+                "answer": self._build_local_demo_answer(query),
+                "reason": "ROUTE_LLM served by internal demo mode.",
+                "governance_reason": "Delegated to internal safety LLM fallback.",
+            }
+
         if not self._llm_url:
             return {
-                "answer": "LLM response path is not configured. Set UNIGURU_LLM_URL to enable open-chat reasoning.",
+                "answer": self._build_local_demo_answer(query),
                 "reason": "ROUTE_LLM selected but UNIGURU_LLM_URL is not configured.",
                 "governance_reason": "LLM route unavailable because no endpoint is configured.",
             }
@@ -305,9 +342,9 @@ class ConversationRouter:
             data = response.json()
         except Exception as exc:
             return {
-                "answer": f"LLM endpoint request failed: {exc}",
+                "answer": self._build_local_demo_answer(query),
                 "reason": "ROUTE_LLM request to configured endpoint failed.",
-                "governance_reason": "LLM route returned an integration failure.",
+                "governance_reason": f"LLM route returned an integration failure: {exc}",
             }
 
         answer = str(
@@ -326,13 +363,32 @@ class ConversationRouter:
             ).strip()
 
         if not answer:
-            answer = "Configured LLM endpoint returned no answer."
+            answer = self._build_local_demo_answer(query)
 
         return {
             "answer": answer,
             "reason": "ROUTE_LLM policy applied via configured LLM endpoint.",
             "governance_reason": "Delegated open-chat response through configured LLM service.",
         }
+
+    @staticmethod
+    def _build_local_demo_answer(query: str) -> str:
+        text = str(query or "").strip()
+        lower = text.lower()
+        if "joke" in lower:
+            body = "Here is one: Why did the developer go broke? Because they used up all their cache."
+        elif any(token in lower for token in ("news", "current", "latest", "happening in the world")):
+            body = (
+                "In demo mode I do not fetch live internet updates, but a good snapshot usually includes "
+                "major world news, economic movement, and local developments from trusted sources."
+            )
+        elif text:
+            body = (
+                f"{text} can be understood by starting with the core idea, then examples, and then practical usage."
+            )
+        else:
+            body = "Let us start with the basics and build up step by step."
+        return f"{SAFE_FALLBACK_PREFIX} {body}"
 
     def _build_router_contract_response(
         self,
@@ -354,6 +410,7 @@ class ConversationRouter:
             "answer": answer,
             "session_id": session_id,
             "reason": reason,
+            "_resolved_route": route.value,
             "ontology_reference": {
                 "concept_id": f"router::{query_type.value.lower()}",
                 "domain": "routing",

@@ -42,6 +42,33 @@ function buildIntegrationNotes(response) {
   return notes;
 }
 
+export function buildSafeMiddlewareFallback({ query, reason, route = "ROUTE_LLM" }) {
+  const normalizedQuery = String(query || "").trim();
+  const lower = normalizedQuery.toLowerCase();
+  let body = "Please ask a specific question and I will explain step by step.";
+  if (lower.includes("joke")) {
+    body = "Here is one: Why did the function return early? It had a callback.";
+  } else if (lower.includes("news") || lower.includes("current") || lower.includes("latest")) {
+    body = "In demo safety mode I cannot fetch live feeds, but I can provide a general overview framework.";
+  } else if (normalizedQuery) {
+    body = `${normalizedQuery} can be explained through definition, context, and examples.`;
+  }
+  return {
+    decision: "answer",
+    answer: `I am still learning this topic, but here is a basic explanation... ${body}`,
+    reason: reason || "Node middleware safe fallback activated.",
+    verification_status: "UNVERIFIED",
+    status_action: "ALLOW_WITH_DISCLAIMER",
+    governance_flags: { fallback_mode: true },
+    governance_output: {
+      allowed: true,
+      reason: "Middleware fallback mode active.",
+      flags: { router_route: route }
+    },
+    routing: { route, query_type: "general_llm_query", router_latency_ms: 0 }
+  };
+}
+
 export function formatEngineResponse(response) {
   if (!response || typeof response !== "object") {
     return response;
@@ -59,4 +86,3 @@ export function formatEngineResponse(response) {
   }
   return normalized;
 }
-

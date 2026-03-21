@@ -2,8 +2,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const UNIGURU_ASK_URL = process.env.UNIGURU_ASK_URL || "http://uniguru-api:8000/ask";
-const UNIGURU_API_TOKEN = process.env.UNIGURU_API_TOKEN || "";
+const UNIGURU_ASK_URL = process.env.UNIGURU_ASK_URL || "http://127.0.0.1:8000/ask";
+const UNIGURU_API_TOKEN = String(process.env.UNIGURU_API_TOKEN || "").trim();
+const UNIGURU_DEMO_SERVICE_TOKEN = String(process.env.UNIGURU_DEMO_SERVICE_TOKEN || "uniguru-demo-token").trim();
+const RESOLVED_SERVICE_TOKEN = UNIGURU_API_TOKEN || UNIGURU_DEMO_SERVICE_TOKEN;
 const REQUEST_TIMEOUT_MS = Number(process.env.UNIGURU_REQUEST_TIMEOUT_MS || 15000);
 
 class UniGuruUpstreamError extends Error {
@@ -64,8 +66,9 @@ export async function callUniGuruAsk(payload) {
     Accept: "application/json"
   };
 
-  if (UNIGURU_API_TOKEN) {
-    headers.Authorization = `Bearer ${UNIGURU_API_TOKEN}`;
+  if (RESOLVED_SERVICE_TOKEN) {
+    headers.Authorization = `Bearer ${RESOLVED_SERVICE_TOKEN}`;
+    headers["X-Service-Token"] = RESOLVED_SERVICE_TOKEN;
   }
 
   const controller = new AbortController();

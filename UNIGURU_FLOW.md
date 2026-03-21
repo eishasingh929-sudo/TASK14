@@ -1,5 +1,7 @@
 # UNIGURU_FLOW
 
+> Superseded by `CANONICAL_SYSTEM_DECISION.md` for final integration decisions.
+
 ## Simple Runtime Flow
 1. Product user or Gurukul sends query to API consumer layer.
 2. API consumer enters Node middleware:
