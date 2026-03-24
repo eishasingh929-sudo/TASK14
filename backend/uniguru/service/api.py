@@ -277,8 +277,20 @@ def _enforce_service_auth(request: Request) -> None:
         return
     if not _API_AUTH_REQUIRED:
         return
-    token = _extract_service_token(request)
-    if token not in _API_TOKENS:
+
+    auth_header = request.headers.get("Authorization", "")
+    bearer_token = ""
+    if auth_header.lower().startswith("bearer "):
+        bearer_token = auth_header[7:].strip()
+    service_token = request.headers.get("X-Service-Token", "").strip()
+
+    provided_tokens = {token for token in (bearer_token, service_token) if token}
+    if not provided_tokens:
+        extracted = _extract_service_token(request)
+        if extracted:
+            provided_tokens.add(extracted)
+
+    if not provided_tokens.intersection(_API_TOKENS):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 

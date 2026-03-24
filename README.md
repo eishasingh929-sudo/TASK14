@@ -30,6 +30,22 @@ Output:
 
 [`demo_logs/demo_safety_proof.json`](/c:/Users/Yass0/OneDrive/Desktop/TASK14/demo_logs/demo_safety_proof.json)
 
+Final 20-query readiness check:
+
+`python test/run_final_validation_20_queries.py`
+
+Output:
+
+[`demo_logs/final_validation_20_queries.json`](/c:/Users/Yass0/OneDrive/Desktop/TASK14/demo_logs/final_validation_20_queries.json)
+
+Dataset ingestion proof:
+
+`python scripts/ingest_kb.py`
+
+Output:
+
+[`demo_logs/dataset_ingestion_proof.json`](/c:/Users/Yass0/OneDrive/Desktop/TASK14/demo_logs/dataset_ingestion_proof.json)
+
 ## Canonical Flow
 
 `UI -> Node (/api/v1/chat/query) -> Python (/ask) -> ConversationRouter -> KB or ROUTE_LLM -> Safe fallback`

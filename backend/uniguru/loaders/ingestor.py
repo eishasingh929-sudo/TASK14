@@ -19,6 +19,7 @@ class KnowledgeIngestor:
         self.parser = FileParser()
         self.index: Dict[str, List[Dict[str, Any]]] = {}
         self.ingestion_log: List[Dict[str, Any]] = []
+        self._project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
         if not os.path.exists(self.index_dir):
             os.makedirs(self.index_dir)
@@ -61,6 +62,7 @@ class KnowledgeIngestor:
 
                 content = result["content"]
                 metadata = result["metadata"]
+                metadata["path"] = os.path.relpath(file_path, self._project_root).replace("\\", "/")
                 metadata["category"] = category
                 status = str(
                     metadata.get("verification_status")
@@ -68,7 +70,7 @@ class KnowledgeIngestor:
                     or "UNSPECIFIED"
                 ).upper()
 
-                if status == "UNSPECIFIED" and category in ["jain", "swaminarayan", "gurukul"]:
+                if status == "UNSPECIFIED" and category in ["jain", "swaminarayan", "gurukul", "ankita", "nupur"]:
                     status = "VERIFIED"
                 
                 metadata["verification_status"] = status

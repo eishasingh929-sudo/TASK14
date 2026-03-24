@@ -26,8 +26,13 @@ Exact startup order for Yashika (Integration), Alay (DevOps), and Vinayak (Testi
    - `python test/run_phase8_validation.py`
 2. Failure-injection safety proof:
    - `python test/run_demo_safety_proof.py`
+3. Final 20-query readiness check:
+   - `python test/run_final_validation_20_queries.py`
 
 ## Expected Artifacts
 1. `demo_logs/phase8_test_outputs.json`
 2. `demo_logs/demo_safety_proof.json`
-3. `docs/reports/DEMO_STABILITY_PROOF.md`
+3. `demo_logs/final_validation_20_queries.json`
+4. `docs/reports/DEMO_STABILITY_PROOF.md`
+5. `docs/reports/FINAL_VALIDATION_20_QUERIES.md`
+6. `docs/reports/DEMO_VIDEO_SCRIPT.md`

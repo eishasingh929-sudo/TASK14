@@ -11,7 +11,7 @@ MAX_KB_RESPONSE_CHARS = 2000
 
 
 def _clean_kb_content(raw_content: str) -> str:
-    text = str(raw_content or "").replace("\r", "")
+    text = str(raw_content or "").replace("\ufeff", "").replace("\r", "")
     text = re.sub(r"^---[\s\S]*?---\n*", "", text, flags=re.MULTILINE)
     text = re.sub(r"^#{1,6}\s*", "", text, flags=re.MULTILINE)
     text = re.sub(r"^\s*[-*]\s+", "", text, flags=re.MULTILINE)
@@ -24,6 +24,37 @@ def _clean_kb_content(raw_content: str) -> str:
         return text
     shortened = text[:MAX_KB_RESPONSE_CHARS].rsplit(" ", 1)[0].strip()
     return f"{shortened}\n\n[Content trimmed for readability.]"
+
+
+def _summarize_kb_content(raw_content: str, *, max_chars: int = 420) -> str:
+    cleaned = _clean_kb_content(raw_content)
+    lines = [line.strip() for line in cleaned.splitlines() if line.strip()]
+    if not lines:
+        return "I will help you with this. Please try again."
+
+    candidate_lines = []
+    for line in lines:
+        lowered = line.lower()
+        if re.match(r"^(title|source|authors?|year|domain|ingestion date|citations?)\s*:", lowered):
+            continue
+        if lowered in {"definitions", "key concepts", "concept explanations", "light equation context"}:
+            continue
+        candidate_lines.append(line)
+
+    selected = candidate_lines if candidate_lines else lines
+    summary = " ".join(selected[:3]).strip()
+    if len(summary) <= max_chars:
+        return summary
+    shortened = summary[:max_chars].rsplit(" ", 1)[0].strip()
+    return f"{shortened}..."
+
+
+def _format_structured_answer(raw_content: str, trace: dict) -> str:
+    answer_text = _summarize_kb_content(raw_content)
+    source = str(trace.get("kb_file_path") or trace.get("kb_file") or "").strip()
+    if source:
+        return f"Answer:\n{answer_text}\n\nSource:\n{source}"
+    return f"Answer:\n{answer_text}"
 
 class RetrievalRule(BaseRule):
     def evaluate(self, context: RuleContext) -> RuleResult:
@@ -48,10 +79,7 @@ class RetrievalRule(BaseRule):
                     "ambiguity": False,
                     "safety": False
                 },
-                response_content=(
-                    f"UniGuru Deterministic Knowledge Retrieval:\n\n{_clean_kb_content(kb_content)}"
-                    if is_verified else UNVERIFIED_REFUSAL
-                ),
+                response_content=_format_structured_answer(kb_content, trace) if is_verified else UNVERIFIED_REFUSAL,
                 rule_name=self.name,
                 extra_metadata={
                     "retrieval_trace": trace,

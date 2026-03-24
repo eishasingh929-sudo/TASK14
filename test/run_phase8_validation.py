@@ -81,7 +81,7 @@ def _start_backend() -> subprocess.Popen[Any]:
     env["UNIGURU_HOST"] = "127.0.0.1"
     env["UNIGURU_PORT"] = str(PYTHON_PORT)
     env["UNIGURU_API_AUTH_REQUIRED"] = "false"
-    env["UNIGURU_LLM_URL"] = env.get("UNIGURU_LLM_URL", "internal://demo-llm")
+    env["UNIGURU_LLM_URL"] = "internal://demo-llm"
     env["UNIGURU_ALLOWED_CALLERS"] = (
         "bhiv-assistant,gurukul-platform,internal-testing,uniguru-frontend"
     )

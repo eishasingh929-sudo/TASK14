@@ -127,7 +127,7 @@ class ConversationRouter:
         # even when env files are missing in demo/smoke runs.
         self._llm_url = os.getenv("UNIGURU_LLM_URL", "internal://demo-llm").strip()
         self._llm_model = os.getenv("UNIGURU_LLM_MODEL", "demo-safety-llm").strip()
-        self._llm_timeout = float(os.getenv("UNIGURU_LLM_TIMEOUT_SECONDS", "20"))
+        self._llm_timeout = float(os.getenv("UNIGURU_LLM_TIMEOUT_SECONDS", "8"))
 
     def llm_status(self) -> Dict[str, Any]:
         configured = bool(self._llm_url)
@@ -236,6 +236,15 @@ class ConversationRouter:
             )
         latency_ms = (time.perf_counter() - started) * 1000
         self._breaker.record_latency(latency_ms)
+
+        decision = str(response.get("decision") or "").strip().lower()
+        if decision != "answer":
+            return self._build_llm_response(
+                query=query,
+                query_type=query_type,
+                session_id=session_id,
+                warning="UniGuru KB could not produce a deterministic answer. This is an LLM fallback response.",
+            )
 
         if not str(response.get("answer") or "").strip():
             return self._build_llm_response(

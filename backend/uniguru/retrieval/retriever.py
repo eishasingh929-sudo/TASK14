@@ -9,11 +9,12 @@ from uniguru.reasoning.graph_reasoner import GraphReasoner
 _MODULE_DIR = os.path.dirname(__file__)
 _KB_ROOT = os.path.normpath(os.path.join(_MODULE_DIR, "..", "knowledge"))
 
-KB_PATHS: Dict[str, str] = {
+_BASE_KB_PATHS: Dict[str, str] = {
     "quantum": os.path.normpath(os.path.join(_KB_ROOT, "quantum")),
     "jain": os.path.normpath(os.path.join(_KB_ROOT, "jain")),
     "swaminarayan": os.path.normpath(os.path.join(_KB_ROOT, "swaminarayan")),
     "gurukul": os.path.normpath(os.path.join(_KB_ROOT, "gurukul")),
+    "datasets": os.path.normpath(os.path.join(_KB_ROOT, "datasets")),
 }
 
 STOPWORDS = {
@@ -44,6 +45,30 @@ STOPWORDS = {
     "explain",
 }
 
+GENERIC_FILE_KEYWORDS = {"readme", "kb index", "kb_index", "index"}
+
+
+def _tokenize(text: str) -> List[str]:
+    return re.findall(r"[a-z0-9]+", (text or "").lower())
+
+
+def _kb_paths() -> Dict[str, str]:
+    paths = dict(_BASE_KB_PATHS)
+    raw_extra = os.getenv("UNIGURU_KB_EXTRA_PATHS", "").strip()
+    if not raw_extra:
+        return paths
+
+    for candidate in raw_extra.split(","):
+        normalized = candidate.strip()
+        if not normalized:
+            continue
+        if not os.path.isabs(normalized):
+            normalized = os.path.normpath(os.path.join(_KB_ROOT, normalized))
+        category = os.path.basename(normalized).lower().replace(" ", "_") or "extra"
+        key = f"extra_{category}"
+        paths[key] = normalized
+    return paths
+
 
 class AdvancedRetriever:
     """
@@ -56,10 +81,12 @@ class AdvancedRetriever:
         self.knowledge_map: Dict[str, str] = {}
         self.source_map: Dict[str, str] = {}
         self.file_map: Dict[str, str] = {}
+        self.path_map: Dict[str, str] = {}
+        self._documents: List[Dict[str, Any]] = []
         self._load_memory()
 
     def _load_memory(self) -> None:
-        for kb_name, kb_path in KB_PATHS.items():
+        for kb_name, kb_path in _kb_paths().items():
             if not os.path.exists(kb_path):
                 continue
             for root, _, files in os.walk(kb_path):
@@ -74,45 +101,88 @@ class AdvancedRetriever:
                     except OSError:
                         # Demo-safety mode: unreadable KB files are skipped, not fatal.
                         continue
+
+                    relative_path = os.path.relpath(full_path, _KB_ROOT).replace("\\", "/")
+                    keyword_tokens = {token for token in _tokenize(keyword) if token not in STOPWORDS}
+                    content_tokens = {token for token in _tokenize(content) if token not in STOPWORDS}
+                    is_generic = keyword in GENERIC_FILE_KEYWORDS
+
                     self.knowledge_map[keyword] = content
                     self.source_map[keyword] = kb_name
                     self.file_map[keyword] = file_name
+                    self.path_map[keyword] = relative_path
+                    self._documents.append(
+                        {
+                            "keyword": keyword,
+                            "keyword_tokens": keyword_tokens,
+                            "content_tokens": content_tokens,
+                            "content": content,
+                            "source": kb_name,
+                            "file": file_name,
+                            "path": relative_path,
+                            "is_generic": is_generic,
+                        }
+                    )
 
     def retrieve_multi(self, query: str) -> List[Dict[str, Any]]:
         """Retrieves top N documents matching the query."""
-        query_lower = query.lower()
-        clean_query = re.sub(r"[^\w\s]", "", query_lower)
-        tokens = [token for token in clean_query.split() if token and token not in STOPWORDS]
-        if not tokens:
+        query_lower = str(query or "").lower()
+        query_tokens = [token for token in _tokenize(query_lower) if token not in STOPWORDS]
+        if not query_tokens:
             return []
+        query_token_set = set(query_tokens)
 
         matches = []
-        for keyword, content in self.knowledge_map.items():
-            kw_tokens = keyword.split()
-            content_lower = content.lower()
+        for document in self._documents:
+            kw_tokens = document["keyword_tokens"]
+            content_tokens = document["content_tokens"]
+            keyword_overlap = query_token_set.intersection(kw_tokens)
+            content_overlap = query_token_set.intersection(content_tokens)
+            exact_phrase_match = 1.0 if document["keyword"] in query_lower else 0.0
 
-            keyword_match = sum(1 for t in kw_tokens if t in tokens)
-            content_match = sum(1 for t in tokens if t in content_lower)
-
-            if keyword_match == 0 and content_match < 2:
+            if (
+                not keyword_overlap
+                and not content_overlap
+                and exact_phrase_match == 0.0
+            ):
                 continue
 
-            keyword_coverage = keyword_match / len(kw_tokens) if kw_tokens else 0.0
-            content_density = min(content_match / len(tokens), 1.0)
-            confidence = min((0.7 * keyword_coverage) + (0.3 * content_density), 1.0)
+            if len(query_token_set) >= 3 and len(content_overlap) < 2 and exact_phrase_match == 0.0:
+                # Reduces accidental matches on single token overlaps for longer queries.
+                continue
+
+            keyword_coverage = len(keyword_overlap) / max(len(kw_tokens), 1)
+            query_coverage = len(content_overlap) / len(query_token_set)
+            specificity_bonus = 0.08 if kw_tokens and kw_tokens.issubset(query_token_set) else 0.0
+            generic_penalty = 0.12 if document["is_generic"] else 0.0
+
+            confidence = (0.5 * keyword_coverage) + (0.35 * query_coverage) + (0.15 * exact_phrase_match)
+            confidence = max(0.0, min(confidence + specificity_bonus - generic_penalty, 1.0))
+            if confidence < 0.2:
+                continue
             matches.append(
                 {
-                    "content": content,
+                    "content": document["content"],
                     "confidence": confidence,
-                    "keyword": keyword,
-                    "keyword_match_count": keyword_match,
-                    "query_token_count": len(tokens),
-                    "source": self.source_map.get(keyword, "unknown"),
-                    "file": self.file_map.get(keyword, "unknown"),
+                    "keyword": document["keyword"],
+                    "keyword_match_count": len(keyword_overlap),
+                    "content_match_count": len(content_overlap),
+                    "matched_tokens": sorted(content_overlap),
+                    "query_token_count": len(query_token_set),
+                    "source": document["source"],
+                    "file": document["file"],
+                    "path": document["path"],
                 }
             )
 
-        matches.sort(key=lambda x: x["confidence"], reverse=True)
+        matches.sort(
+            key=lambda x: (
+                float(x["confidence"]),
+                int(x["keyword_match_count"]),
+                int(x["content_match_count"]),
+            ),
+            reverse=True,
+        )
         return matches[0 : self.top_n]
 
     def reason_and_compare(self, results: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -153,8 +223,11 @@ class AdvancedRetriever:
             "metadata": {
                 "sources_consulted": sources_list,
                 "top_match": primary.get("file"),
+                "top_match_path": primary.get("path"),
                 "top_keyword": primary.get("keyword"),
                 "keyword_match_count": primary.get("keyword_match_count", 0),
+                "content_match_count": primary.get("content_match_count", 0),
+                "matched_tokens": primary.get("matched_tokens", []),
                 "query_token_count": primary.get("query_token_count", 0),
                 "top_confidence": primary.get("confidence", 0.0),
             },
@@ -199,8 +272,11 @@ def retrieve_knowledge_with_trace(query: str) -> Tuple[Optional[str], Dict[str, 
             "match_found": True,
             "confidence": float(metadata.get("top_confidence", 0.0)),
             "kb_file": metadata.get("top_match"),
+            "kb_file_path": metadata.get("top_match_path"),
             "matched_keyword": metadata.get("top_keyword"),
             "keyword_match_count": int(metadata.get("keyword_match_count", 0)),
+            "content_match_count": int(metadata.get("content_match_count", 0)),
+            "matched_tokens": list(metadata.get("matched_tokens", [])),
             "query_token_count": int(metadata.get("query_token_count", 0)),
             "sources_consulted": metadata.get("sources_consulted", []),
         }

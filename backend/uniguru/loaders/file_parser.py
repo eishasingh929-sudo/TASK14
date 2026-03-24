@@ -1,11 +1,12 @@
 import os
+import json
 import fitz  # PyMuPDF
 from typing import Dict, Any, Optional
 
 class FileParser:
     """
     Parses various file formats and extracts text and metadata.
-    Supported: .md, .txt, .pdf
+    Supported: .md, .txt, .pdf, .json
     """
     
     @staticmethod
@@ -20,6 +21,8 @@ class FileParser:
             return FileParser.parse_text(file_path)
         elif ext == ".pdf":
             return FileParser.parse_pdf(file_path)
+        elif ext == ".json":
+            return FileParser.parse_json(file_path)
         return None
 
     @staticmethod
@@ -102,3 +105,45 @@ class FileParser:
             return {"content": text, "metadata": metadata}
         except Exception as e:
             return {"content": "", "metadata": {"error": str(e), "path": file_path}}
+
+    @staticmethod
+    def parse_json(file_path: str) -> Dict[str, Any]:
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                payload = json.load(f)
+        except Exception as e:
+            return {"content": "", "metadata": {"error": str(e), "path": file_path}}
+
+        def _render(value: Any, indent: int = 0) -> str:
+            pad = "  " * indent
+            if isinstance(value, dict):
+                lines = []
+                for key, item in value.items():
+                    if isinstance(item, (dict, list)):
+                        lines.append(f"{pad}{key}:")
+                        lines.append(_render(item, indent + 1))
+                    else:
+                        lines.append(f"{pad}{key}: {item}")
+                return "\n".join(lines)
+            if isinstance(value, list):
+                lines = []
+                for item in value:
+                    if isinstance(item, (dict, list)):
+                        lines.append(f"{pad}-")
+                        lines.append(_render(item, indent + 1))
+                    else:
+                        lines.append(f"{pad}- {item}")
+                return "\n".join(lines)
+            return f"{pad}{value}"
+
+        content = _render(payload).strip()
+        return {
+            "content": content,
+            "metadata": {
+                "source": os.path.basename(file_path),
+                "path": file_path,
+                "author": "Unknown",
+                "publication": "Unknown",
+                "type": "json",
+            },
+        }
