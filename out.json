@@ -1,0 +1,177 @@
+{
+  "kb": {
+    "decision": "answer",
+    "answer": "Based on verified source: mahavira_life.md\n\nAnswer:\nJain Knowledge Base \u2014 Mahavira: Life and Teachings Content Vardhamana Mahavira (599\u2013527 BCE) is the 24th and last Tirthankara (ford-maker/enlightened teacher) of the current cosmic cycle in Jain cosmology.\n\nSource:\njain/mahavira_life.md",
+    "session_id": null,
+    "reason": "Knowledge found in local KB and verified.",
+    "ontology_reference": {
+      "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+      "domain": "jain",
+      "snapshot_version": 1,
+      "snapshot_hash": "e7292c6b78cfa8c7fe0008b36f6916879af5b9c78d763a3cbf402d3e3d6895ad",
+      "truth_level": 3
+    },
+    "reasoning_trace": {
+      "sources_consulted": [
+        "jain",
+        "ontology_graph",
+        "ontology_registry"
+      ],
+      "retrieval_confidence": 0.6,
+      "ontology_domain": "jain",
+      "verification_status": "VERIFIED",
+      "verification_details": "VERIFIED"
+    },
+    "governance_flags": {
+      "authority": false,
+      "delegation": false,
+      "emotional": false,
+      "ambiguity": false,
+      "safety": false,
+      "output_authority_violation": false
+    },
+    "governance_output": {
+      "allowed": true,
+      "reason": "Output governance passed.",
+      "flags": {
+        "output_authority_violation": false
+      }
+    },
+    "verification_status": "VERIFIED",
+    "status_action": "ALLOW",
+    "enforcement_signature": "2966da1365a91ee8816b0ebace299b102daa878af2798a8efba7776a5ed8b13b",
+    "request_id": "eec3120e-4791-4f12-b60e-3663330da70d",
+    "sealed_at": "2026-03-24T07:51:53Z",
+    "latency_ms": 17.0,
+    "routing": {
+      "query_type": "KNOWLEDGE_QUERY",
+      "route": "ROUTE_UNIGURU",
+      "router_latency_ms": 18.259
+    },
+    "language_adapter": {
+      "enabled": true,
+      "source_language": "en",
+      "target_language": "en",
+      "response_localization_applied": false
+    },
+    "core_alignment": {
+      "enabled": false,
+      "read_only": true,
+      "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+      "domain": "jain",
+      "registry_aligned": false
+    }
+  },
+  "random": {
+    "decision": "answer",
+    "answer": "I am still learning this topic, but here is a basic explanation... Here is one: Why did the developer go broke? Because they used up all their cache.",
+    "session_id": null,
+    "reason": "ROUTE_LLM served by internal demo mode.",
+    "ontology_reference": {
+      "concept_id": "router::general_llm_query",
+      "domain": "routing",
+      "snapshot_version": 0,
+      "snapshot_hash": "router-delegated",
+      "truth_level": 0
+    },
+    "reasoning_trace": {
+      "sources_consulted": [
+        "conversation_router"
+      ],
+      "retrieval_confidence": 0.0,
+      "ontology_domain": "routing",
+      "verification_status": "UNVERIFIED",
+      "verification_details": "Delegated via ROUTE_LLM"
+    },
+    "governance_flags": {
+      "safety": false
+    },
+    "governance_output": {
+      "allowed": true,
+      "reason": "Delegated to internal safety LLM fallback.",
+      "flags": {
+        "router_route": "ROUTE_LLM"
+      }
+    },
+    "verification_status": "UNVERIFIED",
+    "status_action": "ALLOW_WITH_DISCLAIMER",
+    "enforcement_signature": "631bdabebc570be7ceb016e55267d5e507f4faea5ab8f625b114d708d2dea37e",
+    "request_id": "1b7e7277-735c-4693-8da1-ba7c7aeacfa5",
+    "sealed_at": "2026-03-24T07:51:53.227623Z",
+    "latency_ms": 0.0,
+    "routing": {
+      "query_type": "GENERAL_LLM_QUERY",
+      "route": "ROUTE_LLM",
+      "router_latency_ms": 0.258
+    },
+    "language_adapter": {
+      "enabled": true,
+      "source_language": "en",
+      "target_language": "en",
+      "response_localization_applied": false
+    },
+    "core_alignment": {
+      "enabled": false,
+      "read_only": true,
+      "concept_id": "router::general_llm_query",
+      "domain": "routing",
+      "registry_aligned": false
+    }
+  },
+  "llm": {
+    "decision": "answer",
+    "answer": "I am still learning this topic, but here is a basic explanation... how are you can be understood by starting with the core idea, then examples, and then practical usage.",
+    "session_id": null,
+    "reason": "ROUTE_LLM served by internal demo mode.",
+    "ontology_reference": {
+      "concept_id": "router::general_llm_query",
+      "domain": "routing",
+      "snapshot_version": 0,
+      "snapshot_hash": "router-delegated",
+      "truth_level": 0
+    },
+    "reasoning_trace": {
+      "sources_consulted": [
+        "conversation_router"
+      ],
+      "retrieval_confidence": 0.0,
+      "ontology_domain": "routing",
+      "verification_status": "UNVERIFIED",
+      "verification_details": "Delegated via ROUTE_LLM"
+    },
+    "governance_flags": {
+      "safety": false
+    },
+    "governance_output": {
+      "allowed": true,
+      "reason": "Delegated to internal safety LLM fallback.",
+      "flags": {
+        "router_route": "ROUTE_LLM"
+      }
+    },
+    "verification_status": "UNVERIFIED",
+    "status_action": "ALLOW_WITH_DISCLAIMER",
+    "enforcement_signature": "ec9efb378a568cf53825b351f68ba6ddb0c5e7cb40b7f1eb6c61841f585ba7ef",
+    "request_id": "086c0ae6-d7fb-4ad9-aad0-aec78927ab08",
+    "sealed_at": "2026-03-24T07:51:53.234476Z",
+    "latency_ms": 0.0,
+    "routing": {
+      "query_type": "GENERAL_LLM_QUERY",
+      "route": "ROUTE_LLM",
+      "router_latency_ms": 0.192
+    },
+    "language_adapter": {
+      "enabled": true,
+      "source_language": "en",
+      "target_language": "en",
+      "response_localization_applied": false
+    },
+    "core_alignment": {
+      "enabled": false,
+      "read_only": true,
+      "concept_id": "router::general_llm_query",
+      "domain": "routing",
+      "registry_aligned": false
+    }
+  }
+}

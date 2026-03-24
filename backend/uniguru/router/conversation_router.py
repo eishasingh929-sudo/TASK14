@@ -238,31 +238,17 @@ class ConversationRouter:
         self._breaker.record_latency(latency_ms)
 
         decision = str(response.get("decision") or "").strip().lower()
-        if decision != "answer":
-            return self._build_llm_response(
-                query=query,
-                query_type=query_type,
-                session_id=session_id,
-                warning="UniGuru KB could not produce a deterministic answer. This is an LLM fallback response.",
-            )
+        has_answer = bool(str(response.get("answer") or "").strip())
 
-        if not str(response.get("answer") or "").strip():
-            return self._build_llm_response(
-                query=query,
-                query_type=query_type,
-                session_id=session_id,
-                warning="UniGuru KB response was empty. Falling back to conversational mode.",
-            )
+        if decision == "answer" and has_answer:
+            return response
 
-        verification_status = str(response.get("verification_status") or "UNVERIFIED").upper()
-        if verification_status == "UNVERIFIED" and self._allow_unverified_fallback:
-            return self._build_llm_response(
-                query=query,
-                query_type=query_type,
-                session_id=session_id,
-                warning="UniGuru could not verify this query. This is an LLM fallback response.",
-            )
-        return response
+        return self._build_llm_response(
+            query=query,
+            query_type=query_type,
+            session_id=session_id,
+            warning=None,
+        )
 
     def _build_system_block_response(
         self,
