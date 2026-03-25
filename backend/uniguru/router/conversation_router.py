@@ -75,6 +75,23 @@ _KNOWLEDGE_PATTERNS = (
     r"\bdifference between\b",
 )
 
+_SUPPORT_HINT_PATTERNS = (
+    r"\badmission\b",
+    r"\badmissions\b",
+    r"\bcounsel",
+    r"\bdocument\b",
+    r"\bseat allot",
+    r"\bmerit\b",
+    r"\bplacement\b",
+    r"\bresume\b",
+    r"\bportfolio\b",
+    r"\blinkedin\b",
+    r"\breferral\b",
+    r"\breporting day\b",
+    r"\binterview\b",
+    r"\bcareer\b",
+)
+
 _GENERAL_CHAT_PATTERNS = (
     r"^(hi|hello|hey)\b",
     r"\bhow are you\b",
@@ -190,9 +207,16 @@ class ConversationRouter:
 
         upstream_type = classify_query(text)
         if upstream_type in {QueryType.KNOWLEDGE_QUERY, QueryType.CONCEPT_QUERY, QueryType.EXPLANATION_QUERY, QueryType.WEB_LOOKUP}:
-            if any(re.search(pattern, text) for pattern in _KNOWLEDGE_PATTERNS) or upstream_type != QueryType.KNOWLEDGE_QUERY:
+            if self._has_support_hint(text) and (
+                any(re.search(pattern, text) for pattern in _KNOWLEDGE_PATTERNS)
+                or upstream_type != QueryType.KNOWLEDGE_QUERY
+            ):
                 return QueryRoutingType.KNOWLEDGE_QUERY
         return QueryRoutingType.GENERAL_LLM_QUERY
+
+    @staticmethod
+    def _has_support_hint(text: str) -> bool:
+        return any(re.search(pattern, text) for pattern in _SUPPORT_HINT_PATTERNS)
 
     @staticmethod
     def select_route(query_type: QueryRoutingType) -> RouteTarget:
@@ -259,9 +283,14 @@ class ConversationRouter:
         query_type: QueryRoutingType,
         session_id: Optional[str],
     ) -> Dict[str, Any]:
+        answer = build_structured_answer(
+            answer="System-level command requests are blocked by BHIV routing policy.",
+            details="The router stopped a potentially unsafe request before it reached the backend.",
+            source="BHIV routing policy",
+        )
         return self._build_router_contract_response(
             decision="block",
-            answer="System-level command requests are blocked by BHIV routing policy.",
+            answer=answer,
             reason="ROUTE_SYSTEM policy enforced.",
             query_type=query_type,
             route=RouteTarget.ROUTE_SYSTEM,
@@ -277,9 +306,14 @@ class ConversationRouter:
         query_type: QueryRoutingType,
         session_id: Optional[str],
     ) -> Dict[str, Any]:
+        answer = build_structured_answer(
+            answer=f"Delegated to workflow engine: {query}",
+            details="This request matched a workflow pattern and was handed off for task processing.",
+            source="Workflow router",
+        )
         return self._build_router_contract_response(
             decision="answer",
-            answer=f"Delegated to workflow engine: {query}",
+            answer=answer,
             reason="ROUTE_WORKFLOW policy applied.",
             query_type=query_type,
             route=RouteTarget.ROUTE_WORKFLOW,

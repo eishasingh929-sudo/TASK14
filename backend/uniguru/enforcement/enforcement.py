@@ -42,7 +42,6 @@ class SovereignEnforcement:
             decision_schema["status_action"] = "ALLOW"
             prefix = self._resolve_declaration(verification_meta, default_source="UniGuru KB", partial=False)
             decision_schema["verification_prefix"] = prefix
-            data["response_content"] = self._prefix_if_missing(content, prefix)
 
         elif v_status == "PARTIAL":
             decision_schema["status_action"] = "ALLOW_WITH_DISCLAIMER"
@@ -53,7 +52,6 @@ class SovereignEnforcement:
             )
             decision_schema["verification_prefix"] = prefix
             decision_schema["disclaimer"] = prefix
-            data["response_content"] = self._prefix_if_missing(content, prefix)
 
         else:
             decision_schema["status_action"] = "REFUSE"
