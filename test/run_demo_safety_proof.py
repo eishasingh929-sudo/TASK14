@@ -199,7 +199,9 @@ def main() -> None:
         stack = _start_stack(
             {
                 "UNIGURU_API_AUTH_REQUIRED": "false",
-                "UNIGURU_LLM_URL": "internal://demo-llm",
+                "UNIGURU_LLM_URL": "http://127.0.0.1:11434/api/generate",
+                "UNIGURU_LLM_MODEL": "gpt-oss:120b-cloud",
+                "UNIGURU_LLM_TIMEOUT_SECONDS": "60",
             }
         )
         results_1 = _run_queries(

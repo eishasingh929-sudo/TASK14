@@ -59,7 +59,9 @@ def _start_stack() -> tuple[subprocess.Popen[Any], subprocess.Popen[Any]]:
     env_backend["UNIGURU_HOST"] = "127.0.0.1"
     env_backend["UNIGURU_PORT"] = str(PYTHON_PORT)
     env_backend["UNIGURU_API_AUTH_REQUIRED"] = "false"
-    env_backend["UNIGURU_LLM_URL"] = env_backend.get("UNIGURU_LLM_URL", "internal://demo-llm")
+    env_backend["UNIGURU_LLM_URL"] = env_backend.get("UNIGURU_LLM_URL", "http://127.0.0.1:11434/api/generate")
+    env_backend["UNIGURU_LLM_MODEL"] = env_backend.get("UNIGURU_LLM_MODEL", "gpt-oss:120b-cloud")
+    env_backend["UNIGURU_LLM_TIMEOUT_SECONDS"] = env_backend.get("UNIGURU_LLM_TIMEOUT_SECONDS", "60")
     env_backend["UNIGURU_ALLOWED_CALLERS"] = (
         "bhiv-assistant,gurukul-platform,internal-testing,uniguru-frontend"
     )

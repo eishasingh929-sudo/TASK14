@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, Optional
+from urllib.parse import urlparse, urlunparse
 
 from uniguru.runtime_env import load_project_env
 from uniguru.service.live_service import LiveUniGuruService
@@ -90,6 +91,15 @@ _SUPPORT_HINT_PATTERNS = (
     r"\breporting day\b",
     r"\binterview\b",
     r"\bcareer\b",
+    r"\bquantum\b",
+    r"\bqubit\b",
+    r"\bjain\b",
+    r"\bmahavira\b",
+    r"\bahimsa\b",
+    r"\bswaminarayan\b",
+    r"\bswamini vato\b",
+    r"\bvedic\b",
+    r"\bnyaya\b",
 )
 
 _GENERAL_CHAT_PATTERNS = (
@@ -100,6 +110,8 @@ _GENERAL_CHAT_PATTERNS = (
 )
 
 SAFE_FALLBACK_PREFIX = "I am still learning this topic, but here is a basic explanation..."
+DEFAULT_LOCAL_OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
+DEFAULT_LOCAL_OLLAMA_MODEL = "llama3"
 
 
 @dataclass(frozen=True)
@@ -148,8 +160,8 @@ class ConversationRouter:
             )
         self._allow_unverified_fallback = bool(allow_unverified_fallback)
         self._breaker = _LatencyCircuitBreaker(threshold_ms=threshold, open_seconds=open_seconds)
-        self._llm_url = os.getenv("UNIGURU_LLM_URL", "").strip()
-        self._llm_model = os.getenv("UNIGURU_LLM_MODEL", "gpt-oss:120b-cloud").strip()
+        self._llm_url = self._resolve_local_ollama_url(os.getenv("UNIGURU_LLM_URL", "").strip())
+        self._llm_model = os.getenv("UNIGURU_LLM_MODEL", DEFAULT_LOCAL_OLLAMA_MODEL).strip() or DEFAULT_LOCAL_OLLAMA_MODEL
         self._llm_timeout = float(os.getenv("UNIGURU_LLM_TIMEOUT_SECONDS", "8"))
 
     def llm_status(self) -> Dict[str, Any]:
@@ -160,6 +172,54 @@ class ConversationRouter:
             "model": self._llm_model or None,
             "available": configured,
         }
+
+    @staticmethod
+    def _resolve_local_ollama_url(raw_url: str) -> str:
+        candidate = str(raw_url or "").strip()
+        if not candidate or candidate.startswith("internal://"):
+            return DEFAULT_LOCAL_OLLAMA_URL
+
+        parsed = urlparse(candidate)
+        if parsed.scheme not in {"http", "https"}:
+            return DEFAULT_LOCAL_OLLAMA_URL
+        if (parsed.hostname or "").lower() not in {"127.0.0.1", "localhost", "::1"}:
+            return DEFAULT_LOCAL_OLLAMA_URL
+        if parsed.port not in {None, 11434}:
+            return DEFAULT_LOCAL_OLLAMA_URL
+        if parsed.path not in {"", "/", "/api/generate"}:
+            return DEFAULT_LOCAL_OLLAMA_URL
+        return urlunparse((parsed.scheme, parsed.netloc, "/api/generate", "", "", ""))
+
+    def _available_local_models(self) -> list[str]:
+        tags_url = self._llm_url.replace("/api/generate", "/api/tags")
+        try:
+            response = requests.get(tags_url, timeout=min(5.0, self._llm_timeout))
+            response.raise_for_status()
+            data = response.json()
+        except Exception:
+            return []
+
+        models = data.get("models") if isinstance(data, dict) else []
+        if not isinstance(models, list):
+            return []
+
+        names: list[str] = []
+        for item in models:
+            if not isinstance(item, dict):
+                continue
+            name = str(item.get("name") or item.get("model") or "").strip()
+            if name and name not in names:
+                names.append(name)
+        return names
+
+    def _select_fallback_model(self, preferred: str) -> str:
+        available = self._available_local_models()
+        candidates = [preferred, preferred.replace("_", "-"), DEFAULT_LOCAL_OLLAMA_MODEL]
+        for candidate in candidates:
+            normalized = str(candidate or "").strip()
+            if normalized and normalized in available:
+                return normalized
+        return available[0] if available else (preferred or DEFAULT_LOCAL_OLLAMA_MODEL)
 
     def route_query(self, query: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         started = time.perf_counter()
@@ -366,33 +426,60 @@ class ConversationRouter:
             }
 
         payload = {
-            "model": self._llm_model or None,
+            "model": self._llm_model or DEFAULT_LOCAL_OLLAMA_MODEL,
             "prompt": query,
-            "query": query,
-            "input": query,
-            "session_id": session_id,
             "stream": False,
         }
-        sanitized_payload = {key: value for key, value in payload.items() if value is not None}
+
+        def _call_local_ollama(model_name: str) -> Dict[str, Any]:
+            response = requests.post(
+                self._llm_url,
+                json={
+                    "model": model_name,
+                    "prompt": query,
+                    "stream": False,
+                },
+                timeout=self._llm_timeout,
+            )
+            response.raise_for_status()
+            return response.json()
 
         try:
-            response = requests.post(self._llm_url, json=sanitized_payload, timeout=self._llm_timeout)
-            response.raise_for_status()
-            data = response.json()
+            data = _call_local_ollama(payload["model"])
         except Exception as exc:
-            return {
-                "answer": self._build_service_continuity_answer(query),
-                "reason": "ROUTE_LLM request to configured endpoint failed.",
-                "governance_reason": f"LLM route returned an integration failure: {exc}",
-                "details": "Service continuity mode kept the system responsive after the configured LLM endpoint failed.",
-                "source_label": f"{self._llm_model} via {self._llm_url}",
-                "metadata": {
-                    "provider": "configured-endpoint",
-                    "endpoint": self._llm_url,
-                    "model": self._llm_model,
-                    "live_response": False,
-                },
-            }
+            fallback_model = self._select_fallback_model(payload["model"])
+            if fallback_model and fallback_model != payload["model"]:
+                try:
+                    data = _call_local_ollama(fallback_model)
+                    payload["model"] = fallback_model
+                except Exception as retry_exc:
+                    return {
+                        "answer": self._build_service_continuity_answer(query),
+                        "reason": "ROUTE_LLM request to local Ollama endpoint failed.",
+                        "governance_reason": f"Local Ollama route returned an integration failure: {retry_exc}",
+                        "details": "Service continuity mode kept the system responsive after the local LLM endpoint failed.",
+                        "source_label": f"{payload['model']} via {self._llm_url}",
+                        "metadata": {
+                            "provider": "local-ollama",
+                            "endpoint": self._llm_url,
+                            "model": payload["model"],
+                            "live_response": False,
+                        },
+                    }
+            else:
+                return {
+                    "answer": self._build_service_continuity_answer(query),
+                    "reason": "ROUTE_LLM request to local Ollama endpoint failed.",
+                    "governance_reason": f"Local Ollama route returned an integration failure: {exc}",
+                    "details": "Service continuity mode kept the system responsive after the local LLM endpoint failed.",
+                    "source_label": f"{payload['model']} via {self._llm_url}",
+                    "metadata": {
+                        "provider": "local-ollama",
+                        "endpoint": self._llm_url,
+                        "model": payload["model"],
+                        "live_response": False,
+                    },
+                }
 
         answer = str(
             data.get("answer")
@@ -415,14 +502,14 @@ class ConversationRouter:
 
         return {
             "answer": answer,
-            "reason": "ROUTE_LLM policy applied via configured LLM endpoint.",
-            "governance_reason": "Delegated open-chat response through configured LLM service.",
+            "reason": "ROUTE_LLM policy applied via local Ollama endpoint.",
+            "governance_reason": "Delegated open-chat response through local Ollama service.",
             "details": "General-purpose question answered by the configured fallback language model.",
-            "source_label": f"{self._llm_model} via {self._llm_url}",
+            "source_label": f"{payload['model']} via {self._llm_url}",
             "metadata": {
-                "provider": "configured-endpoint",
+                "provider": "local-ollama",
                 "endpoint": self._llm_url,
-                "model": self._llm_model,
+                "model": payload["model"],
                 "live_response": live_response,
             },
         }

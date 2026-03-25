@@ -79,7 +79,10 @@ def test_unverified_uniguru_response_can_fallback_to_llm() -> None:
         }
     )
     router = ConversationRouter(uniguru_service=fake, allow_unverified_fallback=True)
-    response = router.route_query("What happened in the latest market?", {"session_id": "s-1", "allow_web": False})
+    response = router.route_query(
+        "What should I do for my admission application?",
+        {"session_id": "s-1", "allow_web": False},
+    )
 
     assert response["routing"]["route"] == RouteTarget.ROUTE_LLM.value
     assert response["verification_status"] == "UNVERIFIED"
@@ -145,3 +148,39 @@ def test_llm_route_uses_configured_endpoint(monkeypatch) -> None:
     assert response["answer"].startswith("Answer:")
     assert captured["url"] == "http://127.0.0.1:11434/api/generate"
     assert captured["json"]["model"] == "llama3"
+    assert captured["json"]["prompt"] == "hello there"
+    assert captured["json"]["stream"] is False
+
+
+def test_llm_route_normalizes_remote_endpoint_to_local_ollama(monkeypatch) -> None:
+    class _FakeResponse:
+        def raise_for_status(self) -> None:
+            return None
+
+        def json(self):
+            return {"response": "Hello from local Ollama"}
+
+    captured = {}
+
+    def _fake_post(url, json, timeout):
+        captured["url"] = url
+        captured["json"] = json
+        captured["timeout"] = timeout
+        return _FakeResponse()
+
+    monkeypatch.setenv("UNIGURU_LLM_URL", "https://api.groq.com/openai/v1/chat/completions")
+    monkeypatch.setenv("UNIGURU_LLM_MODEL", "llama3")
+    monkeypatch.setattr("uniguru.router.conversation_router.requests.post", _fake_post)
+
+    router = ConversationRouter(
+        uniguru_service=_FakeUniGuruService(
+            {"decision": "answer", "answer": "Verified answer", "verification_status": "VERIFIED"}
+        )
+    )
+    response = router.route_query("Explain cloud computing", {"session_id": "llm-remote"})
+
+    assert response["routing"]["route"] == RouteTarget.ROUTE_LLM.value
+    assert "Hello from local Ollama" in response["answer"]
+    assert response["answer"].startswith("Answer:")
+    assert captured["url"] == "http://127.0.0.1:11434/api/generate"
+    assert captured["json"] == {"model": "llama3", "prompt": "Explain cloud computing", "stream": False}
