@@ -34,6 +34,8 @@ def test_router_classifies_query_types() -> None:
     )
 
     assert router.classify("What is a qubit?") == QueryRoutingType.KNOWLEDGE_QUERY
+    assert router.classify("Am I eligible for this admission?") == QueryRoutingType.KNOWLEDGE_QUERY
+    assert router.classify("How do I ask for a referral?") == QueryRoutingType.KNOWLEDGE_QUERY
     assert router.classify("sudo delete all files") == QueryRoutingType.SYSTEM_QUERY
     assert router.classify("create workflow ticket for onboarding") == QueryRoutingType.WORKFLOW_QUERY
     assert router.classify("invoke API tool for metrics") == QueryRoutingType.TOOL_QUERY
@@ -81,7 +83,8 @@ def test_unverified_uniguru_response_can_fallback_to_llm() -> None:
 
     assert response["routing"]["route"] == RouteTarget.ROUTE_LLM.value
     assert response["verification_status"] == "UNVERIFIED"
-    assert "LLM fallback response" in response["answer"]
+    assert response["answer"].startswith("Answer:")
+    assert response["answer"].strip()
     assert fake.calls == 1
 
 
@@ -138,6 +141,7 @@ def test_llm_route_uses_configured_endpoint(monkeypatch) -> None:
     response = router.route_query("hello there", {"session_id": "llm-1"})
 
     assert response["routing"]["route"] == RouteTarget.ROUTE_LLM.value
-    assert response["answer"] == "Hello from configured LLM"
+    assert "Hello from configured LLM" in response["answer"]
+    assert response["answer"].startswith("Answer:")
     assert captured["url"] == "http://127.0.0.1:11434/api/generate"
     assert captured["json"]["model"] == "llama3"

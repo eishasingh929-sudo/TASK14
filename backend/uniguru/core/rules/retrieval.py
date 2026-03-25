@@ -3,6 +3,7 @@ import os
 
 from uniguru.core.rules.base import BaseRule, RuleContext, RuleResult, RuleAction
 from uniguru.retrieval.retriever import retrieve_knowledge_with_trace
+from uniguru.service.response_format import build_structured_answer
 from uniguru.verifier.source_verifier import SourceVerifier
 
 KB_CONFIDENCE_THRESHOLD = float(os.getenv("UNIGURU_KB_CONFIDENCE_THRESHOLD", "0.45"))
@@ -51,10 +52,13 @@ def _summarize_kb_content(raw_content: str, *, max_chars: int = 420) -> str:
 
 def _format_structured_answer(raw_content: str, trace: dict) -> str:
     answer_text = _summarize_kb_content(raw_content)
-    source = str(trace.get("kb_file_path") or trace.get("kb_file") or "").strip()
-    if source:
-        return f"Answer:\n{answer_text}\n\nSource:\n{source}"
-    return f"Answer:\n{answer_text}"
+    source_parts = [
+        str(trace.get("source_title") or "").strip(),
+        str(trace.get("kb_file_path") or trace.get("kb_file") or "").strip(),
+    ]
+    source = " | ".join(part for part in source_parts if part)
+    details = f"Matched keyword: {trace.get('matched_keyword')}" if trace.get("matched_keyword") else None
+    return build_structured_answer(answer=answer_text, details=details, source=source or None)
 
 class RetrievalRule(BaseRule):
     def evaluate(self, context: RuleContext) -> RuleResult:

@@ -13,12 +13,21 @@ import requests
 
 
 ROOT = Path(__file__).resolve().parents[1]
+BACKEND = ROOT / "backend"
+if str(BACKEND) not in sys.path:
+    sys.path.insert(0, str(BACKEND))
+
+from uniguru.runtime_env import load_project_env
+
 PYTHON_PORT = int(os.getenv("UNIGURU_PYTHON_PORT", "8000"))
 NODE_PORT = int(os.getenv("UNIGURU_NODE_PORT", "8080"))
 PYTHON_BASE = f"http://127.0.0.1:{PYTHON_PORT}"
 NODE_BASE = f"http://127.0.0.1:{NODE_PORT}"
 OUTPUT_JSON = ROOT / "demo_logs" / "final_validation_20_queries.json"
 OUTPUT_MD = ROOT / "docs" / "reports" / "FINAL_VALIDATION_20_QUERIES.md"
+
+
+load_project_env()
 
 
 def _wait_for_health(url: str, timeout_seconds: int = 40) -> None:

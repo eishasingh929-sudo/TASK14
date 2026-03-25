@@ -12,8 +12,12 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, Optional
 
+from uniguru.runtime_env import load_project_env
 from uniguru.service.live_service import LiveUniGuruService
+from uniguru.service.response_format import build_structured_answer
 from uniguru.service.query_classifier import QueryType, classify_query
+
+load_project_env()
 
 
 class QueryRoutingType(str, Enum):
@@ -61,6 +65,10 @@ _TOOL_PATTERNS = (
 
 _KNOWLEDGE_PATTERNS = (
     r"^(what|who|when|where|why|how)\b",
+    r"^(am|is|are|can|could|should|would|do|does|did)\s+i\b",
+    r"^what should i\b",
+    r"^how should i\b",
+    r"^how do i\b",
     r"\bexplain\b",
     r"\bdefine\b",
     r"\btell me about\b",
@@ -123,21 +131,17 @@ class ConversationRouter:
             )
         self._allow_unverified_fallback = bool(allow_unverified_fallback)
         self._breaker = _LatencyCircuitBreaker(threshold_ms=threshold, open_seconds=open_seconds)
-        # Always default to internal demo mode so ROUTE_LLM remains available
-        # even when env files are missing in demo/smoke runs.
-        self._llm_url = os.getenv("UNIGURU_LLM_URL", "internal://demo-llm").strip()
-        self._llm_model = os.getenv("UNIGURU_LLM_MODEL", "demo-safety-llm").strip()
+        self._llm_url = os.getenv("UNIGURU_LLM_URL", "").strip()
+        self._llm_model = os.getenv("UNIGURU_LLM_MODEL", "gpt-oss:120b-cloud").strip()
         self._llm_timeout = float(os.getenv("UNIGURU_LLM_TIMEOUT_SECONDS", "8"))
 
     def llm_status(self) -> Dict[str, Any]:
         configured = bool(self._llm_url)
-        internal_demo = self._llm_url.startswith("internal://")
         return {
             "configured": configured,
             "endpoint": self._llm_url or None,
             "model": self._llm_model or None,
-            "internal_demo_mode": internal_demo,
-            "available": True,  # safety fallback is always available
+            "available": configured,
         }
 
     def route_query(self, query: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
@@ -293,9 +297,11 @@ class ConversationRouter:
         warning: Optional[str],
     ) -> Dict[str, Any]:
         llm_result = self._request_llm(query=query, session_id=session_id)
-        answer = llm_result["answer"]
-        if warning:
-            answer = f"{warning} {answer}"
+        answer = build_structured_answer(
+            answer=llm_result["answer"],
+            details=warning or llm_result["details"],
+            source=llm_result["source_label"],
+        )
         return self._build_router_contract_response(
             decision="answer",
             answer=answer,
@@ -306,21 +312,23 @@ class ConversationRouter:
             session_id=session_id,
             governance_allowed=True,
             governance_reason=llm_result["governance_reason"],
+            extra={"llm_metadata": llm_result["metadata"]},
         )
 
-    def _request_llm(self, query: str, session_id: Optional[str]) -> Dict[str, str]:
-        if self._llm_url.startswith("internal://"):
-            return {
-                "answer": self._build_local_demo_answer(query),
-                "reason": "ROUTE_LLM served by internal demo mode.",
-                "governance_reason": "Delegated to internal safety LLM fallback.",
-            }
-
+    def _request_llm(self, query: str, session_id: Optional[str]) -> Dict[str, Any]:
         if not self._llm_url:
             return {
-                "answer": self._build_local_demo_answer(query),
+                "answer": self._build_service_continuity_answer(query),
                 "reason": "ROUTE_LLM selected but UNIGURU_LLM_URL is not configured.",
                 "governance_reason": "LLM route unavailable because no endpoint is configured.",
+                "details": "Service continuity mode returned a safe baseline answer because no external LLM endpoint is configured.",
+                "source_label": "LLM endpoint not configured",
+                "metadata": {
+                    "provider": "unavailable",
+                    "endpoint": None,
+                    "model": self._llm_model,
+                    "live_response": False,
+                },
             }
 
         payload = {
@@ -339,9 +347,17 @@ class ConversationRouter:
             data = response.json()
         except Exception as exc:
             return {
-                "answer": self._build_local_demo_answer(query),
+                "answer": self._build_service_continuity_answer(query),
                 "reason": "ROUTE_LLM request to configured endpoint failed.",
                 "governance_reason": f"LLM route returned an integration failure: {exc}",
+                "details": "Service continuity mode kept the system responsive after the configured LLM endpoint failed.",
+                "source_label": f"{self._llm_model} via {self._llm_url}",
+                "metadata": {
+                    "provider": "configured-endpoint",
+                    "endpoint": self._llm_url,
+                    "model": self._llm_model,
+                    "live_response": False,
+                },
             }
 
         answer = str(
@@ -359,25 +375,33 @@ class ConversationRouter:
                 or ""
             ).strip()
 
+        live_response = bool(answer)
         if not answer:
-            answer = self._build_local_demo_answer(query)
+            answer = self._build_service_continuity_answer(query)
 
         return {
             "answer": answer,
             "reason": "ROUTE_LLM policy applied via configured LLM endpoint.",
             "governance_reason": "Delegated open-chat response through configured LLM service.",
+            "details": "General-purpose question answered by the configured fallback language model.",
+            "source_label": f"{self._llm_model} via {self._llm_url}",
+            "metadata": {
+                "provider": "configured-endpoint",
+                "endpoint": self._llm_url,
+                "model": self._llm_model,
+                "live_response": live_response,
+            },
         }
 
     @staticmethod
-    def _build_local_demo_answer(query: str) -> str:
+    def _build_service_continuity_answer(query: str) -> str:
         text = str(query or "").strip()
         lower = text.lower()
         if "joke" in lower:
             body = "Here is one: Why did the developer go broke? Because they used up all their cache."
         elif any(token in lower for token in ("news", "current", "latest", "happening in the world")):
             body = (
-                "In demo mode I do not fetch live internet updates, but a good snapshot usually includes "
-                "major world news, economic movement, and local developments from trusted sources."
+                "I cannot verify live internet updates in continuity mode, so please confirm current events with a trusted live source."
             )
         elif text:
             body = (
@@ -385,7 +409,7 @@ class ConversationRouter:
             )
         else:
             body = "Let us start with the basics and build up step by step."
-        return f"{SAFE_FALLBACK_PREFIX} {body}"
+        return body
 
     def _build_router_contract_response(
         self,
@@ -398,11 +422,12 @@ class ConversationRouter:
         session_id: Optional[str],
         governance_allowed: bool,
         governance_reason: str,
+        extra: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         request_id = str(uuid.uuid4())
         signature_payload = f"{decision}|{answer}|{route.value}|{request_id}"
         signature = hashlib.sha256(signature_payload.encode("utf-8")).hexdigest()
-        return {
+        response = {
             "decision": decision,
             "answer": answer,
             "session_id": session_id,
@@ -435,6 +460,9 @@ class ConversationRouter:
             "sealed_at": _utc_now_iso(),
             "latency_ms": 0.0,
         }
+        if extra:
+            response.update(extra)
+        return response
 
 
 _DEFAULT_ROUTER = ConversationRouter()

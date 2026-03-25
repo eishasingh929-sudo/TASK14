@@ -321,6 +321,18 @@
       }
     },
     {
+      "content": "Placement readiness combines resume quality, communication practice, role-specific preparation, and application tracking. Students improve faster when they focus on one target role at a time and review feedback after each interview stage.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-001",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
       "content": "Answer notes\n- Placement readiness combines resume quality, communication practice, and role-specific interview preparation.\n- Students should maintain a project portfolio with measurable outcomes.\n- Weekly mock interviews improve confidence and answer clarity.\n\nPlacement workflow\n1. Resume audit\n2. Aptitude practice\n3. Technical interview prep\n4. HR and behavioral interview prep\n5. Offer comparison and acceptance planning\n\nSupport guidance\n- Focus on one target role at a time for better preparation depth.\n- Keep a tracker of applications, interview dates, and recruiter feedback.",
       "metadata": {
         "source": "Nupur Dataset Pack",
@@ -1824,6 +1836,18 @@
   ],
   "university admission basics": [
     {
+      "content": "University admissions usually evaluate academic marks, entrance exams, and document verification. Students should track registration dates, merit list publication, counseling, and final fee payment so they do not miss the confirmation window.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-001",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
       "content": "Answer notes\n- University admissions usually evaluate academic marks, entrance exams, and document verification.\n- A complete application packet includes identity proof, transcripts, and category certificates when applicable.\n- Applicants should track deadlines for registration, payment, and counseling rounds.\n\nImportant process checkpoints\n1. Registration and profile creation\n2. Document upload and validation\n3. Merit list publication\n4. Seat allotment and fee confirmation\n\nSupport guidance\n- If a student misses a counseling round, they should check the next open round and policy for upgradation.\n- If documents are rejected, re-upload within the correction window.",
       "metadata": {
         "source": "Ankita Dataset Pack",
@@ -1838,6 +1862,42 @@
     }
   ],
   "admission": [
+    {
+      "content": "University admissions usually evaluate academic marks, entrance exams, and document verification. Students should track registration dates, merit list publication, counseling, and final fee payment so they do not miss the confirmation window.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-001",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Students should track registration closing dates, exam dates, admit card release, counseling schedules, and fee payment deadlines in one checklist. A shared calendar with reminders helps avoid missing late-night or weekend deadlines.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-007",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Admission eligibility usually depends on the required academic marks, age limits, subject combinations, entrance score, and category rules in the official notice. Students should compare their profile with the published checklist before applying so they do not waste a seat on an ineligible program.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-016",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
     {
       "content": "Answer notes\n- University admissions usually evaluate academic marks, entrance exams, and document verification.\n- A complete application packet includes identity proof, transcripts, and category certificates when applicable.\n- Applicants should track deadlines for registration, payment, and counseling rounds.\n\nImportant process checkpoints\n1. Registration and profile creation\n2. Document upload and validation\n3. Merit list publication\n4. Seat allotment and fee confirmation\n\nSupport guidance\n- If a student misses a counseling round, they should check the next open round and policy for upgradation.\n- If documents are rejected, re-upload within the correction window.",
       "metadata": {
@@ -1854,6 +1914,42 @@
   ],
   "basics": [
     {
+      "content": "University admissions usually evaluate academic marks, entrance exams, and document verification. Students should track registration dates, merit list publication, counseling, and final fee payment so they do not miss the confirmation window.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-001",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "A strong entrance exam plan combines syllabus mapping, weekly revision, timed practice, and error review. Students should analyze weak topics after each mock test rather than only counting the number of hours studied.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-010",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Hostel applications usually open after or alongside admission confirmation and may require a separate form. Students should check room availability, fee schedule, security deposit, curfew rules, and documents such as admission proof and guardian ID.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-014",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
       "content": "Answer notes\n- University admissions usually evaluate academic marks, entrance exams, and document verification.\n- A complete application packet includes identity proof, transcripts, and category certificates when applicable.\n- Applicants should track deadlines for registration, payment, and counseling rounds.\n\nImportant process checkpoints\n1. Registration and profile creation\n2. Document upload and validation\n3. Merit list publication\n4. Seat allotment and fee confirmation\n\nSupport guidance\n- If a student misses a counseling round, they should check the next open round and policy for upgradation.\n- If documents are rejected, re-upload within the correction window.",
       "metadata": {
         "source": "Ankita Dataset Pack",
@@ -1865,9 +1961,57 @@
         "verification_status": "VERIFIED",
         "category": "ankita"
       }
+    },
+    {
+      "content": "A resume audit checks clarity, grammar, relevance, measurable achievements, and consistency with the target role. Students should replace vague lines with impact statements that show scale, tools used, and outcomes delivered.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-002",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "System design basics for students focus on requirements, scale, storage, caching, APIs, and failure handling. For interview prep, it is better to explain one or two tradeoffs clearly than to memorize a large list of buzzwords.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-018",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Salary negotiation starts with understanding your market range, the role level, and the complete offer package including bonuses and benefits. Students should be polite, ask for time to review, and negotiate with facts rather than pressure.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-020",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
     }
   ],
   "university": [
+    {
+      "content": "University admissions usually evaluate academic marks, entrance exams, and document verification. Students should track registration dates, merit list publication, counseling, and final fee payment so they do not miss the confirmation window.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-001",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
     {
       "content": "Answer notes\n- University admissions usually evaluate academic marks, entrance exams, and document verification.\n- A complete application packet includes identity proof, transcripts, and category certificates when applicable.\n- Applicants should track deadlines for registration, payment, and counseling rounds.\n\nImportant process checkpoints\n1. Registration and profile creation\n2. Document upload and validation\n3. Merit list publication\n4. Seat allotment and fee confirmation\n\nSupport guidance\n- If a student misses a counseling round, they should check the next open round and policy for upgradation.\n- If documents are rejected, re-upload within the correction window.",
       "metadata": {
@@ -1882,7 +2026,1351 @@
       }
     }
   ],
+  "document verification window": [
+    {
+      "content": "Document verification checks identity proof, marksheets, photographs, signatures, category certificates, and application details. If a file is rejected, the student should re-upload the corrected version within the correction window instead of creating a duplicate application.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-002",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "document": [
+    {
+      "content": "Document verification checks identity proof, marksheets, photographs, signatures, category certificates, and application details. If a file is rejected, the student should re-upload the corrected version within the correction window instead of creating a duplicate application.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-002",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "verification": [
+    {
+      "content": "Document verification checks identity proof, marksheets, photographs, signatures, category certificates, and application details. If a file is rejected, the student should re-upload the corrected version within the correction window instead of creating a duplicate application.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-002",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Category certificate verification checks whether the certificate is current, issued by the correct authority, and matches the applicant's record. Students should keep a scanned copy, the original certificate, and any supporting affidavit ready if the portal asks for correction.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-017",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "window": [
+    {
+      "content": "Document verification checks identity proof, marksheets, photographs, signatures, category certificates, and application details. If a file is rejected, the student should re-upload the corrected version within the correction window instead of creating a duplicate application.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-002",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "The correction window allows a student to fix data entry errors such as name spelling, marks, uploaded documents, or category details. Students should use the official edit flow, save screenshots of the update, and recheck the submitted form after correction.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-006",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "counseling round planning": [
+    {
+      "content": "A counseling round is the stage where eligible students review available seats, set preferences, and receive allotment results. Students should keep payment methods and required documents ready because the acceptance window after allotment is often short.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-003",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "counseling": [
+    {
+      "content": "A counseling round is the stage where eligible students review available seats, set preferences, and receive allotment results. Students should keep payment methods and required documents ready because the acceptance window after allotment is often short.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-003",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "A counseling mock run is a rehearsal of the seat-selection and document-submission process before the real counseling round. Students can use it to test login access, understand the locking step, and decide the order of preferences before the actual deadline.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-025",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "planning": [
+    {
+      "content": "A counseling round is the stage where eligible students review available seats, set preferences, and receive allotment results. Students should keep payment methods and required documents ready because the acceptance window after allotment is often short.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-003",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Commute planning should consider travel time, safety, reporting hours, and transport cost before finalizing enrollment. Students who travel daily should test the route once and keep a backup travel plan for exam days or bad weather.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-015",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Cutoff planning means comparing your score or rank with past cutoff trends to estimate where you may get a seat. A practical strategy is to list dream, realistic, and safe options so the final choice order reflects both ambition and backup support.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-018",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "round": [
+    {
+      "content": "A counseling round is the stage where eligible students review available seats, set preferences, and receive allotment results. Students should keep payment methods and required documents ready because the acceptance window after allotment is often short.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-003",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Coding round preparation should cover arrays, strings, recursion, hash maps, sorting, and basic dynamic programming at an appropriate level. Students should practice writing clean code under time limits instead of only reading solved answers.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-008",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "merit list interpretation": [
+    {
+      "content": "A merit list usually shows the candidate rank, category, score, and allotment eligibility. Students should compare their rank with the cutoff history and keep backup program choices ready instead of depending on only one high-demand option.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-004",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "interpretation": [
+    {
+      "content": "A merit list usually shows the candidate rank, category, score, and allotment eligibility. Students should compare their rank with the cutoff history and keep backup program choices ready instead of depending on only one high-demand option.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-004",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "list": [
+    {
+      "content": "A merit list usually shows the candidate rank, category, score, and allotment eligibility. Students should compare their rank with the cutoff history and keep backup program choices ready instead of depending on only one high-demand option.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-004",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "merit": [
+    {
+      "content": "A merit list usually shows the candidate rank, category, score, and allotment eligibility. Students should compare their rank with the cutoff history and keep backup program choices ready instead of depending on only one high-demand option.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-004",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "seat allotment confirmation": [
+    {
+      "content": "After seat allotment, the student must accept the seat, pay the required fee, and complete final reporting if instructed. Delayed payment or missing the acceptance step can automatically release the seat to the next candidate.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-005",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "allotment": [
+    {
+      "content": "After seat allotment, the student must accept the seat, pay the required fee, and complete final reporting if instructed. Delayed payment or missing the acceptance step can automatically release the seat to the next candidate.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-005",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "confirmation": [
+    {
+      "content": "After seat allotment, the student must accept the seat, pay the required fee, and complete final reporting if instructed. Delayed payment or missing the acceptance step can automatically release the seat to the next candidate.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-005",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "seat": [
+    {
+      "content": "After seat allotment, the student must accept the seat, pay the required fee, and complete final reporting if instructed. Delayed payment or missing the acceptance step can automatically release the seat to the next candidate.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-005",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Cutoff planning means comparing your score or rank with past cutoff trends to estimate where you may get a seat. A practical strategy is to list dream, realistic, and safe options so the final choice order reflects both ambition and backup support.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-018",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "correction window guidance": [
+    {
+      "content": "The correction window allows a student to fix data entry errors such as name spelling, marks, uploaded documents, or category details. Students should use the official edit flow, save screenshots of the update, and recheck the submitted form after correction.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-006",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "correction": [
+    {
+      "content": "The correction window allows a student to fix data entry errors such as name spelling, marks, uploaded documents, or category details. Students should use the official edit flow, save screenshots of the update, and recheck the submitted form after correction.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-006",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "guidance": [
+    {
+      "content": "The correction window allows a student to fix data entry errors such as name spelling, marks, uploaded documents, or category details. Students should use the official edit flow, save screenshots of the update, and recheck the submitted form after correction.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-006",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "admission deadline tracking": [
+    {
+      "content": "Students should track registration closing dates, exam dates, admit card release, counseling schedules, and fee payment deadlines in one checklist. A shared calendar with reminders helps avoid missing late-night or weekend deadlines.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-007",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "deadline": [
+    {
+      "content": "Students should track registration closing dates, exam dates, admit card release, counseling schedules, and fee payment deadlines in one checklist. A shared calendar with reminders helps avoid missing late-night or weekend deadlines.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-007",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "tracking": [
+    {
+      "content": "Students should track registration closing dates, exam dates, admit card release, counseling schedules, and fee payment deadlines in one checklist. A shared calendar with reminders helps avoid missing late-night or weekend deadlines.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-007",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "profile creation checklist": [
+    {
+      "content": "Profile creation should use the same name, date of birth, email, and mobile number that appear on official documents. Students should keep login credentials safe because later corrections, admit card access, and counseling updates depend on that account.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-008",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "checklist": [
+    {
+      "content": "Profile creation should use the same name, date of birth, email, and mobile number that appear on official documents. Students should keep login credentials safe because later corrections, admit card access, and counseling updates depend on that account.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-008",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Reporting day usually requires the admission letter, fee receipt, ID proof, photographs, and original documents for final inspection. Students should arrive early, keep photocopies in order, and confirm the office hours because missed reporting can cancel the seat.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-019",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "creation": [
+    {
+      "content": "Profile creation should use the same name, date of birth, email, and mobile number that appear on official documents. Students should keep login credentials safe because later corrections, admit card access, and counseling updates depend on that account.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-008",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "profile": [
+    {
+      "content": "Profile creation should use the same name, date of birth, email, and mobile number that appear on official documents. Students should keep login credentials safe because later corrections, admit card access, and counseling updates depend on that account.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-008",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "A clean LinkedIn profile should have a professional photo, clear headline, short summary, updated projects, and consistent dates. Students should also add links to GitHub, portfolio work, or certifications if those strengthen the target profile.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-005",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "choice filling strategy": [
+    {
+      "content": "Choice filling should balance dream options, realistic options, and safe options instead of listing only the most competitive programs. Preference order matters, so students should rank options according to genuine interest before locking the form.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-009",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "choice": [
+    {
+      "content": "Choice filling should balance dream options, realistic options, and safe options instead of listing only the most competitive programs. Preference order matters, so students should rank options according to genuine interest before locking the form.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-009",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "filling": [
+    {
+      "content": "Choice filling should balance dream options, realistic options, and safe options instead of listing only the most competitive programs. Preference order matters, so students should rank options according to genuine interest before locking the form.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-009",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "strategy": [
+    {
+      "content": "Choice filling should balance dream options, realistic options, and safe options instead of listing only the most competitive programs. Preference order matters, so students should rank options according to genuine interest before locking the form.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-009",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Students improve PPO chances by taking ownership, documenting progress, asking useful questions, and delivering visible outcomes during the internship. Regular communication with mentors and clean handover of work also make a strong impression.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-015",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "A referral request should be short, specific, and respectful. Students should mention the role, explain why they fit, and attach a concise resume or portfolio so the request is easy to act on.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-022",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "entrance exam preparation basics": [
+    {
+      "content": "A strong entrance exam plan combines syllabus mapping, weekly revision, timed practice, and error review. Students should analyze weak topics after each mock test rather than only counting the number of hours studied.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-010",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "entrance": [
+    {
+      "content": "A strong entrance exam plan combines syllabus mapping, weekly revision, timed practice, and error review. Students should analyze weak topics after each mock test rather than only counting the number of hours studied.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-010",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "An entrance scorecard should be checked for candidate name, roll number, subject-wise marks, total score, percentile, and rank. If anything is wrong, students should contact the exam helpdesk immediately and keep screenshots of the discrepancy.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-024",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "exam": [
+    {
+      "content": "A strong entrance exam plan combines syllabus mapping, weekly revision, timed practice, and error review. Students should analyze weak topics after each mock test rather than only counting the number of hours studied.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-010",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "preparation": [
+    {
+      "content": "A strong entrance exam plan combines syllabus mapping, weekly revision, timed practice, and error review. Students should analyze weak topics after each mock test rather than only counting the number of hours studied.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-010",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Coding round preparation should cover arrays, strings, recursion, hash maps, sorting, and basic dynamic programming at an appropriate level. Students should practice writing clean code under time limits instead of only reading solved answers.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-008",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "HR interviews test motivation, communication, role understanding, and professionalism more than technical depth. Students should answer honestly, keep examples concrete, and avoid giving inconsistent reasons for career choices.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-012",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Good group discussion performance combines listening, concise speaking, structure, and respectful participation. Students do not need to dominate; they need to add value, support points with logic, and help the discussion stay focused.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-013",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "admit card readiness": [
+    {
+      "content": "Students should verify the exam date, reporting time, center address, photo visibility, and ID instructions on the admit card. It is safer to print multiple copies and visit the center area in advance if travel is unfamiliar.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-011",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "admit": [
+    {
+      "content": "Students should verify the exam date, reporting time, center address, photo visibility, and ID instructions on the admit card. It is safer to print multiple copies and visit the center area in advance if travel is unfamiliar.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-011",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "card": [
+    {
+      "content": "Students should verify the exam date, reporting time, center address, photo visibility, and ID instructions on the admit card. It is safer to print multiple copies and visit the center area in advance if travel is unfamiliar.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-011",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "readiness": [
+    {
+      "content": "Students should verify the exam date, reporting time, center address, photo visibility, and ID instructions on the admit card. It is safer to print multiple copies and visit the center area in advance if travel is unfamiliar.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-011",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "fee payment safety": [
+    {
+      "content": "Admission fees should be paid only through the official portal or approved banking channel. Students should download the receipt immediately, verify the transaction status on the portal, and keep a copy for reporting day.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-012",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "payment": [
+    {
+      "content": "Admission fees should be paid only through the official portal or approved banking channel. Students should download the receipt immediately, verify the transaction status on the portal, and keep a copy for reporting day.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-012",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "safety": [
+    {
+      "content": "Admission fees should be paid only through the official portal or approved banking channel. Students should download the receipt immediately, verify the transaction status on the portal, and keep a copy for reporting day.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-012",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "scholarship application timing": [
+    {
+      "content": "Scholarship applications often open near admission or shortly after enrollment confirmation. Students should collect income proofs, category certificates, bank details, and institution letters early because these documents take time to arrange.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-013",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "application": [
+    {
+      "content": "Scholarship applications often open near admission or shortly after enrollment confirmation. Students should collect income proofs, category certificates, bank details, and institution letters early because these documents take time to arrange.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-013",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Hostel applications usually open after or alongside admission confirmation and may require a separate form. Students should check room availability, fee schedule, security deposit, curfew rules, and documents such as admission proof and guardian ID.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-014",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "An application tracker should record company name, role, date applied, interview stage, recruiter details, deadlines, and feedback. This prevents missed follow-ups and helps students notice patterns in the roles where they are getting shortlisted.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-006",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "scholarship": [
+    {
+      "content": "Scholarship applications often open near admission or shortly after enrollment confirmation. Students should collect income proofs, category certificates, bank details, and institution letters early because these documents take time to arrange.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-013",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "timing": [
+    {
+      "content": "Scholarship applications often open near admission or shortly after enrollment confirmation. Students should collect income proofs, category certificates, bank details, and institution letters early because these documents take time to arrange.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-013",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "hostel application basics": [
+    {
+      "content": "Hostel applications usually open after or alongside admission confirmation and may require a separate form. Students should check room availability, fee schedule, security deposit, curfew rules, and documents such as admission proof and guardian ID.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-014",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "hostel": [
+    {
+      "content": "Hostel applications usually open after or alongside admission confirmation and may require a separate form. Students should check room availability, fee schedule, security deposit, curfew rules, and documents such as admission proof and guardian ID.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-014",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Hostel allocation usually depends on distance from campus, availability, gender-specific rules, and whether the student is a first-year or senior applicant. Students who need housing should apply as soon as the window opens and keep backup accommodation options ready.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-023",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "transport and commute planning": [
+    {
+      "content": "Commute planning should consider travel time, safety, reporting hours, and transport cost before finalizing enrollment. Students who travel daily should test the route once and keep a backup travel plan for exam days or bad weather.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-015",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "commute": [
+    {
+      "content": "Commute planning should consider travel time, safety, reporting hours, and transport cost before finalizing enrollment. Students who travel daily should test the route once and keep a backup travel plan for exam days or bad weather.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-015",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "transport": [
+    {
+      "content": "Commute planning should consider travel time, safety, reporting hours, and transport cost before finalizing enrollment. Students who travel daily should test the route once and keep a backup travel plan for exam days or bad weather.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-015",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "admission eligibility check": [
+    {
+      "content": "Admission eligibility usually depends on the required academic marks, age limits, subject combinations, entrance score, and category rules in the official notice. Students should compare their profile with the published checklist before applying so they do not waste a seat on an ineligible program.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-016",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "check": [
+    {
+      "content": "Admission eligibility usually depends on the required academic marks, age limits, subject combinations, entrance score, and category rules in the official notice. Students should compare their profile with the published checklist before applying so they do not waste a seat on an ineligible program.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-016",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "eligibility": [
+    {
+      "content": "Admission eligibility usually depends on the required academic marks, age limits, subject combinations, entrance score, and category rules in the official notice. Students should compare their profile with the published checklist before applying so they do not waste a seat on an ineligible program.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-016",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "category certificate verification": [
+    {
+      "content": "Category certificate verification checks whether the certificate is current, issued by the correct authority, and matches the applicant's record. Students should keep a scanned copy, the original certificate, and any supporting affidavit ready if the portal asks for correction.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-017",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "category": [
+    {
+      "content": "Category certificate verification checks whether the certificate is current, issued by the correct authority, and matches the applicant's record. Students should keep a scanned copy, the original certificate, and any supporting affidavit ready if the portal asks for correction.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-017",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "certificate": [
+    {
+      "content": "Category certificate verification checks whether the certificate is current, issued by the correct authority, and matches the applicant's record. Students should keep a scanned copy, the original certificate, and any supporting affidavit ready if the portal asks for correction.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-017",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "A migration certificate or transfer certificate is often needed when moving from one institution or board to another. Students should request it early because the issuing office may take time, and the form may need previous college enrollment details.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-022",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "cutoff and seat planning": [
+    {
+      "content": "Cutoff planning means comparing your score or rank with past cutoff trends to estimate where you may get a seat. A practical strategy is to list dream, realistic, and safe options so the final choice order reflects both ambition and backup support.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-018",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "cutoff": [
+    {
+      "content": "Cutoff planning means comparing your score or rank with past cutoff trends to estimate where you may get a seat. A practical strategy is to list dream, realistic, and safe options so the final choice order reflects both ambition and backup support.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-018",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "reporting day checklist": [
+    {
+      "content": "Reporting day usually requires the admission letter, fee receipt, ID proof, photographs, and original documents for final inspection. Students should arrive early, keep photocopies in order, and confirm the office hours because missed reporting can cancel the seat.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-019",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "reporting": [
+    {
+      "content": "Reporting day usually requires the admission letter, fee receipt, ID proof, photographs, and original documents for final inspection. Students should arrive early, keep photocopies in order, and confirm the office hours because missed reporting can cancel the seat.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-019",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "withdrawal and refund policy": [
+    {
+      "content": "Withdrawal and refund rules explain how much fee can be returned if a student cancels admission within the official timeline. The safest habit is to read the refund table before paying any non-refundable amount and save the confirmation email or receipt.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-020",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "policy": [
+    {
+      "content": "Withdrawal and refund rules explain how much fee can be returned if a student cancels admission within the official timeline. The safest habit is to read the refund table before paying any non-refundable amount and save the confirmation email or receipt.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-020",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "refund": [
+    {
+      "content": "Withdrawal and refund rules explain how much fee can be returned if a student cancels admission within the official timeline. The safest habit is to read the refund table before paying any non-refundable amount and save the confirmation email or receipt.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-020",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "withdrawal": [
+    {
+      "content": "Withdrawal and refund rules explain how much fee can be returned if a student cancels admission within the official timeline. The safest habit is to read the refund table before paying any non-refundable amount and save the confirmation email or receipt.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-020",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "gap year documentation": [
+    {
+      "content": "If a student has taken a gap year, the institution may ask for a gap certificate, written explanation, or supporting documents such as work records or medical papers. The key is to tell the truth, keep the explanation short, and match the dates across all submitted forms.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-021",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "documentation": [
+    {
+      "content": "If a student has taken a gap year, the institution may ask for a gap certificate, written explanation, or supporting documents such as work records or medical papers. The key is to tell the truth, keep the explanation short, and match the dates across all submitted forms.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-021",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "year": [
+    {
+      "content": "If a student has taken a gap year, the institution may ask for a gap certificate, written explanation, or supporting documents such as work records or medical papers. The key is to tell the truth, keep the explanation short, and match the dates across all submitted forms.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-021",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "migration and transfer certificate": [
+    {
+      "content": "A migration certificate or transfer certificate is often needed when moving from one institution or board to another. Students should request it early because the issuing office may take time, and the form may need previous college enrollment details.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-022",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "migration": [
+    {
+      "content": "A migration certificate or transfer certificate is often needed when moving from one institution or board to another. Students should request it early because the issuing office may take time, and the form may need previous college enrollment details.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-022",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "transfer": [
+    {
+      "content": "A migration certificate or transfer certificate is often needed when moving from one institution or board to another. Students should request it early because the issuing office may take time, and the form may need previous college enrollment details.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-022",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "hostel allocation priority": [
+    {
+      "content": "Hostel allocation usually depends on distance from campus, availability, gender-specific rules, and whether the student is a first-year or senior applicant. Students who need housing should apply as soon as the window opens and keep backup accommodation options ready.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-023",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "allocation": [
+    {
+      "content": "Hostel allocation usually depends on distance from campus, availability, gender-specific rules, and whether the student is a first-year or senior applicant. Students who need housing should apply as soon as the window opens and keep backup accommodation options ready.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-023",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "priority": [
+    {
+      "content": "Hostel allocation usually depends on distance from campus, availability, gender-specific rules, and whether the student is a first-year or senior applicant. Students who need housing should apply as soon as the window opens and keep backup accommodation options ready.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-023",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "entrance scorecard review": [
+    {
+      "content": "An entrance scorecard should be checked for candidate name, roll number, subject-wise marks, total score, percentile, and rank. If anything is wrong, students should contact the exam helpdesk immediately and keep screenshots of the discrepancy.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-024",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "review": [
+    {
+      "content": "An entrance scorecard should be checked for candidate name, roll number, subject-wise marks, total score, percentile, and rank. If anything is wrong, students should contact the exam helpdesk immediately and keep screenshots of the discrepancy.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-024",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "scorecard": [
+    {
+      "content": "An entrance scorecard should be checked for candidate name, roll number, subject-wise marks, total score, percentile, and rank. If anything is wrong, students should contact the exam helpdesk immediately and keep screenshots of the discrepancy.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-024",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "counseling mock run": [
+    {
+      "content": "A counseling mock run is a rehearsal of the seat-selection and document-submission process before the real counseling round. Students can use it to test login access, understand the locking step, and decide the order of preferences before the actual deadline.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-025",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "mock": [
+    {
+      "content": "A counseling mock run is a rehearsal of the seat-selection and document-submission process before the real counseling round. Students can use it to test login access, understand the locking step, and decide the order of preferences before the actual deadline.",
+      "metadata": {
+        "source": "Ankita Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-025",
+        "author": "Ankita Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "ankita",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Mock interviews help students improve answer clarity, confidence, body language, and time control under pressure. Feedback is most useful when it identifies specific weak areas such as rambling, shallow project explanations, or lack of examples.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-010",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
   "placement support overview": [
+    {
+      "content": "Placement readiness combines resume quality, communication practice, role-specific preparation, and application tracking. Students improve faster when they focus on one target role at a time and review feedback after each interview stage.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-001",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
     {
       "content": "Answer notes\n- Placement readiness combines resume quality, communication practice, and role-specific interview preparation.\n- Students should maintain a project portfolio with measurable outcomes.\n- Weekly mock interviews improve confidence and answer clarity.\n\nPlacement workflow\n1. Resume audit\n2. Aptitude practice\n3. Technical interview prep\n4. HR and behavioral interview prep\n5. Offer comparison and acceptance planning\n\nSupport guidance\n- Focus on one target role at a time for better preparation depth.\n- Keep a tracker of applications, interview dates, and recruiter feedback.",
       "metadata": {
@@ -1899,6 +3387,18 @@
   ],
   "placement": [
     {
+      "content": "Placement readiness combines resume quality, communication practice, role-specific preparation, and application tracking. Students improve faster when they focus on one target role at a time and review feedback after each interview stage.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-001",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
       "content": "Answer notes\n- Placement readiness combines resume quality, communication practice, and role-specific interview preparation.\n- Students should maintain a project portfolio with measurable outcomes.\n- Weekly mock interviews improve confidence and answer clarity.\n\nPlacement workflow\n1. Resume audit\n2. Aptitude practice\n3. Technical interview prep\n4. HR and behavioral interview prep\n5. Offer comparison and acceptance planning\n\nSupport guidance\n- Focus on one target role at a time for better preparation depth.\n- Keep a tracker of applications, interview dates, and recruiter feedback.",
       "metadata": {
         "source": "Nupur Dataset Pack",
@@ -1914,6 +3414,18 @@
   ],
   "support": [
     {
+      "content": "Placement readiness combines resume quality, communication practice, role-specific preparation, and application tracking. Students improve faster when they focus on one target role at a time and review feedback after each interview stage.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-001",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
       "content": "Answer notes\n- Placement readiness combines resume quality, communication practice, and role-specific interview preparation.\n- Students should maintain a project portfolio with measurable outcomes.\n- Weekly mock interviews improve confidence and answer clarity.\n\nPlacement workflow\n1. Resume audit\n2. Aptitude practice\n3. Technical interview prep\n4. HR and behavioral interview prep\n5. Offer comparison and acceptance planning\n\nSupport guidance\n- Focus on one target role at a time for better preparation depth.\n- Keep a tracker of applications, interview dates, and recruiter feedback.",
       "metadata": {
         "source": "Nupur Dataset Pack",
@@ -1924,6 +3436,1154 @@
         "title": "Placement Support Overview",
         "verification_status": "VERIFIED",
         "category": "nupur"
+      }
+    }
+  ],
+  "resume audit basics": [
+    {
+      "content": "A resume audit checks clarity, grammar, relevance, measurable achievements, and consistency with the target role. Students should replace vague lines with impact statements that show scale, tools used, and outcomes delivered.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-002",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "audit": [
+    {
+      "content": "A resume audit checks clarity, grammar, relevance, measurable achievements, and consistency with the target role. Students should replace vague lines with impact statements that show scale, tools used, and outcomes delivered.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-002",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "resume": [
+    {
+      "content": "A resume audit checks clarity, grammar, relevance, measurable achievements, and consistency with the target role. Students should replace vague lines with impact statements that show scale, tools used, and outcomes delivered.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-002",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Strong resume bullets begin with action, mention the task context, and end with measurable impact wherever possible. A bullet such as 'built API used by 2,000 users' is usually more useful than 'worked on backend development.'",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-003",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "A resume summary should be two or three lines that describe your target role, core skills, and one proof of impact. It works best when it is specific, such as 'backend developer focused on APIs, databases, and test automation' rather than generic praise.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-016",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "resume bullet improvement": [
+    {
+      "content": "Strong resume bullets begin with action, mention the task context, and end with measurable impact wherever possible. A bullet such as 'built API used by 2,000 users' is usually more useful than 'worked on backend development.'",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-003",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "bullet": [
+    {
+      "content": "Strong resume bullets begin with action, mention the task context, and end with measurable impact wherever possible. A bullet such as 'built API used by 2,000 users' is usually more useful than 'worked on backend development.'",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-003",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "improvement": [
+    {
+      "content": "Strong resume bullets begin with action, mention the task context, and end with measurable impact wherever possible. A bullet such as 'built API used by 2,000 users' is usually more useful than 'worked on backend development.'",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-003",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "portfolio project selection": [
+    {
+      "content": "A good portfolio shows two or three projects that match the target role and demonstrate ownership, problem solving, and measurable results. Students should prefer complete projects they can explain deeply over a long list of unfinished experiments.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-004",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "portfolio": [
+    {
+      "content": "A good portfolio shows two or three projects that match the target role and demonstrate ownership, problem solving, and measurable results. Students should prefer complete projects they can explain deeply over a long list of unfinished experiments.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-004",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "A clean GitHub portfolio highlights a few complete repositories with readable READMEs, clear commit history, and simple setup instructions. Students should pin their best work and remove placeholder projects that do not help the recruiter understand the target role.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-017",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "project": [
+    {
+      "content": "A good portfolio shows two or three projects that match the target role and demonstrate ownership, problem solving, and measurable results. Students should prefer complete projects they can explain deeply over a long list of unfinished experiments.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-004",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Group project storytelling means explaining the problem, your role, the team's decisions, and the final result in a clear sequence. Recruiters understand teamwork better when the story shows ownership, conflict resolution, and measurable outcome.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-025",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "selection": [
+    {
+      "content": "A good portfolio shows two or three projects that match the target role and demonstrate ownership, problem solving, and measurable results. Students should prefer complete projects they can explain deeply over a long list of unfinished experiments.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-004",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "linkedin profile cleanup": [
+    {
+      "content": "A clean LinkedIn profile should have a professional photo, clear headline, short summary, updated projects, and consistent dates. Students should also add links to GitHub, portfolio work, or certifications if those strengthen the target profile.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-005",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "cleanup": [
+    {
+      "content": "A clean LinkedIn profile should have a professional photo, clear headline, short summary, updated projects, and consistent dates. Students should also add links to GitHub, portfolio work, or certifications if those strengthen the target profile.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-005",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "A clean GitHub portfolio highlights a few complete repositories with readable READMEs, clear commit history, and simple setup instructions. Students should pin their best work and remove placeholder projects that do not help the recruiter understand the target role.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-017",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "linkedin": [
+    {
+      "content": "A clean LinkedIn profile should have a professional photo, clear headline, short summary, updated projects, and consistent dates. Students should also add links to GitHub, portfolio work, or certifications if those strengthen the target profile.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-005",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "application tracker usage": [
+    {
+      "content": "An application tracker should record company name, role, date applied, interview stage, recruiter details, deadlines, and feedback. This prevents missed follow-ups and helps students notice patterns in the roles where they are getting shortlisted.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-006",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "tracker": [
+    {
+      "content": "An application tracker should record company name, role, date applied, interview stage, recruiter details, deadlines, and feedback. This prevents missed follow-ups and helps students notice patterns in the roles where they are getting shortlisted.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-006",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "usage": [
+    {
+      "content": "An application tracker should record company name, role, date applied, interview stage, recruiter details, deadlines, and feedback. This prevents missed follow-ups and helps students notice patterns in the roles where they are getting shortlisted.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-006",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "aptitude practice routine": [
+    {
+      "content": "Aptitude preparation works best with timed practice in quant, reasoning, and verbal sections plus weekly error review. Students should learn shortcuts only after understanding the logic behind common problem types.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-007",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "aptitude": [
+    {
+      "content": "Aptitude preparation works best with timed practice in quant, reasoning, and verbal sections plus weekly error review. Students should learn shortcuts only after understanding the logic behind common problem types.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-007",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Aptitude revision works best when formulas are grouped by topic such as ratio, percentage, time and work, probability, and geometry. Students should practice recall from memory before looking at notes so the formulas stay usable during timed tests.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-023",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "practice": [
+    {
+      "content": "Aptitude preparation works best with timed practice in quant, reasoning, and verbal sections plus weekly error review. Students should learn shortcuts only after understanding the logic behind common problem types.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-007",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "routine": [
+    {
+      "content": "Aptitude preparation works best with timed practice in quant, reasoning, and verbal sections plus weekly error review. Students should learn shortcuts only after understanding the logic behind common problem types.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-007",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "coding round preparation": [
+    {
+      "content": "Coding round preparation should cover arrays, strings, recursion, hash maps, sorting, and basic dynamic programming at an appropriate level. Students should practice writing clean code under time limits instead of only reading solved answers.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-008",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "coding": [
+    {
+      "content": "Coding round preparation should cover arrays, strings, recursion, hash maps, sorting, and basic dynamic programming at an appropriate level. Students should practice writing clean code under time limits instead of only reading solved answers.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-008",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "When a coding interview solution fails, students should first explain the intended approach, then isolate the bug, and finally correct the edge case. Interviewers usually value calm reasoning and clean fixes more than rushing into a new answer.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-019",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "technical interview structure": [
+    {
+      "content": "A technical interview often includes project discussion, concept checks, problem solving, and follow-up questions on tradeoffs. Students should prepare to explain why they made decisions, not just what technology they used.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-009",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "interview": [
+    {
+      "content": "A technical interview often includes project discussion, concept checks, problem solving, and follow-up questions on tradeoffs. Students should prepare to explain why they made decisions, not just what technology they used.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-009",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Mock interviews help students improve answer clarity, confidence, body language, and time control under pressure. Feedback is most useful when it identifies specific weak areas such as rambling, shallow project explanations, or lack of examples.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-010",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "The STAR method structures answers around Situation, Task, Action, and Result so responses stay clear and complete. Students should prepare a few real stories covering teamwork, conflict, leadership, failure, and learning.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-011",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "HR interviews test motivation, communication, role understanding, and professionalism more than technical depth. Students should answer honestly, keep examples concrete, and avoid giving inconsistent reasons for career choices.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-012",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Before an interview, students should know the company products, role expectations, recent work areas, and basic hiring process. This helps them tailor project examples and ask stronger questions at the end of the interview.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-014",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "When a coding interview solution fails, students should first explain the intended approach, then isolate the bug, and finally correct the edge case. Interviewers usually value calm reasoning and clean fixes more than rushing into a new answer.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-019",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "structure": [
+    {
+      "content": "A technical interview often includes project discussion, concept checks, problem solving, and follow-up questions on tradeoffs. Students should prepare to explain why they made decisions, not just what technology they used.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-009",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "technical": [
+    {
+      "content": "A technical interview often includes project discussion, concept checks, problem solving, and follow-up questions on tradeoffs. Students should prepare to explain why they made decisions, not just what technology they used.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-009",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "mock interview value": [
+    {
+      "content": "Mock interviews help students improve answer clarity, confidence, body language, and time control under pressure. Feedback is most useful when it identifies specific weak areas such as rambling, shallow project explanations, or lack of examples.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-010",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "value": [
+    {
+      "content": "Mock interviews help students improve answer clarity, confidence, body language, and time control under pressure. Feedback is most useful when it identifies specific weak areas such as rambling, shallow project explanations, or lack of examples.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-010",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "behavioral interview star method": [
+    {
+      "content": "The STAR method structures answers around Situation, Task, Action, and Result so responses stay clear and complete. Students should prepare a few real stories covering teamwork, conflict, leadership, failure, and learning.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-011",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "behavioral": [
+    {
+      "content": "The STAR method structures answers around Situation, Task, Action, and Result so responses stay clear and complete. Students should prepare a few real stories covering teamwork, conflict, leadership, failure, and learning.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-011",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "method": [
+    {
+      "content": "The STAR method structures answers around Situation, Task, Action, and Result so responses stay clear and complete. Students should prepare a few real stories covering teamwork, conflict, leadership, failure, and learning.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-011",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "star": [
+    {
+      "content": "The STAR method structures answers around Situation, Task, Action, and Result so responses stay clear and complete. Students should prepare a few real stories covering teamwork, conflict, leadership, failure, and learning.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-011",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "hr interview preparation": [
+    {
+      "content": "HR interviews test motivation, communication, role understanding, and professionalism more than technical depth. Students should answer honestly, keep examples concrete, and avoid giving inconsistent reasons for career choices.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-012",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "group discussion preparation": [
+    {
+      "content": "Good group discussion performance combines listening, concise speaking, structure, and respectful participation. Students do not need to dominate; they need to add value, support points with logic, and help the discussion stay focused.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-013",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "discussion": [
+    {
+      "content": "Good group discussion performance combines listening, concise speaking, structure, and respectful participation. Students do not need to dominate; they need to add value, support points with logic, and help the discussion stay focused.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-013",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "group": [
+    {
+      "content": "Good group discussion performance combines listening, concise speaking, structure, and respectful participation. Students do not need to dominate; they need to add value, support points with logic, and help the discussion stay focused.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-013",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "Group project storytelling means explaining the problem, your role, the team's decisions, and the final result in a clear sequence. Recruiters understand teamwork better when the story shows ownership, conflict resolution, and measurable outcome.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-025",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "company research before interview": [
+    {
+      "content": "Before an interview, students should know the company products, role expectations, recent work areas, and basic hiring process. This helps them tailor project examples and ask stronger questions at the end of the interview.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-014",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "before": [
+    {
+      "content": "Before an interview, students should know the company products, role expectations, recent work areas, and basic hiring process. This helps them tailor project examples and ask stronger questions at the end of the interview.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-014",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "company": [
+    {
+      "content": "Before an interview, students should know the company products, role expectations, recent work areas, and basic hiring process. This helps them tailor project examples and ask stronger questions at the end of the interview.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-014",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "research": [
+    {
+      "content": "Before an interview, students should know the company products, role expectations, recent work areas, and basic hiring process. This helps them tailor project examples and ask stronger questions at the end of the interview.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-014",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "internship to ppo strategy": [
+    {
+      "content": "Students improve PPO chances by taking ownership, documenting progress, asking useful questions, and delivering visible outcomes during the internship. Regular communication with mentors and clean handover of work also make a strong impression.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-015",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "internship": [
+    {
+      "content": "Students improve PPO chances by taking ownership, documenting progress, asking useful questions, and delivering visible outcomes during the internship. Regular communication with mentors and clean handover of work also make a strong impression.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-015",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    },
+    {
+      "content": "To improve PPO chances during internship, students should ask for weekly feedback, fix issues quickly, and document the value they delivered. A visible habit of ownership often matters more than simply being present every day.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-024",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "resume summary drafting": [
+    {
+      "content": "A resume summary should be two or three lines that describe your target role, core skills, and one proof of impact. It works best when it is specific, such as 'backend developer focused on APIs, databases, and test automation' rather than generic praise.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-016",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "drafting": [
+    {
+      "content": "A resume summary should be two or three lines that describe your target role, core skills, and one proof of impact. It works best when it is specific, such as 'backend developer focused on APIs, databases, and test automation' rather than generic praise.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-016",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "summary": [
+    {
+      "content": "A resume summary should be two or three lines that describe your target role, core skills, and one proof of impact. It works best when it is specific, such as 'backend developer focused on APIs, databases, and test automation' rather than generic praise.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-016",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "github portfolio cleanup": [
+    {
+      "content": "A clean GitHub portfolio highlights a few complete repositories with readable READMEs, clear commit history, and simple setup instructions. Students should pin their best work and remove placeholder projects that do not help the recruiter understand the target role.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-017",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "github": [
+    {
+      "content": "A clean GitHub portfolio highlights a few complete repositories with readable READMEs, clear commit history, and simple setup instructions. Students should pin their best work and remove placeholder projects that do not help the recruiter understand the target role.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-017",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "system design basics for students": [
+    {
+      "content": "System design basics for students focus on requirements, scale, storage, caching, APIs, and failure handling. For interview prep, it is better to explain one or two tradeoffs clearly than to memorize a large list of buzzwords.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-018",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "design": [
+    {
+      "content": "System design basics for students focus on requirements, scale, storage, caching, APIs, and failure handling. For interview prep, it is better to explain one or two tradeoffs clearly than to memorize a large list of buzzwords.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-018",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "students": [
+    {
+      "content": "System design basics for students focus on requirements, scale, storage, caching, APIs, and failure handling. For interview prep, it is better to explain one or two tradeoffs clearly than to memorize a large list of buzzwords.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-018",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "system": [
+    {
+      "content": "System design basics for students focus on requirements, scale, storage, caching, APIs, and failure handling. For interview prep, it is better to explain one or two tradeoffs clearly than to memorize a large list of buzzwords.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-018",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "coding interview debugging": [
+    {
+      "content": "When a coding interview solution fails, students should first explain the intended approach, then isolate the bug, and finally correct the edge case. Interviewers usually value calm reasoning and clean fixes more than rushing into a new answer.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-019",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "debugging": [
+    {
+      "content": "When a coding interview solution fails, students should first explain the intended approach, then isolate the bug, and finally correct the edge case. Interviewers usually value calm reasoning and clean fixes more than rushing into a new answer.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-019",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "salary negotiation basics": [
+    {
+      "content": "Salary negotiation starts with understanding your market range, the role level, and the complete offer package including bonuses and benefits. Students should be polite, ask for time to review, and negotiate with facts rather than pressure.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-020",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "negotiation": [
+    {
+      "content": "Salary negotiation starts with understanding your market range, the role level, and the complete offer package including bonuses and benefits. Students should be polite, ask for time to review, and negotiate with facts rather than pressure.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-020",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "salary": [
+    {
+      "content": "Salary negotiation starts with understanding your market range, the role level, and the complete offer package including bonuses and benefits. Students should be polite, ask for time to review, and negotiate with facts rather than pressure.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-020",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "rejection follow-up etiquette": [
+    {
+      "content": "A good follow-up after rejection should thank the recruiter, ask for one improvement point, and keep the tone professional. This keeps the relationship open for future roles and shows maturity even when the result was disappointing.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-021",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "etiquette": [
+    {
+      "content": "A good follow-up after rejection should thank the recruiter, ask for one improvement point, and keep the tone professional. This keeps the relationship open for future roles and shows maturity even when the result was disappointing.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-021",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "follow": [
+    {
+      "content": "A good follow-up after rejection should thank the recruiter, ask for one improvement point, and keep the tone professional. This keeps the relationship open for future roles and shows maturity even when the result was disappointing.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-021",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "rejection": [
+    {
+      "content": "A good follow-up after rejection should thank the recruiter, ask for one improvement point, and keep the tone professional. This keeps the relationship open for future roles and shows maturity even when the result was disappointing.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-021",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "referral request strategy": [
+    {
+      "content": "A referral request should be short, specific, and respectful. Students should mention the role, explain why they fit, and attach a concise resume or portfolio so the request is easy to act on.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-022",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "referral": [
+    {
+      "content": "A referral request should be short, specific, and respectful. Students should mention the role, explain why they fit, and attach a concise resume or portfolio so the request is easy to act on.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-022",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "request": [
+    {
+      "content": "A referral request should be short, specific, and respectful. Students should mention the role, explain why they fit, and attach a concise resume or portfolio so the request is easy to act on.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-022",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "aptitude formula revision": [
+    {
+      "content": "Aptitude revision works best when formulas are grouped by topic such as ratio, percentage, time and work, probability, and geometry. Students should practice recall from memory before looking at notes so the formulas stay usable during timed tests.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-023",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "formula": [
+    {
+      "content": "Aptitude revision works best when formulas are grouped by topic such as ratio, percentage, time and work, probability, and geometry. Students should practice recall from memory before looking at notes so the formulas stay usable during timed tests.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-023",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "revision": [
+    {
+      "content": "Aptitude revision works best when formulas are grouped by topic such as ratio, percentage, time and work, probability, and geometry. Students should practice recall from memory before looking at notes so the formulas stay usable during timed tests.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-023",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "internship feedback to ppo": [
+    {
+      "content": "To improve PPO chances during internship, students should ask for weekly feedback, fix issues quickly, and document the value they delivered. A visible habit of ownership often matters more than simply being present every day.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-024",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "feedback": [
+    {
+      "content": "To improve PPO chances during internship, students should ask for weekly feedback, fix issues quickly, and document the value they delivered. A visible habit of ownership often matters more than simply being present every day.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-024",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "group project storytelling": [
+    {
+      "content": "Group project storytelling means explaining the problem, your role, the team's decisions, and the final result in a clear sequence. Recruiters understand teamwork better when the story shows ownership, conflict resolution, and measurable outcome.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-025",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
+      }
+    }
+  ],
+  "storytelling": [
+    {
+      "content": "Group project storytelling means explaining the problem, your role, the team's decisions, and the final result in a clear sequence. Recruiters understand teamwork better when the story shows ownership, conflict resolution, and measurable outcome.",
+      "metadata": {
+        "source": "Nupur Dataset Pack",
+        "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-025",
+        "author": "Nupur Team",
+        "publication": "UniGuru Internal Dataset",
+        "type": "json-entry",
+        "category": "nupur",
+        "verification_status": "VERIFIED"
       }
     }
   ]

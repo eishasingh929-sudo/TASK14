@@ -56,6 +56,9 @@ class KnowledgeIngestor:
         for root, _, files in os.walk(directory):
             for file_name in files:
                 file_path = os.path.join(root, file_name)
+                if file_name.lower().endswith(".json"):
+                    self._ingest_structured_json(file_path=file_path, category=category)
+                    continue
                 result = self.parser.parse(file_path)
                 if not result or not result.get("content"):
                     continue
@@ -89,6 +92,51 @@ class KnowledgeIngestor:
                         "verification_status": metadata.get("verification_status"),
                     }
                 )
+
+    def _ingest_structured_json(self, file_path: str, category: str) -> None:
+        try:
+            with open(file_path, "r", encoding="utf-8") as handle:
+                payload = json.load(handle)
+        except (OSError, json.JSONDecodeError):
+            return
+
+        if isinstance(payload, list):
+            entries = [entry for entry in payload if isinstance(entry, dict)]
+        elif isinstance(payload, dict) and isinstance(payload.get("entries"), list):
+            entries = [entry for entry in payload["entries"] if isinstance(entry, dict)]
+        elif isinstance(payload, dict):
+            entries = [payload]
+        else:
+            entries = []
+
+        for index, entry in enumerate(entries, start=1):
+            title = str(entry.get("title") or entry.get("name") or f"{os.path.basename(file_path)}-{index}").strip()
+            content = str(entry.get("content") or entry.get("answer") or entry.get("details") or "").strip()
+            if not title or not content:
+                continue
+
+            entry_ref = str(entry.get("id") or entry.get("slug") or index).strip()
+            metadata = {
+                "source": str(entry.get("source") or title),
+                "path": f"{os.path.relpath(file_path, self._project_root).replace(chr(92), '/') }#{entry_ref}",
+                "author": str(entry.get("author") or "Unknown"),
+                "publication": str(entry.get("publication") or "Unknown"),
+                "type": "json-entry",
+                "category": category,
+                "verification_status": str(entry.get("verification_status") or "VERIFIED").upper(),
+            }
+
+            self._add_to_index(title.lower(), content, metadata)
+            for keyword in self._extract_keywords(title)[:6]:
+                self._add_to_index(keyword, content, metadata)
+
+            self.ingestion_log.append(
+                {
+                    "path": metadata["path"],
+                    "category": category,
+                    "verification_status": metadata["verification_status"],
+                }
+            )
 
     def _add_to_index(self, keyword: str, content: str, metadata: Dict[str, Any]):
         if keyword not in self.index:

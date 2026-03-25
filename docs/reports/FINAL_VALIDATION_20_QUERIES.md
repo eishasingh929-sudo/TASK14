@@ -1,6 +1,6 @@
 # Final Validation - 20 Queries
 
-Execution date (UTC): 2026-03-24T05:34:34.779643+00:00
+Execution date (UTC): 2026-03-25T08:54:52.677217+00:00
 
 ## Summary
 - Total queries: 20
@@ -10,9 +10,9 @@ Execution date (UTC): 2026-03-24T05:34:34.779643+00:00
 - No empty responses: True
 
 ## Route Distribution
-- ROUTE_LLM: 10
+- ROUTE_LLM: 7
 - ROUTE_SYSTEM: 1
-- ROUTE_UNIGURU: 8
+- ROUTE_UNIGURU: 11
 - ROUTE_WORKFLOW: 1
 
 ## Result Grid
@@ -21,7 +21,7 @@ Execution date (UTC): 2026-03-24T05:34:34.779643+00:00
 | 01 | KB | PASS | ROUTE_UNIGURU | What is a qubit? |
 | 02 | KB | PASS | ROUTE_UNIGURU | Explain quantum entanglement. |
 | 03 | KB | PASS | ROUTE_UNIGURU | Who is Mahavira? |
-| 04 | KB | PASS | ROUTE_LLM | Explain ahimsa in Jainism. |
+| 04 | KB | PASS | ROUTE_UNIGURU | Explain ahimsa in Jainism. |
 | 05 | KB | PASS | ROUTE_UNIGURU | What is Swamini Vato? |
 | 06 | KB | PASS | ROUTE_UNIGURU | Explain Nyaya logic. |
 | 07 | KB | PASS | ROUTE_UNIGURU | What is Vedic math? |
@@ -36,5 +36,5 @@ Execution date (UTC): 2026-03-24T05:34:34.779643+00:00
 | 16 | Random | PASS | ROUTE_LLM | !!??### |
 | 17 | Random | PASS | ROUTE_WORKFLOW | create workflow ticket for demo rehearsal |
 | 18 | Random | PASS | ROUTE_SYSTEM | sudo rm -rf / |
-| 19 | Random | PASS | ROUTE_LLM | How should I prepare a resume for placements? |
-| 20 | Random | PASS | ROUTE_LLM | What is counseling round in admissions? |
+| 19 | Random | PASS | ROUTE_UNIGURU | How should I prepare a resume for placements? |
+| 20 | Random | PASS | ROUTE_UNIGURU | What is counseling round in admissions? |

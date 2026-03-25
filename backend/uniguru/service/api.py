@@ -16,12 +16,16 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, PlainTextResponse
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from uniguru.runtime_env import load_project_env
 from uniguru.ontology.registry import OntologyRegistry
 from uniguru.router.conversation_router import ConversationRouter
 from uniguru.integrations import BucketTelemetryClient, CoreReaderClient, LanguageAdapter, TelemetryEvent
+from uniguru.service.response_format import build_structured_answer
 from uniguru.service.live_service import LiveUniGuruService
 from uniguru.service.query_classifier import QueryType, classify_query
 from uniguru.stt import STTEngine, STTUnavailableError
+
+load_project_env()
 
 
 _LOG_LEVEL = os.getenv("UNIGURU_LOG_LEVEL", "INFO").upper()
@@ -119,6 +123,7 @@ _QUEUE_LOCK = threading.Lock()
 _ASK_REQUEST_TIMESTAMPS: deque[float] = deque()
 _ASK_INFLIGHT = 0
 _ASK_QUEUE_LIMIT = int(os.getenv("UNIGURU_ROUTER_QUEUE_LIMIT", "200"))
+_METRICS_WRITE_FAILURE_REPORTED = False
 _METRICS = {
     "requests_total": 0,
     "requests_by_status": defaultdict(int),
@@ -150,12 +155,12 @@ def _build_basic_demo_answer(query: str) -> str:
         return f"{SAFE_FALLBACK_PREFIX} Here is one: Why was the computer cold? Because it forgot to close Windows."
     if any(token in lower for token in ("news", "current", "latest", "happening in the world")):
         return (
-            f"{SAFE_FALLBACK_PREFIX} In safe mode I cannot fetch live internet updates, "
+            "In safe mode I cannot fetch live internet updates, "
             "but a basic world update usually includes politics, economy, science, and regional events."
         )
     if text:
-        return f"{SAFE_FALLBACK_PREFIX} {text} can be understood by defining the core idea, then examples, then usage."
-    return f"{SAFE_FALLBACK_PREFIX} Let us start from the basics and build understanding step by step."
+        return f"{text} can be understood by defining the core idea, then examples, then usage."
+    return "Let us start from the basics and build understanding step by step."
 
 
 def _build_safe_fallback_response(
@@ -169,7 +174,11 @@ def _build_safe_fallback_response(
     answer = _build_basic_demo_answer(query)
     response = {
         "decision": "answer",
-        "answer": answer,
+        "answer": build_structured_answer(
+            answer=answer,
+            details=f"{SAFE_FALLBACK_PREFIX} {reason}",
+            source="Safe fallback continuity layer",
+        ),
         "session_id": session_id,
         "reason": reason,
         "ontology_reference": registry.default_reference(),
@@ -314,6 +323,7 @@ def _query_hash(query: str) -> str:
 
 
 def _save_metrics_snapshot() -> None:
+    global _METRICS_WRITE_FAILURE_REPORTED
     if not _METRICS_STATE_FILE:
         return
     with _METRICS_LOCK:
@@ -329,11 +339,21 @@ def _save_metrics_snapshot() -> None:
             "queue_rejected_total": int(_METRICS["queue_rejected_total"]),
             "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         }
-    directory = os.path.dirname(_METRICS_STATE_FILE)
-    if directory:
-        os.makedirs(directory, exist_ok=True)
-    with open(_METRICS_STATE_FILE, "w", encoding="utf-8") as handle:
-        json.dump(data, handle, ensure_ascii=True, sort_keys=True)
+    fallback_path = os.path.normpath(
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "demo_logs", "metrics_state.json")
+    )
+    for candidate in (_METRICS_STATE_FILE, fallback_path):
+        try:
+            directory = os.path.dirname(candidate)
+            if directory:
+                os.makedirs(directory, exist_ok=True)
+            with open(candidate, "w", encoding="utf-8") as handle:
+                json.dump(data, handle, ensure_ascii=True, sort_keys=True)
+            return
+        except OSError as exc:
+            if not _METRICS_WRITE_FAILURE_REPORTED:
+                logger.warning("Metrics snapshot could not be saved to %s: %s", candidate, exc)
+            _METRICS_WRITE_FAILURE_REPORTED = True
 
 
 def _load_metrics_snapshot() -> None:
@@ -656,7 +676,11 @@ def ask(request: AskRequest, raw_request: Request) -> Dict[str, Any]:
                 reason="/ask recovered from invalid response payload type.",
             )
         if not str(response.get("answer") or "").strip():
-            response["answer"] = SAFE_FALLBACK_PREFIX
+            response["answer"] = build_structured_answer(
+                answer="I am ready to help, but the previous response was empty.",
+                details="The API safety layer inserted a non-empty response to keep the service stable.",
+                source="API safety layer",
+            )
         return response
     except HTTPException as exc:
         return _build_safe_fallback_response(

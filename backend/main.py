@@ -3,6 +3,10 @@ from __future__ import annotations
 import os
 
 import uvicorn
+from uniguru.runtime_env import load_project_env
+
+
+load_project_env()
 
 
 def main() -> None:

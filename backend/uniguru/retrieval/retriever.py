@@ -1,3 +1,4 @@
+import json
 import os
 import re
 from typing import Any, Dict, List, Optional, Tuple
@@ -5,7 +6,6 @@ from typing import Any, Dict, List, Optional, Tuple
 from uniguru.reasoning.concept_resolver import ConceptResolver
 from uniguru.reasoning.graph_reasoner import GraphReasoner
 
-# Paths for knowledge bases
 _MODULE_DIR = os.path.dirname(__file__)
 _KB_ROOT = os.path.normpath(os.path.join(_MODULE_DIR, "..", "knowledge"))
 
@@ -52,6 +52,32 @@ def _tokenize(text: str) -> List[str]:
     return re.findall(r"[a-z0-9]+", (text or "").lower())
 
 
+def _token_set(text: str) -> set[str]:
+    return {token for token in _tokenize(text) if token not in STOPWORDS}
+
+
+def _coerce_list(value: Any) -> List[str]:
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    if isinstance(value, str):
+        parts = [part.strip() for part in value.split(",")]
+        return [part for part in parts if part]
+    return []
+
+
+def _frontmatter(content: str) -> Dict[str, str]:
+    match = re.match(r"^\s*---\s*\n(.*?)\n---\s*\n?", content, flags=re.DOTALL)
+    if not match:
+        return {}
+    result: Dict[str, str] = {}
+    for line in match.group(1).splitlines():
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        result[key.strip().lower()] = value.strip()
+    return result
+
+
 def _kb_paths() -> Dict[str, str]:
     paths = dict(_BASE_KB_PATHS)
     raw_extra = os.getenv("UNIGURU_KB_EXTRA_PATHS", "").strip()
@@ -71,10 +97,7 @@ def _kb_paths() -> Dict[str, str]:
 
 
 class AdvancedRetriever:
-    """
-    Multi-source internal KB retriever.
-    Only local knowledge paths are used.
-    """
+    """Multi-source local KB retriever with structured dataset support."""
 
     def __init__(self, top_n: int = 3):
         self.top_n = top_n
@@ -85,81 +108,188 @@ class AdvancedRetriever:
         self._documents: List[Dict[str, Any]] = []
         self._load_memory()
 
+    def _append_document(
+        self,
+        *,
+        keyword: str,
+        content: str,
+        source: str,
+        file_name: str,
+        relative_path: str,
+        source_title: Optional[str] = None,
+        aliases: Optional[List[str]] = None,
+        sample_queries: Optional[List[str]] = None,
+        tags: Optional[List[str]] = None,
+    ) -> None:
+        keyword = keyword.strip().lower()
+        if not keyword or not content.strip():
+            return
+
+        alias_list = aliases or []
+        sample_query_list = sample_queries or []
+        tag_list = tags or []
+        title = (source_title or keyword).strip()
+        is_generic = keyword in GENERIC_FILE_KEYWORDS
+
+        self.knowledge_map[keyword] = content
+        self.source_map[keyword] = source
+        self.file_map[keyword] = file_name
+        self.path_map[keyword] = relative_path
+        self._documents.append(
+            {
+                "keyword": keyword,
+                "keyword_tokens": _token_set(keyword),
+                "content_tokens": _token_set(content),
+                "alias_tokens": set().union(*[_token_set(alias) for alias in alias_list]) if alias_list else set(),
+                "sample_query_tokens": set().union(*[_token_set(item) for item in sample_query_list])
+                if sample_query_list
+                else set(),
+                "aliases": alias_list,
+                "sample_queries": sample_query_list,
+                "tags": tag_list,
+                "content": content,
+                "source": source,
+                "file": file_name,
+                "path": relative_path,
+                "source_title": title,
+                "is_generic": is_generic,
+            }
+        )
+
+    def _load_markdown_document(self, kb_name: str, full_path: str, file_name: str) -> None:
+        try:
+            with open(full_path, "r", encoding="utf-8") as handle:
+                content = handle.read()
+        except OSError:
+            return
+
+        metadata = _frontmatter(content)
+        keyword = os.path.splitext(file_name)[0].lower().replace("_", " ")
+        relative_path = os.path.relpath(full_path, _KB_ROOT).replace("\\", "/")
+        aliases = _coerce_list(metadata.get("aliases"))
+        tags = _coerce_list(metadata.get("tags"))
+        sample_queries = _coerce_list(metadata.get("sample_queries"))
+        source_title = metadata.get("title") or keyword
+
+        self._append_document(
+            keyword=keyword,
+            content=content,
+            source=kb_name,
+            file_name=file_name,
+            relative_path=relative_path,
+            source_title=source_title,
+            aliases=aliases,
+            sample_queries=sample_queries,
+            tags=tags,
+        )
+
+    def _load_json_document(self, kb_name: str, full_path: str, file_name: str) -> None:
+        try:
+            with open(full_path, "r", encoding="utf-8") as handle:
+                payload = json.load(handle)
+        except (OSError, json.JSONDecodeError):
+            return
+
+        entries: List[Dict[str, Any]]
+        if isinstance(payload, list):
+            entries = [entry for entry in payload if isinstance(entry, dict)]
+        elif isinstance(payload, dict) and isinstance(payload.get("entries"), list):
+            entries = [entry for entry in payload["entries"] if isinstance(entry, dict)]
+        elif isinstance(payload, dict):
+            entries = [payload]
+        else:
+            entries = []
+
+        relative_path = os.path.relpath(full_path, _KB_ROOT).replace("\\", "/")
+        for index, entry in enumerate(entries, start=1):
+            title = str(entry.get("title") or entry.get("name") or f"{file_name}-{index}").strip()
+            content = str(entry.get("content") or entry.get("answer") or entry.get("details") or "").strip()
+            source_label = str(entry.get("source") or title).strip()
+            entry_id = str(entry.get("id") or entry.get("slug") or index).strip()
+            keyword = title.lower()
+            aliases = _coerce_list(entry.get("aliases"))
+            sample_queries = _coerce_list(entry.get("sample_queries"))
+            tags = _coerce_list(entry.get("tags"))
+
+            self._append_document(
+                keyword=keyword,
+                content=content,
+                source=kb_name,
+                file_name=file_name,
+                relative_path=f"{relative_path}#{entry_id}",
+                source_title=source_label,
+                aliases=aliases,
+                sample_queries=sample_queries,
+                tags=tags,
+            )
+
     def _load_memory(self) -> None:
         for kb_name, kb_path in _kb_paths().items():
             if not os.path.exists(kb_path):
                 continue
             for root, _, files in os.walk(kb_path):
                 for file_name in files:
-                    if not file_name.endswith(".md"):
-                        continue
                     full_path = os.path.join(root, file_name)
-                    keyword = os.path.splitext(file_name)[0].lower().replace("_", " ")
-                    try:
-                        with open(full_path, "r", encoding="utf-8") as f:
-                            content = f.read()
-                    except OSError:
-                        # Demo-safety mode: unreadable KB files are skipped, not fatal.
-                        continue
-
-                    relative_path = os.path.relpath(full_path, _KB_ROOT).replace("\\", "/")
-                    keyword_tokens = {token for token in _tokenize(keyword) if token not in STOPWORDS}
-                    content_tokens = {token for token in _tokenize(content) if token not in STOPWORDS}
-                    is_generic = keyword in GENERIC_FILE_KEYWORDS
-
-                    self.knowledge_map[keyword] = content
-                    self.source_map[keyword] = kb_name
-                    self.file_map[keyword] = file_name
-                    self.path_map[keyword] = relative_path
-                    self._documents.append(
-                        {
-                            "keyword": keyword,
-                            "keyword_tokens": keyword_tokens,
-                            "content_tokens": content_tokens,
-                            "content": content,
-                            "source": kb_name,
-                            "file": file_name,
-                            "path": relative_path,
-                            "is_generic": is_generic,
-                        }
-                    )
+                    lower = file_name.lower()
+                    if lower.endswith(".md"):
+                        self._load_markdown_document(kb_name=kb_name, full_path=full_path, file_name=file_name)
+                    elif lower.endswith(".json"):
+                        self._load_json_document(kb_name=kb_name, full_path=full_path, file_name=file_name)
 
     def retrieve_multi(self, query: str) -> List[Dict[str, Any]]:
-        """Retrieves top N documents matching the query."""
         query_lower = str(query or "").lower()
-        query_tokens = [token for token in _tokenize(query_lower) if token not in STOPWORDS]
-        if not query_tokens:
+        query_token_set = _token_set(query_lower)
+        if not query_token_set:
             return []
-        query_token_set = set(query_tokens)
 
         matches = []
         for document in self._documents:
-            kw_tokens = document["keyword_tokens"]
-            content_tokens = document["content_tokens"]
-            keyword_overlap = query_token_set.intersection(kw_tokens)
-            content_overlap = query_token_set.intersection(content_tokens)
-            exact_phrase_match = 1.0 if document["keyword"] in query_lower else 0.0
+            keyword_overlap = query_token_set.intersection(document["keyword_tokens"])
+            content_overlap = query_token_set.intersection(document["content_tokens"])
+            alias_overlap = query_token_set.intersection(document["alias_tokens"])
+            sample_query_overlap = query_token_set.intersection(document["sample_query_tokens"])
+            exact_keyword_match = 1.0 if document["keyword"] in query_lower else 0.0
+            exact_alias_match = 1.0 if any(alias.lower() in query_lower for alias in document["aliases"]) else 0.0
 
-            if (
-                not keyword_overlap
-                and not content_overlap
-                and exact_phrase_match == 0.0
+            if not any(
+                (
+                    keyword_overlap,
+                    content_overlap,
+                    alias_overlap,
+                    sample_query_overlap,
+                    exact_keyword_match,
+                    exact_alias_match,
+                )
             ):
                 continue
 
-            if len(query_token_set) >= 3 and len(content_overlap) < 2 and exact_phrase_match == 0.0:
-                # Reduces accidental matches on single token overlaps for longer queries.
-                continue
+            if len(query_token_set) >= 4 and not (keyword_overlap or alias_overlap or sample_query_overlap):
+                if len(content_overlap) < 2:
+                    continue
 
-            keyword_coverage = len(keyword_overlap) / max(len(kw_tokens), 1)
-            query_coverage = len(content_overlap) / len(query_token_set)
-            specificity_bonus = 0.08 if kw_tokens and kw_tokens.issubset(query_token_set) else 0.0
+            keyword_coverage = len(keyword_overlap) / max(len(document["keyword_tokens"]), 1)
+            content_coverage = len(content_overlap) / len(query_token_set)
+            alias_coverage = len(alias_overlap) / max(len(document["alias_tokens"]), 1) if document["alias_tokens"] else 0.0
+            sample_query_coverage = (
+                len(sample_query_overlap) / max(len(document["sample_query_tokens"]), 1)
+                if document["sample_query_tokens"]
+                else 0.0
+            )
             generic_penalty = 0.12 if document["is_generic"] else 0.0
+            specificity_bonus = 0.1 if document["keyword_tokens"] and document["keyword_tokens"].issubset(query_token_set) else 0.0
 
-            confidence = (0.5 * keyword_coverage) + (0.35 * query_coverage) + (0.15 * exact_phrase_match)
+            confidence = (
+                0.35 * keyword_coverage
+                + 0.25 * content_coverage
+                + 0.2 * max(alias_coverage, exact_alias_match)
+                + 0.1 * sample_query_coverage
+                + 0.1 * exact_keyword_match
+            )
             confidence = max(0.0, min(confidence + specificity_bonus - generic_penalty, 1.0))
-            if confidence < 0.2:
+            if confidence < 0.22:
                 continue
+
+            matched_tokens = sorted(set(content_overlap) | set(keyword_overlap) | set(alias_overlap) | set(sample_query_overlap))
             matches.append(
                 {
                     "content": document["content"],
@@ -167,58 +297,47 @@ class AdvancedRetriever:
                     "keyword": document["keyword"],
                     "keyword_match_count": len(keyword_overlap),
                     "content_match_count": len(content_overlap),
-                    "matched_tokens": sorted(content_overlap),
+                    "matched_tokens": matched_tokens,
                     "query_token_count": len(query_token_set),
                     "source": document["source"],
                     "file": document["file"],
                     "path": document["path"],
+                    "source_title": document["source_title"],
+                    "sample_queries": document["sample_queries"],
                 }
             )
 
         matches.sort(
-            key=lambda x: (
-                float(x["confidence"]),
-                int(x["keyword_match_count"]),
-                int(x["content_match_count"]),
+            key=lambda item: (
+                float(item["confidence"]),
+                int(item["keyword_match_count"]),
+                int(item["content_match_count"]),
             ),
             reverse=True,
         )
         return matches[0 : self.top_n]
 
     def reason_and_compare(self, results: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Structured comparison and conflict detection across local sources."""
         if not results:
             return {"decision": "no_match", "content": None, "reasoning": "No relevant documents found."}
 
-        num_docs = len(results)
         primary = results[0]
-
-        sources_list = [r.get("source", "unknown") for r in results]
-        unique_sources = list(set(sources_list))
-
-        reasoning_str = (
-            f"Retrieved {num_docs} documents from {len(unique_sources)} internal sources "
-            f"({', '.join(unique_sources)})."
-        )
-
+        sources_list = [result.get("path", "unknown") for result in results]
+        unique_sources = list(dict.fromkeys(sources_list))
         status = "AGREEMENT"
-        if num_docs > 1:
+
+        if len(results) > 1:
             first_len = len(str(primary.get("content", "")))
-            for i in range(1, num_docs):
-                result = results[i]
-                result_content = str(result.get("content", ""))
-                if abs(len(result_content) - first_len) > 2000:
+            for result in results[1:]:
+                if abs(len(str(result.get("content", ""))) - first_len) > 2000:
                     status = "POTENTIAL_CONTRADICTION"
-                    reasoning_str = (
-                        f"{reasoning_str} Warning: significant variance in source detail detected."
-                    )
                     break
 
         return {
             "decision": "answer",
             "content": primary.get("content"),
             "verification_status": "VERIFIED" if status == "AGREEMENT" else "PARTIAL",
-            "reasoning": reasoning_str,
+            "reasoning": f"Retrieved {len(results)} documents from {len(unique_sources)} internal sources.",
             "status": status,
             "metadata": {
                 "sources_consulted": sources_list,
@@ -230,6 +349,8 @@ class AdvancedRetriever:
                 "matched_tokens": primary.get("matched_tokens", []),
                 "query_token_count": primary.get("query_token_count", 0),
                 "top_confidence": primary.get("confidence", 0.0),
+                "source_title": primary.get("source_title"),
+                "sample_queries": primary.get("sample_queries", []),
             },
         }
 
@@ -255,7 +376,7 @@ def retrieve_knowledge_with_trace(query: str) -> Tuple[Optional[str], Dict[str, 
         result = retriever.reason_and_compare(results)
     except Exception:
         trace = {
-            "engine": "AdvancedRetriever_v2",
+            "engine": "AdvancedRetriever_v3",
             "kb_path": _KB_ROOT,
             "match_found": False,
             "confidence": 0.0,
@@ -267,7 +388,7 @@ def retrieve_knowledge_with_trace(query: str) -> Tuple[Optional[str], Dict[str, 
     if result.get("decision") == "answer" and result.get("content"):
         metadata = result.get("metadata") or {}
         trace = {
-            "engine": "AdvancedRetriever_v2",
+            "engine": "AdvancedRetriever_v3",
             "kb_path": _KB_ROOT,
             "match_found": True,
             "confidence": float(metadata.get("top_confidence", 0.0)),
@@ -279,6 +400,8 @@ def retrieve_knowledge_with_trace(query: str) -> Tuple[Optional[str], Dict[str, 
             "matched_tokens": list(metadata.get("matched_tokens", [])),
             "query_token_count": int(metadata.get("query_token_count", 0)),
             "sources_consulted": metadata.get("sources_consulted", []),
+            "source_title": metadata.get("source_title"),
+            "sample_queries": metadata.get("sample_queries", []),
         }
         concept_resolution = ConceptResolver().resolve(query=query, retrieval_trace=trace)
         reasoning_path = GraphReasoner().reasoning_path_from_domain_root(
@@ -295,7 +418,7 @@ def retrieve_knowledge_with_trace(query: str) -> Tuple[Optional[str], Dict[str, 
         return result.get("content"), trace
 
     trace = {
-        "engine": "AdvancedRetriever_v2",
+        "engine": "AdvancedRetriever_v3",
         "kb_path": _KB_ROOT,
         "match_found": False,
         "confidence": 0.0,

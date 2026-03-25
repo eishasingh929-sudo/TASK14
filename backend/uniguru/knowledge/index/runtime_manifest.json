@@ -1,18 +1,18 @@
 {
   "summary": {
-    "documents_total": 47,
-    "keywords_total": 113,
+    "documents_total": 97,
+    "keywords_total": 261,
     "categories": {
       "quantum": 19,
       "gurukul": 6,
       "jain": 10,
       "swaminarayan": 10,
-      "ankita": 1,
-      "nupur": 1
+      "ankita": 26,
+      "nupur": 26
     },
     "verification_status": {
       "UNSPECIFIED": 19,
-      "VERIFIED": 28
+      "VERIFIED": 78
     }
   },
   "ingestion_log": [
@@ -242,8 +242,258 @@
       "verification_status": "VERIFIED"
     },
     {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-001",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-002",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-003",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-004",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-005",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-006",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-007",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-008",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-009",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-010",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-011",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-012",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-013",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-014",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-015",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-016",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-017",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-018",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-019",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-020",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-021",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-022",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-023",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-024",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/ankita/admissions_support_entries.json#ankita-025",
+      "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
       "path": "backend/uniguru/knowledge/datasets/ankita/university_admission_basics.md",
       "category": "ankita",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-001",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-002",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-003",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-004",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-005",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-006",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-007",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-008",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-009",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-010",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-011",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-012",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-013",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-014",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-015",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-016",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-017",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-018",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-019",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-020",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-021",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-022",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-023",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-024",
+      "category": "nupur",
+      "verification_status": "VERIFIED"
+    },
+    {
+      "path": "backend/uniguru/knowledge/datasets/nupur/career_support_entries.json#nupur-025",
+      "category": "nupur",
       "verification_status": "VERIFIED"
     },
     {

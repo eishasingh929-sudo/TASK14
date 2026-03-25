@@ -1,98 +1,80 @@
-# UniGuru System Execution Proof
+# UniGuru Review Packet
 
-## 1. ZERO FAILURE PROOF
-- Run 20 queries simultaneously.
-- **Result**:
-  - 20 Successful (`HTTP 200 OK`)
-  - 0 Failed (`HTTP 503` / errors)
-  - 0 Empty responses
+UniGuru is now demo-ready with three things in place:
 
----
+- A live LLM fallback that uses the real local endpoint configured in `.env`
+- An expanded knowledge base from Ankita and Nupur with 25 entries each
+- Fresh proof files showing routing, latency, and non-empty responses
 
-## 2. DATASET INGESTION PROOF
-**Dataset Used**: Local JSON/Markdown files `backend/uniguru/knowledge/jain/*.md`
-- Sample entries:
-  - `anekantavada_syadvada.md`: "Anekantavada (Non-one-sidedness) is one of the most important philosophical contributions..."
-  - `jain_cosmology.md`: "Jain cosmology presents a detailed, non-theistic description of the universe (Loka)..."
-  - `mahavira_life.md`: "Vardhamana Mahavira (599–527 BCE) is the 24th and last Tirthankara..."
+## What Changed
 
-**5 Queries → Correct Answers from Dataset**:
-1. Q: "Who is Mahavira?" → A: "Vardhamana Mahavira (599–527 BCE) is the 24th and last Tirthankara..." (Source: `jain/mahavira_life.md`)
-2. Q: "What is Anekantavada?" → A: "Anekantavada (Non-one-sidedness) is one of the most important philosophical contributions..." (Source: `jain/anekantavada_syadvada.md`)
-3. Q: "Tell me about Jain cosmology." → A: "Jain cosmology presents a detailed, non-theistic description of the universe..." (Source: `jain/jain_cosmology.md`)
-4. Q: "Explain the Karma doctrine in Jainism." → A: "Jain karma theory is one of the most elaborate and systematic karma philosophies..." (Source: `jain/jain_karma_doctrine.md`)
-5. Q: "Who is Rishabhadeva?" → A: "Rishabhadeva (also called Adinatha — 'First Lord') is the first of the 24 Tirthankaras..." (Source: `jain/rishabhadeva_adinatha.md`)
+- The live model endpoint is `http://127.0.0.1:11434/api/generate`.
+- The active local model is `gpt-oss:120b-cloud`.
+- The KB confidence threshold is set to `0.25` so support-style questions can still land on the local KB when the match is strong enough.
+- Metrics writing is now safe on Windows because the API falls back to a repo-local snapshot path instead of crashing on `/var/...`.
+- The router now treats support-style questions like `Am I eligible...`, `How do I ask...`, and `What should I...` as knowledge questions.
 
----
+## Evidence Files
 
-## 3. LLM FALLBACK PROOF
-**3 KB Queries → KB Answers**:
-1. "What is Tattvartha Sutra?" → Routed to `ROUTE_UNIGURU` (Answer based on `tattvartha_sutra.md`)
-2. "Tell me about Shravaka ethics." → Routed to `ROUTE_UNIGURU` (Answer based on `jain_shravaka_ethics.md`)
-3. "What is Sutrakritanga?" → Routed to `ROUTE_UNIGURU` (Answer based on `sutrakritanga.md`)
+- Live 20-query validation: [`demo_logs/final_validation_20_queries.json`](./demo_logs/final_validation_20_queries.json)
+- Dataset ingest proof: [`demo_logs/dataset_ingestion_proof.json`](./demo_logs/dataset_ingestion_proof.json)
+- Expanded KB smoke proof: [`demo_logs/expanded_dataset_smoke.json`](./demo_logs/expanded_dataset_smoke.json)
+- Runtime manifest: [`backend/uniguru/knowledge/index/runtime_manifest.json`](./backend/uniguru/knowledge/index/runtime_manifest.json)
+- System explanation: [`SYSTEM_EXPLANATION.md`](./SYSTEM_EXPLANATION.md)
 
-**3 General Queries → LLM Answers**:
-1. "Tell me a joke about a programmer." → Routed to `ROUTE_LLM` (Served by safety LLM fallback)
-2. "How to make a cake?" → Routed to `ROUTE_LLM` (Served by safety LLM fallback)
-3. "What's the weather?" → Routed to `ROUTE_LLM` (Served by safety LLM fallback)
+## Validation Summary
 
----
+From the live 20-query run:
 
-## 4. REAL OUTPUT (MANDATORY)
+- Total queries: `20`
+- Passed: `20`
+- Failed: `0`
+- Empty responses: `0`
+- 503 errors: `0`
 
-**KB Query Response** (`ROUTE_UNIGURU`):
-```json
-{
-  "decision": "answer",
-  "answer": "Based on verified source: tattvartha_sutra.md\n\nAnswer:\nJain Knowledge Base — Tattvartha Sutra (Expanded) Content The Tattvartha Sutra (also spelled Tattvārthasūtra) is the foundational philosophical text of Jainism, composed by Acharya Umaswati around the 2nd–5th century CE. It is unique in being accepted by all three main Jain sects.\n\nSource:\njain/tattvartha_sutra.md",
-  "session_id": null,
-  "reason": "Knowledge found in local KB and verified.",
-  "ontology_reference": {
-    "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
-    "domain": "jain",
-    "snapshot_version": 1,
-    "snapshot_hash": "e7292c6b78cfa8c7fe0008b36f6916879af5b9c78d763a3cbf402d3e3d6895ad",
-    "truth_level": 3
-  },
-  "verification_status": "VERIFIED",
-  "status_action": "ALLOW",
-  "latency_ms": 15.29,
-  "routing": {
-    "query_type": "KNOWLEDGE_QUERY",
-    "route": "ROUTE_UNIGURU",
-    "router_latency_ms": 15.456
-  }
-}
-```
+Route distribution:
 
-**General LLM Fallback Response** (`ROUTE_LLM`):
-```json
-{
-  "decision": "answer",
-  "answer": "I am still learning this topic, but here is a basic explanation... Here is one: Why did the developer go broke? Because they used up all their cache.",
-  "session_id": null,
-  "reason": "ROUTE_LLM served by internal demo mode.",
-  "ontology_reference": {
-    "concept_id": "router::general_llm_query",
-    "domain": "routing",
-    "snapshot_version": 0,
-    "snapshot_hash": "router-delegated",
-    "truth_level": 0
-  },
-  "verification_status": "UNVERIFIED",
-  "status_action": "ALLOW_WITH_DISCLAIMER",
-  "latency_ms": 0.0,
-  "routing": {
-    "query_type": "GENERAL_LLM_QUERY",
-    "route": "ROUTE_LLM",
-    "router_latency_ms": 0.201
-  }
-}
-```
+- `ROUTE_UNIGURU`: `11`
+- `ROUTE_LLM`: `7`
+- `ROUTE_WORKFLOW`: `1`
+- `ROUTE_SYSTEM`: `1`
 
----
+## Dataset Summary
 
-## 5. SYSTEM STATUS
-- **Auth working**: Confirmed
-- **Env working**: Confirmed
-- **Routing working**: Confirmed (Deterministically switches between `ROUTE_UNIGURU` and `ROUTE_LLM` with NO failure cases downstream).
+The Ankita and Nupur packs were expanded to 25 entries each, giving the support KB more real coverage for:
+
+- Admission eligibility
+- Counseling and reporting day flow
+- Refund and document questions
+- Resume, referral, portfolio, and internship prep
+
+The ingest manifest shows:
+
+- `97` total documents processed
+- `261` indexed keywords
+- `78` verified items
+
+## Sample Query Mapping
+
+The ingest proof also records sample query mappings, for example:
+
+- `Am I eligible for this admission?` -> `Admission Eligibility Check`
+- `How do I ask for a referral?` -> `Referral Request Strategy`
+- `What should I bring on reporting day?` -> `Reporting Day Checklist`
+- `How should I clean up my GitHub portfolio?` -> `GitHub Portfolio Cleanup`
+
+## How To Explain It Simply
+
+If someone asks how UniGuru works, the short version is:
+
+1. It decides what kind of question the user asked.
+2. It checks the local knowledge base first for supported topics.
+3. If the local knowledge is enough, it returns a verified answer.
+4. If not, it uses the live LLM endpoint.
+5. If anything fails, it still returns a safe answer instead of breaking.
+
+## Handoff Notes
+
+- `Yashika` can plug this into Gurukul / Samachar using the `/api/v1/chat/query` flow.
+- `Alay` can deploy using the existing `.env` values and the run scripts in `run/`.
+- `Vinayak` can validate the same evidence files above plus the router tests in `backend/tests/test_router.py`.
