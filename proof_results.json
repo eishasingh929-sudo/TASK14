@@ -1,0 +1,762 @@
+{
+  "zero_failure": [
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    },
+    {
+      "status_code": 200,
+      "is_empty": false
+    }
+  ],
+  "dataset": [
+    {
+      "decision": "answer",
+      "answer": "Based on verified source: mahavira_life.md\n\nAnswer:\nJain Knowledge Base \u2014 Mahavira: Life and Teachings Content Vardhamana Mahavira (599\u2013527 BCE) is the 24th and last Tirthankara (ford-maker/enlightened teacher) of the current cosmic cycle in Jain cosmology.\n\nSource:\njain/mahavira_life.md",
+      "session_id": null,
+      "reason": "Knowledge found in local KB and verified.",
+      "ontology_reference": {
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "snapshot_version": 1,
+        "snapshot_hash": "e7292c6b78cfa8c7fe0008b36f6916879af5b9c78d763a3cbf402d3e3d6895ad",
+        "truth_level": 3
+      },
+      "reasoning_trace": {
+        "sources_consulted": [
+          "jain",
+          "ontology_graph",
+          "ontology_registry"
+        ],
+        "retrieval_confidence": 0.6,
+        "ontology_domain": "jain",
+        "verification_status": "VERIFIED",
+        "verification_details": "VERIFIED"
+      },
+      "governance_flags": {
+        "authority": false,
+        "delegation": false,
+        "emotional": false,
+        "ambiguity": false,
+        "safety": false,
+        "output_authority_violation": false
+      },
+      "governance_output": {
+        "allowed": true,
+        "reason": "Output governance passed.",
+        "flags": {
+          "output_authority_violation": false
+        }
+      },
+      "verification_status": "VERIFIED",
+      "status_action": "ALLOW",
+      "enforcement_signature": "e4e9e3cff1e73f675a69b251a7d17554196c2dd2104171b61353c2b75fdd9a80",
+      "request_id": "8344f0e4-ed31-44ba-9976-c88a34caa732",
+      "sealed_at": "2026-03-25T03:41:53Z",
+      "latency_ms": 373.96,
+      "routing": {
+        "query_type": "KNOWLEDGE_QUERY",
+        "route": "ROUTE_UNIGURU",
+        "router_latency_ms": 374.129
+      },
+      "language_adapter": {
+        "enabled": true,
+        "source_language": "en",
+        "target_language": "en",
+        "response_localization_applied": false
+      },
+      "core_alignment": {
+        "enabled": false,
+        "read_only": true,
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "registry_aligned": false
+      }
+    },
+    {
+      "decision": "answer",
+      "answer": "Based on verified source: anekantavada_syadvada.md\n\nAnswer:\nJain Knowledge Base \u2014 Anekantavada and Syadvada Content Anekantavada (Non-one-sidedness) is one of the most important philosophical contributions of Jainism to Indian thought. It holds that ultimate reality is complex and cannot be described from a single viewpoint.\n\nSource:\njain/anekantavada_syadvada.md",
+      "session_id": null,
+      "reason": "Knowledge found in local KB and verified.",
+      "ontology_reference": {
+        "concept_id": "495fe91d-d5c8-4a89-b3f0-5e16e001ec9a",
+        "domain": "jain",
+        "snapshot_version": 1,
+        "snapshot_hash": "e7292c6b78cfa8c7fe0008b36f6916879af5b9c78d763a3cbf402d3e3d6895ad",
+        "truth_level": 3
+      },
+      "reasoning_trace": {
+        "sources_consulted": [
+          "jain",
+          "ontology_graph",
+          "ontology_registry"
+        ],
+        "retrieval_confidence": 0.6,
+        "ontology_domain": "jain",
+        "verification_status": "VERIFIED",
+        "verification_details": "VERIFIED"
+      },
+      "governance_flags": {
+        "authority": false,
+        "delegation": false,
+        "emotional": false,
+        "ambiguity": false,
+        "safety": false,
+        "output_authority_violation": false
+      },
+      "governance_output": {
+        "allowed": true,
+        "reason": "Output governance passed.",
+        "flags": {
+          "output_authority_violation": false
+        }
+      },
+      "verification_status": "VERIFIED",
+      "status_action": "ALLOW",
+      "enforcement_signature": "46095f059741756b866d0e540be7af58fc5ab16fc2d63744b24e64d3ca7e2fd4",
+      "request_id": "193cf08c-0f1f-4c2c-baab-caaf30873f92",
+      "sealed_at": "2026-03-25T03:41:53Z",
+      "latency_ms": 15.03,
+      "routing": {
+        "query_type": "KNOWLEDGE_QUERY",
+        "route": "ROUTE_UNIGURU",
+        "router_latency_ms": 15.187
+      },
+      "language_adapter": {
+        "enabled": true,
+        "source_language": "en",
+        "target_language": "en",
+        "response_localization_applied": false
+      },
+      "core_alignment": {
+        "enabled": false,
+        "read_only": true,
+        "concept_id": "495fe91d-d5c8-4a89-b3f0-5e16e001ec9a",
+        "domain": "jain",
+        "registry_aligned": false
+      }
+    },
+    {
+      "decision": "answer",
+      "answer": "Based on verified source: jain_cosmology.md\n\nAnswer:\nJain Knowledge Base \u2014 Jain Cosmology Content Jain cosmology presents a detailed, non-theistic description of the universe (Loka) as eternal, uncreated, and self-sustaining.\n\nSource:\njain/jain_cosmology.md",
+      "session_id": null,
+      "reason": "Knowledge found in local KB and verified.",
+      "ontology_reference": {
+        "concept_id": "7676764d-7f7d-4bc2-8c80-f689e113baec",
+        "domain": "jain",
+        "snapshot_version": 1,
+        "snapshot_hash": "e7292c6b78cfa8c7fe0008b36f6916879af5b9c78d763a3cbf402d3e3d6895ad",
+        "truth_level": 4
+      },
+      "reasoning_trace": {
+        "sources_consulted": [
+          "jain",
+          "ontology_graph",
+          "ontology_registry"
+        ],
+        "retrieval_confidence": 1.0,
+        "ontology_domain": "jain",
+        "verification_status": "VERIFIED",
+        "verification_details": "VERIFIED"
+      },
+      "governance_flags": {
+        "authority": false,
+        "delegation": false,
+        "emotional": false,
+        "ambiguity": false,
+        "safety": false,
+        "output_authority_violation": false
+      },
+      "governance_output": {
+        "allowed": true,
+        "reason": "Output governance passed.",
+        "flags": {
+          "output_authority_violation": false
+        }
+      },
+      "verification_status": "VERIFIED",
+      "status_action": "ALLOW",
+      "enforcement_signature": "9ccec29656b794874e74c9622de373f10dc648ebf8372a9c2ebf0b77b38343a3",
+      "request_id": "1a30e855-6e5c-4833-a2d2-5c3963abfea0",
+      "sealed_at": "2026-03-25T03:41:53Z",
+      "latency_ms": 15.97,
+      "routing": {
+        "query_type": "KNOWLEDGE_QUERY",
+        "route": "ROUTE_UNIGURU",
+        "router_latency_ms": 16.126
+      },
+      "language_adapter": {
+        "enabled": true,
+        "source_language": "en",
+        "target_language": "en",
+        "response_localization_applied": false
+      },
+      "core_alignment": {
+        "enabled": false,
+        "read_only": true,
+        "concept_id": "7676764d-7f7d-4bc2-8c80-f689e113baec",
+        "domain": "jain",
+        "registry_aligned": false
+      }
+    },
+    {
+      "decision": "answer",
+      "answer": "Based on verified source: jain_karma_doctrine.md\n\nAnswer:\nJain Knowledge Base \u2014 Karma Doctrine Content Jain karma theory is one of the most elaborate and systematic karma philosophies in Indian religion. Unlike Hindu Vedantic karma, Jain karma is treated as a physical substance \u2014 fine particles of matter that bind to the soul.\n\nSource:\njain/jain_karma_doctrine.md",
+      "session_id": null,
+      "reason": "Knowledge found in local KB and verified.",
+      "ontology_reference": {
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "snapshot_version": 1,
+        "snapshot_hash": "e7292c6b78cfa8c7fe0008b36f6916879af5b9c78d763a3cbf402d3e3d6895ad",
+        "truth_level": 3
+      },
+      "reasoning_trace": {
+        "sources_consulted": [
+          "jain",
+          "ontology_graph",
+          "ontology_registry"
+        ],
+        "retrieval_confidence": 0.5666666666666667,
+        "ontology_domain": "jain",
+        "verification_status": "VERIFIED",
+        "verification_details": "VERIFIED"
+      },
+      "governance_flags": {
+        "authority": false,
+        "delegation": false,
+        "emotional": false,
+        "ambiguity": false,
+        "safety": false,
+        "output_authority_violation": false
+      },
+      "governance_output": {
+        "allowed": true,
+        "reason": "Output governance passed.",
+        "flags": {
+          "output_authority_violation": false
+        }
+      },
+      "verification_status": "VERIFIED",
+      "status_action": "ALLOW",
+      "enforcement_signature": "1d76137a66e4ff9154ec3c55ece0e80244dd3de3770747a29969df2482abb531",
+      "request_id": "3cbb80c4-1492-48a6-8374-90f2ea55e833",
+      "sealed_at": "2026-03-25T03:41:53Z",
+      "latency_ms": 15.48,
+      "routing": {
+        "query_type": "KNOWLEDGE_QUERY",
+        "route": "ROUTE_UNIGURU",
+        "router_latency_ms": 15.641
+      },
+      "language_adapter": {
+        "enabled": true,
+        "source_language": "en",
+        "target_language": "en",
+        "response_localization_applied": false
+      },
+      "core_alignment": {
+        "enabled": false,
+        "read_only": true,
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "registry_aligned": false
+      }
+    },
+    {
+      "decision": "answer",
+      "answer": "Based on verified source: rishabhadeva_adinatha.md\n\nAnswer:\nJain Knowledge Base \u2014 Rishabhadeva (Adinatha) Content Rishabhadeva (also called Adinatha \u2014 \"First Lord\") is the first of the 24 Tirthankaras of the current cosmic time cycle according to Jain cosmology.\n\nSource:\njain/rishabhadeva_adinatha.md",
+      "session_id": null,
+      "reason": "Knowledge found in local KB and verified.",
+      "ontology_reference": {
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "snapshot_version": 1,
+        "snapshot_hash": "e7292c6b78cfa8c7fe0008b36f6916879af5b9c78d763a3cbf402d3e3d6895ad",
+        "truth_level": 3
+      },
+      "reasoning_trace": {
+        "sources_consulted": [
+          "jain",
+          "ontology_graph",
+          "ontology_registry"
+        ],
+        "retrieval_confidence": 0.6,
+        "ontology_domain": "jain",
+        "verification_status": "VERIFIED",
+        "verification_details": "VERIFIED"
+      },
+      "governance_flags": {
+        "authority": false,
+        "delegation": false,
+        "emotional": false,
+        "ambiguity": false,
+        "safety": false,
+        "output_authority_violation": false
+      },
+      "governance_output": {
+        "allowed": true,
+        "reason": "Output governance passed.",
+        "flags": {
+          "output_authority_violation": false
+        }
+      },
+      "verification_status": "VERIFIED",
+      "status_action": "ALLOW",
+      "enforcement_signature": "3b123eeeaf0927bb65391d1ce6c98c5210620499c436bfb5da4ce8253acf7ce7",
+      "request_id": "d13e3c1e-7042-422e-bca8-9c9bdb0bebc8",
+      "sealed_at": "2026-03-25T03:41:53Z",
+      "latency_ms": 19.91,
+      "routing": {
+        "query_type": "KNOWLEDGE_QUERY",
+        "route": "ROUTE_UNIGURU",
+        "router_latency_ms": 20.052
+      },
+      "language_adapter": {
+        "enabled": true,
+        "source_language": "en",
+        "target_language": "en",
+        "response_localization_applied": false
+      },
+      "core_alignment": {
+        "enabled": false,
+        "read_only": true,
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "registry_aligned": false
+      }
+    }
+  ],
+  "kb": [
+    {
+      "decision": "answer",
+      "answer": "Based on verified source: tattvartha_sutra.md\n\nAnswer:\nJain Knowledge Base \u2014 Tattvartha Sutra (Expanded) Content The Tattvartha Sutra (also spelled Tattv\u0101rthas\u016btra) is the foundational philosophical text of Jainism, composed by Acharya Umaswati around the 2nd\u20135th century CE. It is unique in being accepted by all three main Jain sects.\n\nSource:\njain/tattvartha_sutra.md",
+      "session_id": null,
+      "reason": "Knowledge found in local KB and verified.",
+      "ontology_reference": {
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "snapshot_version": 1,
+        "snapshot_hash": "e7292c6b78cfa8c7fe0008b36f6916879af5b9c78d763a3cbf402d3e3d6895ad",
+        "truth_level": 3
+      },
+      "reasoning_trace": {
+        "sources_consulted": [
+          "jain",
+          "ontology_graph",
+          "ontology_registry"
+        ],
+        "retrieval_confidence": 1.0,
+        "ontology_domain": "jain",
+        "verification_status": "VERIFIED",
+        "verification_details": "VERIFIED"
+      },
+      "governance_flags": {
+        "authority": false,
+        "delegation": false,
+        "emotional": false,
+        "ambiguity": false,
+        "safety": false,
+        "output_authority_violation": false
+      },
+      "governance_output": {
+        "allowed": true,
+        "reason": "Output governance passed.",
+        "flags": {
+          "output_authority_violation": false
+        }
+      },
+      "verification_status": "VERIFIED",
+      "status_action": "ALLOW",
+      "enforcement_signature": "c86f2af543e4e58ae5c2b9fe99fceeab3dc12712fd3344defc35e32d37333ce3",
+      "request_id": "54a1dd36-96dd-4585-ac0d-d08c2b0b70b4",
+      "sealed_at": "2026-03-25T03:41:53Z",
+      "latency_ms": 15.29,
+      "routing": {
+        "query_type": "KNOWLEDGE_QUERY",
+        "route": "ROUTE_UNIGURU",
+        "router_latency_ms": 15.456
+      },
+      "language_adapter": {
+        "enabled": true,
+        "source_language": "en",
+        "target_language": "en",
+        "response_localization_applied": false
+      },
+      "core_alignment": {
+        "enabled": false,
+        "read_only": true,
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "registry_aligned": false
+      }
+    },
+    {
+      "decision": "answer",
+      "answer": "Based on verified source: jain_shravaka_ethics.md\n\nAnswer:\nJain Knowledge Base \u2014 Jain Ethics and Lay Conduct Content Jain ethics prescribes a graduated path of conduct for both ascetic monks and lay practitioners (shravaka/shravika). For laypeople, twelve minor vows (vratas) guide ethical life.\n\nSource:\njain/jain_shravaka_ethics.md",
+      "session_id": null,
+      "reason": "Knowledge found in local KB and verified.",
+      "ontology_reference": {
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "snapshot_version": 1,
+        "snapshot_hash": "e7292c6b78cfa8c7fe0008b36f6916879af5b9c78d763a3cbf402d3e3d6895ad",
+        "truth_level": 3
+      },
+      "reasoning_trace": {
+        "sources_consulted": [
+          "jain",
+          "ontology_graph",
+          "ontology_registry"
+        ],
+        "retrieval_confidence": 0.6833333333333333,
+        "ontology_domain": "jain",
+        "verification_status": "VERIFIED",
+        "verification_details": "VERIFIED"
+      },
+      "governance_flags": {
+        "authority": false,
+        "delegation": false,
+        "emotional": false,
+        "ambiguity": false,
+        "safety": false,
+        "output_authority_violation": false
+      },
+      "governance_output": {
+        "allowed": true,
+        "reason": "Output governance passed.",
+        "flags": {
+          "output_authority_violation": false
+        }
+      },
+      "verification_status": "VERIFIED",
+      "status_action": "ALLOW",
+      "enforcement_signature": "9cd77bdedb907122fd1eb550b13e54f5a851027f3ccbd8af24890e5d4eb9a0e4",
+      "request_id": "20e03b2e-0f2f-46f4-b006-d33972c72949",
+      "sealed_at": "2026-03-25T03:41:53Z",
+      "latency_ms": 15.07,
+      "routing": {
+        "query_type": "KNOWLEDGE_QUERY",
+        "route": "ROUTE_UNIGURU",
+        "router_latency_ms": 15.24
+      },
+      "language_adapter": {
+        "enabled": true,
+        "source_language": "en",
+        "target_language": "en",
+        "response_localization_applied": false
+      },
+      "core_alignment": {
+        "enabled": false,
+        "read_only": true,
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "registry_aligned": false
+      }
+    },
+    {
+      "decision": "answer",
+      "answer": "Based on verified source: sutrakritanga.md\n\nAnswer:\nJain Knowledge Base \u2014 Sutrakritanga Content The S\u016btrak\u1e5bt\u0101\u1e45ga is the second of the 12 Angas (main canonical texts) of Jainism. It contrasts Jain philosophy with other contemporary philosophical schools and provides guidance on ethical conduct for monks.\n\nSource:\njain/sutrakritanga.md",
+      "session_id": null,
+      "reason": "Knowledge found in local KB and verified.",
+      "ontology_reference": {
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "snapshot_version": 1,
+        "snapshot_hash": "e7292c6b78cfa8c7fe0008b36f6916879af5b9c78d763a3cbf402d3e3d6895ad",
+        "truth_level": 3
+      },
+      "reasoning_trace": {
+        "sources_consulted": [
+          "jain",
+          "ontology_graph",
+          "ontology_registry"
+        ],
+        "retrieval_confidence": 1.0,
+        "ontology_domain": "jain",
+        "verification_status": "VERIFIED",
+        "verification_details": "VERIFIED"
+      },
+      "governance_flags": {
+        "authority": false,
+        "delegation": false,
+        "emotional": false,
+        "ambiguity": false,
+        "safety": false,
+        "output_authority_violation": false
+      },
+      "governance_output": {
+        "allowed": true,
+        "reason": "Output governance passed.",
+        "flags": {
+          "output_authority_violation": false
+        }
+      },
+      "verification_status": "VERIFIED",
+      "status_action": "ALLOW",
+      "enforcement_signature": "bae0f9cfc605e85289585d2a0bfa0fd945907659255159c6301979adb99af608",
+      "request_id": "bcbc51bb-d419-4ae4-ac04-83836ab13f9f",
+      "sealed_at": "2026-03-25T03:41:53Z",
+      "latency_ms": 17.29,
+      "routing": {
+        "query_type": "KNOWLEDGE_QUERY",
+        "route": "ROUTE_UNIGURU",
+        "router_latency_ms": 17.433
+      },
+      "language_adapter": {
+        "enabled": true,
+        "source_language": "en",
+        "target_language": "en",
+        "response_localization_applied": false
+      },
+      "core_alignment": {
+        "enabled": false,
+        "read_only": true,
+        "concept_id": "ceb14ea2-d665-4ebf-ab6a-8dcaed4bd793",
+        "domain": "jain",
+        "registry_aligned": false
+      }
+    }
+  ],
+  "llm": [
+    {
+      "decision": "answer",
+      "answer": "I am still learning this topic, but here is a basic explanation... Here is one: Why did the developer go broke? Because they used up all their cache.",
+      "session_id": null,
+      "reason": "ROUTE_LLM served by internal demo mode.",
+      "ontology_reference": {
+        "concept_id": "router::general_llm_query",
+        "domain": "routing",
+        "snapshot_version": 0,
+        "snapshot_hash": "router-delegated",
+        "truth_level": 0
+      },
+      "reasoning_trace": {
+        "sources_consulted": [
+          "conversation_router"
+        ],
+        "retrieval_confidence": 0.0,
+        "ontology_domain": "routing",
+        "verification_status": "UNVERIFIED",
+        "verification_details": "Delegated via ROUTE_LLM"
+      },
+      "governance_flags": {
+        "safety": false
+      },
+      "governance_output": {
+        "allowed": true,
+        "reason": "Delegated to internal safety LLM fallback.",
+        "flags": {
+          "router_route": "ROUTE_LLM"
+        }
+      },
+      "verification_status": "UNVERIFIED",
+      "status_action": "ALLOW_WITH_DISCLAIMER",
+      "enforcement_signature": "a96920ce33fcde75ed12e91b08a96297830fecffb034e14cce4ac1890af6612b",
+      "request_id": "567a75b8-3055-47e2-8acf-2354a6347132",
+      "sealed_at": "2026-03-25T03:41:53.984665Z",
+      "latency_ms": 0.0,
+      "routing": {
+        "query_type": "GENERAL_LLM_QUERY",
+        "route": "ROUTE_LLM",
+        "router_latency_ms": 0.201
+      },
+      "language_adapter": {
+        "enabled": true,
+        "source_language": "en",
+        "target_language": "en",
+        "response_localization_applied": false
+      },
+      "core_alignment": {
+        "enabled": false,
+        "read_only": true,
+        "concept_id": "router::general_llm_query",
+        "domain": "routing",
+        "registry_aligned": false
+      }
+    },
+    {
+      "decision": "answer",
+      "answer": "I am still learning this topic, but here is a basic explanation... How to make a cake? can be understood by starting with the core idea, then examples, and then practical usage.",
+      "session_id": null,
+      "reason": "ROUTE_LLM served by internal demo mode.",
+      "ontology_reference": {
+        "concept_id": "router::knowledge_query",
+        "domain": "routing",
+        "snapshot_version": 0,
+        "snapshot_hash": "router-delegated",
+        "truth_level": 0
+      },
+      "reasoning_trace": {
+        "sources_consulted": [
+          "conversation_router"
+        ],
+        "retrieval_confidence": 0.0,
+        "ontology_domain": "routing",
+        "verification_status": "UNVERIFIED",
+        "verification_details": "Delegated via ROUTE_LLM"
+      },
+      "governance_flags": {
+        "safety": false
+      },
+      "governance_output": {
+        "allowed": true,
+        "reason": "Delegated to internal safety LLM fallback.",
+        "flags": {
+          "router_route": "ROUTE_LLM"
+        }
+      },
+      "verification_status": "UNVERIFIED",
+      "status_action": "ALLOW_WITH_DISCLAIMER",
+      "enforcement_signature": "6181fb7134a2d040141c7b8523992ae0edba33a0973b0f5c489a7a1462a8325d",
+      "request_id": "1e018520-6916-4b4a-9e83-79bab6b60c20",
+      "sealed_at": "2026-03-25T03:41:54.007873Z",
+      "latency_ms": 0.0,
+      "routing": {
+        "query_type": "KNOWLEDGE_QUERY",
+        "route": "ROUTE_LLM",
+        "router_latency_ms": 15.931
+      },
+      "language_adapter": {
+        "enabled": true,
+        "source_language": "en",
+        "target_language": "en",
+        "response_localization_applied": false
+      },
+      "core_alignment": {
+        "enabled": false,
+        "read_only": true,
+        "concept_id": "router::knowledge_query",
+        "domain": "routing",
+        "registry_aligned": false
+      }
+    },
+    {
+      "decision": "answer",
+      "answer": "I am still learning this topic, but here is a basic explanation... What's the weather? can be understood by starting with the core idea, then examples, and then practical usage.",
+      "session_id": null,
+      "reason": "ROUTE_LLM served by internal demo mode.",
+      "ontology_reference": {
+        "concept_id": "router::knowledge_query",
+        "domain": "routing",
+        "snapshot_version": 0,
+        "snapshot_hash": "router-delegated",
+        "truth_level": 0
+      },
+      "reasoning_trace": {
+        "sources_consulted": [
+          "conversation_router"
+        ],
+        "retrieval_confidence": 0.0,
+        "ontology_domain": "routing",
+        "verification_status": "UNVERIFIED",
+        "verification_details": "Delegated via ROUTE_LLM"
+      },
+      "governance_flags": {
+        "safety": false
+      },
+      "governance_output": {
+        "allowed": true,
+        "reason": "Delegated to internal safety LLM fallback.",
+        "flags": {
+          "router_route": "ROUTE_LLM"
+        }
+      },
+      "verification_status": "UNVERIFIED",
+      "status_action": "ALLOW_WITH_DISCLAIMER",
+      "enforcement_signature": "3b7ef1760e1734c85b20dc7f36a8bb62ef1c1102100e22b30193e83a6b8b0a18",
+      "request_id": "df3c1f26-d564-4264-a795-4e0d8797e8e9",
+      "sealed_at": "2026-03-25T03:41:54.028548Z",
+      "latency_ms": 0.0,
+      "routing": {
+        "query_type": "KNOWLEDGE_QUERY",
+        "route": "ROUTE_LLM",
+        "router_latency_ms": 14.695
+      },
+      "language_adapter": {
+        "enabled": true,
+        "source_language": "en",
+        "target_language": "en",
+        "response_localization_applied": false
+      },
+      "core_alignment": {
+        "enabled": false,
+        "read_only": true,
+        "concept_id": "router::knowledge_query",
+        "domain": "routing",
+        "registry_aligned": false
+      }
+    }
+  ]
+}
