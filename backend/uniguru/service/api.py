@@ -20,7 +20,7 @@ from uniguru.runtime_env import load_project_env
 from uniguru.ontology.registry import OntologyRegistry
 from uniguru.router.conversation_router import ConversationRouter
 from uniguru.integrations import BucketTelemetryClient, CoreReaderClient, LanguageAdapter, TelemetryEvent
-from uniguru.service.response_format import build_structured_answer
+from uniguru.service.response_format import build_presentation_metadata, build_structured_answer
 from uniguru.service.live_service import LiveUniGuruService
 from uniguru.service.query_classifier import QueryType, classify_query
 from uniguru.stt import STTEngine, STTUnavailableError
@@ -109,7 +109,7 @@ _ALLOWED_CALLERS = {
     caller.strip()
     for caller in os.getenv(
         "UNIGURU_ALLOWED_CALLERS",
-        "bhiv-assistant,gurukul-platform,internal-testing,uniguru-frontend",
+        "bhiv-assistant,gurukul-platform,samachar-platform,internal-testing,uniguru-frontend",
     ).split(",")
     if caller.strip()
 }
@@ -220,6 +220,11 @@ def _build_safe_fallback_response(
             "response_localization_applied": False,
         },
     }
+    response["presentation"] = build_presentation_metadata(
+        answer=str(response["answer"]),
+        verification_status="UNVERIFIED",
+        fallback_mode=True,
+    )
     _log_event(
         "safe_fallback_response",
         {
@@ -316,6 +321,14 @@ def _resolve_caller(request: AskRequest, raw_request: Request) -> str:
         caller = "demo-user"
         
     return caller
+
+
+def _enforce_allowed_caller(caller: str) -> None:
+    normalized = str(caller or "").strip()
+    if not normalized:
+        raise HTTPException(status_code=403, detail="Caller identification is required")
+    if normalized not in _ALLOWED_CALLERS:
+        raise HTTPException(status_code=403, detail=f"Caller '{normalized}' is not allowed")
 
 
 def _query_hash(query: str) -> str:
@@ -530,6 +543,7 @@ def _process_router_request(
         request=AskRequest(query=query, context=context, allow_web=allow_web, session_id=session_id),
         raw_request=raw_request,
     )
+    _enforce_allowed_caller(caller_name)
 
     context_map = dict(context or {})
     adapted = language_adapter.normalize_query(query=query, context=context_map)
@@ -585,6 +599,11 @@ def _process_router_request(
             "language_adapter_applied": adapted.adapter_applied,
         },
     )
+    response["presentation"] = build_presentation_metadata(
+        answer=str(response.get("answer") or ""),
+        verification_status=verification_status,
+        fallback_mode=bool((response.get("governance_flags") or {}).get("fallback_mode")),
+    )
     return response
 
 
@@ -599,15 +618,6 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         },
     )
     return JSONResponse(status_code=422, content={"detail": exc.errors()})
-
-
-@app.middleware("http")
-async def add_default_caller(request: Request, call_next):
-    if not request.headers.get("X-Caller-Name"):
-        request.scope["headers"].append(
-            (b"x-caller-name", b"demo-user")
-        )
-    return await call_next(request)
 
 
 @app.middleware("http")
@@ -681,8 +691,15 @@ def ask(request: AskRequest, raw_request: Request) -> Dict[str, Any]:
                 details="The API safety layer inserted a non-empty response to keep the service stable.",
                 source="API safety layer",
             )
+        response["presentation"] = build_presentation_metadata(
+            answer=str(response.get("answer") or ""),
+            verification_status=str(response.get("verification_status") or "UNVERIFIED"),
+            fallback_mode=bool((response.get("governance_flags") or {}).get("fallback_mode")),
+        )
         return response
     except HTTPException as exc:
+        if exc.status_code in {401, 403}:
+            raise
         return _build_safe_fallback_response(
             query=request.query,
             session_id=request.session_id,
@@ -762,7 +779,7 @@ async def voice_query(
         response["transcription"] = transcription
         return response
     except HTTPException as exc:
-        if exc.status_code == 401:
+        if exc.status_code in {401, 403}:
             raise
         return _build_safe_fallback_response(
             query="voice input",

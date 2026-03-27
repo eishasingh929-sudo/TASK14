@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 KB_ROOT = ROOT / "backend" / "uniguru" / "knowledge"
+RUNTIME_MANIFEST = ROOT / "backend" / "uniguru" / "knowledge" / "index" / "runtime_manifest.json"
 OUTPUT_JSON = ROOT / "demo_logs" / "kb_coverage_snapshot.json"
 OUTPUT_MD = ROOT / "docs" / "reports" / "KB_COVERAGE_SUMMARY.md"
 
@@ -25,11 +26,21 @@ def main() -> None:
         domain = rel[0] if rel else "unknown"
         domain_counter[domain] += 1
 
+    runtime_summary = {}
+    if RUNTIME_MANIFEST.exists():
+        runtime_summary = json.loads(RUNTIME_MANIFEST.read_text(encoding="utf-8")).get("summary", {})
+
+    shallow_domains = {
+        domain: count for domain, count in dict(sorted(domain_counter.items(), key=lambda kv: kv[0])).items() if count < 10
+    }
+
     data = {
         "kb_root": str(KB_ROOT),
         "exists": True,
         "markdown_files": len(md_files),
         "domains": dict(sorted(domain_counter.items(), key=lambda kv: kv[0])),
+        "runtime_summary": runtime_summary,
+        "shallow_domains": shallow_domains,
     }
 
     OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
@@ -40,11 +51,18 @@ def main() -> None:
         "",
         f"- KB root: `{KB_ROOT.as_posix()}`",
         f"- Markdown files: `{len(md_files)}`",
+        f"- Runtime documents total: `{runtime_summary.get('documents_total', 'n/a')}`",
         "",
         "## Domain Distribution",
     ]
     for domain, count in sorted(domain_counter.items(), key=lambda kv: kv[0]):
         lines.append(f"- `{domain}`: {count}")
+    lines.extend(["", "## Shallow Domains (<10 markdown files)"])
+    if shallow_domains:
+        for domain, count in shallow_domains.items():
+            lines.append(f"- `{domain}`: {count}")
+    else:
+        lines.append("- None")
     lines.extend(
         [
             "",

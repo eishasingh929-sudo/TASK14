@@ -3,6 +3,10 @@
 ## Base URL
 `https://uni-guru.in`
 
+Direct host ports for deployment:
+- `http://<HOST_OR_IP>:8000/ask`
+- `http://<HOST_OR_IP>:3000/api/v1/chat/query`
+
 ## Authentication
 All requests to protected endpoints MUST include the `Authorization` header:
 `Authorization: Bearer <your_access_token>`
@@ -12,7 +16,11 @@ Callers MUST identify themselves via:
 - JSON field: `context.caller`
 - OR Header: `X-Caller-Name`
 
-Supported callers: `bhiv-assistant`, `gurukul-platform`, `internal-testing`.
+Supported callers: `bhiv-assistant`, `gurukul-platform`, `samachar-platform`, `internal-testing`, `uniguru-frontend`.
+
+If auth is enabled:
+- Missing or invalid token -> `401`
+- Unknown caller -> `403`
 
 ## Endpoints
 
@@ -29,7 +37,16 @@ Primary reasoning endpoint.
 }
 ```
 
-### 2. Health (GET /health)
+### 2. External UI (POST /api/v1/chat/query)
+Node middleware endpoint for NIC or other frontend callers.
+
+### 3. Gurukul (POST /api/v1/gurukul/query)
+Specialized Node middleware endpoint for Gurukul student traffic.
+
+### 4. Samachar (POST /api/v1/samachar/query)
+Specialized Node middleware endpoint for news-style or bulletin traffic.
+
+### 5. Health (GET /health)
 Public health status (no auth).
 ```json
 {
@@ -39,8 +56,8 @@ Public health status (no auth).
 }
 ```
 
-### 3. Metrics (GET /metrics)
+### 6. Metrics (GET /metrics)
 Prometheus compatible metrics (requires auth).
 
-### 4. Dashboard (GET /monitoring/dashboard)
+### 7. Dashboard (GET /monitoring/dashboard)
 Structured live dashboard data (requires auth).

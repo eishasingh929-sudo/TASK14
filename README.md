@@ -11,6 +11,7 @@ UniGuru is a demo-safe AI backend stack with deterministic KB routing, LLM fallb
 3. Start node middleware:
    - Windows: `powershell -ExecutionPolicy Bypass -File run/run_node.ps1`
    - Linux/macOS: `bash run/run_node.sh`
+   - Default Node port: `3000`
 
 ## Validate End-to-End
 
@@ -38,6 +39,22 @@ Output:
 
 [`demo_logs/final_validation_20_queries.json`](/c:/Users/Yass0/OneDrive/Desktop/TASK14/demo_logs/final_validation_20_queries.json)
 
+Final live 30-query check:
+
+`python test/run_final_validation_live.py`
+
+Output:
+
+[`demo_logs/final_validation_live.json`](/c:/Users/Yass0/OneDrive/Desktop/TASK14/demo_logs/final_validation_live.json)
+
+Restart proof:
+
+`python test/run_live_restart_proof.py`
+
+Output:
+
+[`demo_logs/live_restart_proof.json`](/c:/Users/Yass0/OneDrive/Desktop/TASK14/demo_logs/live_restart_proof.json)
+
 Dataset ingestion proof:
 
 `python scripts/ingest_kb.py`
@@ -48,7 +65,12 @@ Output:
 
 ## Canonical Flow
 
-`UI -> Node (/api/v1/chat/query) -> Python (/ask) -> ConversationRouter -> KB or ROUTE_LLM -> Safe fallback`
+`UI -> Node (:3000 /api/v1/chat/query) -> Python (:8000 /ask) -> ConversationRouter -> KB or ROUTE_LLM -> Safe fallback`
+
+Additional integration routes:
+
+- `POST /api/v1/gurukul/query`
+- `POST /api/v1/samachar/query`
 
 Safe fallback phrase:
 

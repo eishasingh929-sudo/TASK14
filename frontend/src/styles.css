@@ -41,6 +41,50 @@ body {
   border: 1px solid #e2e8f0;
 }
 
+.bubble-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bubble-paragraph {
+  margin: 0;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.bubble-section {
+  padding-top: 4px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.bubble-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.bubble-meta {
+  margin: 0;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.bubble-note {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .bubble.user {
   background: #dbeafe;
 }

@@ -9,9 +9,36 @@ interface Props {
 }
 
 export function MessageBubble({ role, content, payload }: Props) {
+  const presentation = payload?.presentation;
+  const paragraphs =
+    presentation?.paragraphs && presentation.paragraphs.length > 0
+      ? presentation.paragraphs
+      : [content].filter(Boolean);
+
   return (
     <div className={`bubble ${role}`}>
-      <div>{content}</div>
+      <div className="bubble-content">
+        {paragraphs.map((paragraph, index) => (
+          <p key={`${role}-paragraph-${index}`} className="bubble-paragraph">
+            {paragraph}
+          </p>
+        ))}
+        {role === "assistant" && presentation?.details && (
+          <div className="bubble-section">
+            <div className="bubble-label">Details</div>
+            <p className="bubble-paragraph">{presentation.details}</p>
+          </div>
+        )}
+        {role === "assistant" && presentation?.source && (
+          <div className="bubble-section">
+            <div className="bubble-label">Source</div>
+            <p className="bubble-meta">{presentation.source}</p>
+          </div>
+        )}
+        {role === "assistant" && presentation?.disclaimer && (
+          <p className="bubble-note">{presentation.disclaimer}</p>
+        )}
+      </div>
       {role === "assistant" && (
         <>
           <VerificationBadge

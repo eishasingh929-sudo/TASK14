@@ -15,7 +15,7 @@ import requests
 
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON_PORT = int(os.getenv("UNIGURU_PYTHON_PORT", "8000"))
-NODE_PORT = int(os.getenv("UNIGURU_NODE_PORT", "8080"))
+NODE_PORT = int(os.getenv("UNIGURU_NODE_PORT", "3000"))
 PYTHON_BASE = f"http://127.0.0.1:{PYTHON_PORT}"
 NODE_BASE = f"http://127.0.0.1:{NODE_PORT}"
 OUTPUT_JSON = ROOT / "demo_logs" / "demo_safety_proof.json"
@@ -54,7 +54,7 @@ def _start_stack(env_overrides: Dict[str, str]) -> tuple[subprocess.Popen[Any], 
     env_backend["UNIGURU_HOST"] = "127.0.0.1"
     env_backend["UNIGURU_PORT"] = str(PYTHON_PORT)
     env_backend["NODE_BACKEND_PORT"] = str(NODE_PORT)
-    env_backend["UNIGURU_ALLOWED_CALLERS"] = "bhiv-assistant,gurukul-platform,internal-testing,uniguru-frontend"
+    env_backend["UNIGURU_ALLOWED_CALLERS"] = "bhiv-assistant,gurukul-platform,samachar-platform,internal-testing,uniguru-frontend"
     for key, value in env_overrides.items():
         env_backend[key] = value
 
@@ -201,7 +201,7 @@ def main() -> None:
                 "UNIGURU_API_AUTH_REQUIRED": "false",
                 "UNIGURU_LLM_URL": "http://127.0.0.1:11434/api/generate",
                 "UNIGURU_LLM_MODEL": "gpt-oss:120b-cloud",
-                "UNIGURU_LLM_TIMEOUT_SECONDS": "60",
+                "UNIGURU_LLM_TIMEOUT_SECONDS": "12",
             }
         )
         results_1 = _run_queries(

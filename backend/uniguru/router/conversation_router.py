@@ -160,21 +160,29 @@ class ConversationRouter:
             )
         self._allow_unverified_fallback = bool(allow_unverified_fallback)
         self._breaker = _LatencyCircuitBreaker(threshold_ms=threshold, open_seconds=open_seconds)
-        self._llm_url = self._resolve_local_ollama_url(os.getenv("UNIGURU_LLM_URL", "").strip())
+        self._llm_url = self._normalize_llm_url(os.getenv("UNIGURU_LLM_URL", "").strip())
         self._llm_model = os.getenv("UNIGURU_LLM_MODEL", DEFAULT_LOCAL_OLLAMA_MODEL).strip() or DEFAULT_LOCAL_OLLAMA_MODEL
         self._llm_timeout = float(os.getenv("UNIGURU_LLM_TIMEOUT_SECONDS", "8"))
 
     def llm_status(self) -> Dict[str, Any]:
         configured = bool(self._llm_url)
+        available_models = self._available_local_models() if configured else []
+        reachable = bool(available_models)
+        selected_model = self._select_fallback_model(self._llm_model) if configured else None
+        model_loaded = bool(selected_model and selected_model in available_models)
         return {
             "configured": configured,
             "endpoint": self._llm_url or None,
             "model": self._llm_model or None,
-            "available": configured,
+            "selected_model": selected_model,
+            "available_models": available_models,
+            "reachable": reachable,
+            "model_loaded": model_loaded,
+            "available": bool(reachable and model_loaded),
         }
 
     @staticmethod
-    def _resolve_local_ollama_url(raw_url: str) -> str:
+    def _normalize_llm_url(raw_url: str) -> str:
         candidate = str(raw_url or "").strip()
         if not candidate or candidate.startswith("internal://"):
             return DEFAULT_LOCAL_OLLAMA_URL
@@ -182,16 +190,26 @@ class ConversationRouter:
         parsed = urlparse(candidate)
         if parsed.scheme not in {"http", "https"}:
             return DEFAULT_LOCAL_OLLAMA_URL
-        if (parsed.hostname or "").lower() not in {"127.0.0.1", "localhost", "::1"}:
-            return DEFAULT_LOCAL_OLLAMA_URL
-        if parsed.port not in {None, 11434}:
-            return DEFAULT_LOCAL_OLLAMA_URL
-        if parsed.path not in {"", "/", "/api/generate"}:
-            return DEFAULT_LOCAL_OLLAMA_URL
-        return urlunparse((parsed.scheme, parsed.netloc, "/api/generate", "", "", ""))
+        path = parsed.path or ""
+        if path in {"", "/"}:
+            path = "/api/generate"
+        return urlunparse((parsed.scheme, parsed.netloc, path, "", "", ""))
+
+    def _llm_tags_url(self) -> str:
+        if not self._llm_url:
+            return ""
+        parsed = urlparse(self._llm_url)
+        path = parsed.path or ""
+        if path.endswith("/api/generate"):
+            path = f"{path[:-len('/generate')]}/tags"
+        elif path in {"", "/"}:
+            path = "/api/tags"
+        return urlunparse((parsed.scheme, parsed.netloc, path, "", "", ""))
 
     def _available_local_models(self) -> list[str]:
-        tags_url = self._llm_url.replace("/api/generate", "/api/tags")
+        tags_url = self._llm_tags_url()
+        if not tags_url:
+            return []
         try:
             response = requests.get(tags_url, timeout=min(5.0, self._llm_timeout))
             response.raise_for_status()

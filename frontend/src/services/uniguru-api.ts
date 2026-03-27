@@ -2,7 +2,7 @@ import axios from "axios";
 import { UniGuruResponse } from "../types/uniguru";
 
 const BASE = import.meta.env.VITE_UNIGURU_API_URL || "http://localhost:8000";
-const NODE_BASE = import.meta.env.VITE_NODE_BACKEND_URL || "http://localhost:8080";
+const NODE_BASE = import.meta.env.VITE_NODE_BACKEND_URL || "http://localhost:3000";
 const TOKEN = import.meta.env.VITE_UNIGURU_API_TOKEN || "";
 
 export async function ask(query: string, caller = "bhiv-assistant"): Promise<UniGuruResponse> {

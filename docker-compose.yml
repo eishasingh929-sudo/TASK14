@@ -12,8 +12,8 @@ services:
     environment:
       UNIGURU_HOST: "0.0.0.0"
       UNIGURU_PORT: "8000"
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     volumes:
       - uniguru_metrics:/var/lib/uniguru
     networks:
@@ -25,15 +25,16 @@ services:
       dockerfile: Dockerfile
     container_name: node-backend
     restart: unless-stopped
+    env_file:
+      - .env.production
     environment:
-      NODE_BACKEND_PORT: "8080"
+      NODE_BACKEND_PORT: "3000"
       UNIGURU_ASK_URL: "http://uniguru-api:8000/ask"
-      UNIGURU_API_TOKEN: "${UNIGURU_API_TOKEN}"
       UNIGURU_REQUEST_TIMEOUT_MS: "15000"
     depends_on:
       - uniguru-api
-    expose:
-      - "8080"
+    ports:
+      - "3000:3000"
     networks:
       - uniguru_net
 

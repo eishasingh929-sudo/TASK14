@@ -133,10 +133,7 @@ def test_service_token_auth_can_be_enforced() -> None:
         api_module._is_pytest_runtime = lambda: False
 
         unauthorized = client.post("/ask", json=_ask_payload("What is a qubit?"))
-        assert unauthorized.status_code == 200
-        unauthorized_payload = unauthorized.json()
-        assert unauthorized_payload["verification_status"] == "UNVERIFIED"
-        assert "I am still learning this topic" in unauthorized_payload["answer"]
+        assert unauthorized.status_code == 401
 
         authorized = client.post(
             "/ask",
@@ -206,20 +203,16 @@ def test_metrics_reset_endpoint_clears_counters() -> None:
     assert "uniguru_ask_requests_total 0" in after.text
 
 
-def test_missing_caller_returns_safe_fallback() -> None:
+def test_missing_caller_is_rejected() -> None:
     response = client.post("/ask", json={"query": "What is a qubit?"})
-    assert response.status_code == 200
-    payload = response.json()
-    assert payload["verification_status"] == "UNVERIFIED"
-    assert "I am still learning this topic" in payload["answer"]
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Caller 'demo-user' is not allowed"
 
 
-def test_unknown_caller_returns_safe_fallback() -> None:
+def test_unknown_caller_is_rejected() -> None:
     response = client.post("/ask", json={"query": "What is a qubit?", "context": {"caller": "unknown-client"}})
-    assert response.status_code == 200
-    payload = response.json()
-    assert payload["verification_status"] == "UNVERIFIED"
-    assert "I am still learning this topic" in payload["answer"]
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Caller 'unknown-client' is not allowed"
 
 
 def test_allowed_header_caller_is_accepted() -> None:

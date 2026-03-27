@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 # Set environment for testing BEFORE importing api
 os.environ["UNIGURU_API_AUTH_REQUIRED"] = "false"
-os.environ["UNIGURU_ALLOWED_CALLERS"] = "bhiv-assistant,gurukul-platform,internal-testing,uniguru-frontend"
+os.environ["UNIGURU_ALLOWED_CALLERS"] = "bhiv-assistant,gurukul-platform,samachar-platform,internal-testing,uniguru-frontend"
 
 from uniguru.service.api import AskRequest, ask
 from uniguru.router.conversation_router import RouteTarget
@@ -26,7 +26,7 @@ class TestEcosystemIntegration(unittest.TestCase):
     def setUp(self):
         # Setup environment for testing
         os.environ["UNIGURU_API_AUTH_REQUIRED"] = "false"
-        os.environ["UNIGURU_ALLOWED_CALLERS"] = "bhiv-assistant,gurukul-platform,internal-testing,uniguru-frontend"
+        os.environ["UNIGURU_ALLOWED_CALLERS"] = "bhiv-assistant,gurukul-platform,samachar-platform,internal-testing,uniguru-frontend"
 
     @patch("uniguru.service.api.conversation_router")
     @patch("uniguru.service.api.bucket_telemetry")

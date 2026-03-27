@@ -23,6 +23,17 @@ export interface CoreAlignment {
   [key: string]: unknown;
 }
 
+export interface PresentationMetadata {
+  summary?: string;
+  body?: string;
+  details?: string;
+  source?: string;
+  paragraphs?: string[];
+  bullet_points?: string[];
+  disclaimer?: string;
+  fallback_mode?: boolean;
+}
+
 export interface UniGuruResponse {
   decision: string;
   answer: string;
@@ -32,4 +43,7 @@ export interface UniGuruResponse {
   reasoning_trace?: ReasoningTrace;
   routing?: RoutingMetadata;
   core_alignment?: CoreAlignment;
+  integration_notes?: string[];
+  raw_answer?: string;
+  presentation?: PresentationMetadata;
 }

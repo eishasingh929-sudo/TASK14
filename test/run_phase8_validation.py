@@ -15,7 +15,7 @@ import requests
 
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON_PORT = int(os.getenv("UNIGURU_PYTHON_PORT", "8000"))
-NODE_PORT = int(os.getenv("UNIGURU_NODE_PORT", "8080"))
+NODE_PORT = int(os.getenv("UNIGURU_NODE_PORT", "3000"))
 PYTHON_BASE = f"http://127.0.0.1:{PYTHON_PORT}"
 NODE_BASE = f"http://127.0.0.1:{NODE_PORT}"
 OUTPUT_PATH = ROOT / "demo_logs" / "phase8_test_outputs.json"
@@ -83,7 +83,7 @@ def _start_backend() -> subprocess.Popen[Any]:
     env["UNIGURU_API_AUTH_REQUIRED"] = "false"
     env["UNIGURU_LLM_URL"] = "internal://demo-llm"
     env["UNIGURU_ALLOWED_CALLERS"] = (
-        "bhiv-assistant,gurukul-platform,internal-testing,uniguru-frontend"
+        "bhiv-assistant,gurukul-platform,samachar-platform,internal-testing,uniguru-frontend"
     )
     return subprocess.Popen(
         [sys.executable, "-m", "uvicorn", "uniguru.service.api:app", "--host", "127.0.0.1", "--port", str(PYTHON_PORT)],

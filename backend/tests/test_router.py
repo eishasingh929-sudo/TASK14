@@ -152,13 +152,13 @@ def test_llm_route_uses_configured_endpoint(monkeypatch) -> None:
     assert captured["json"]["stream"] is False
 
 
-def test_llm_route_normalizes_remote_endpoint_to_local_ollama(monkeypatch) -> None:
+def test_llm_route_preserves_explicit_remote_endpoint(monkeypatch) -> None:
     class _FakeResponse:
         def raise_for_status(self) -> None:
             return None
 
         def json(self):
-            return {"response": "Hello from local Ollama"}
+            return {"response": "Hello from configured remote LLM"}
 
     captured = {}
 
@@ -180,7 +180,7 @@ def test_llm_route_normalizes_remote_endpoint_to_local_ollama(monkeypatch) -> No
     response = router.route_query("Explain cloud computing", {"session_id": "llm-remote"})
 
     assert response["routing"]["route"] == RouteTarget.ROUTE_LLM.value
-    assert "Hello from local Ollama" in response["answer"]
+    assert "Hello from configured remote LLM" in response["answer"]
     assert response["answer"].startswith("Answer:")
-    assert captured["url"] == "http://127.0.0.1:11434/api/generate"
+    assert captured["url"] == "https://api.groq.com/openai/v1/chat/completions"
     assert captured["json"] == {"model": "llama3", "prompt": "Explain cloud computing", "stream": False}
