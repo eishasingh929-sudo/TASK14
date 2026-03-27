@@ -6,7 +6,7 @@
 - Additional integration routes:
   - `/api/v1/gurukul/query`
   - `/api/v1/samachar/query`
-- Docker Compose is the preferred deployment path. Manual PowerShell startup is the fallback path.
+- Docker Compose is the preferred deployment path. Direct VM deployment uses `gunicorn` with `uvicorn.workers.UvicornWorker`.
 
 ## How The API Works
 - NIC UI calls `POST /api/v1/chat/query` on the Node service.
@@ -35,10 +35,10 @@
 ```bash
 docker compose up -d --build --force-recreate
 ```
-- Manual:
+- Direct VM:
 ```powershell
-powershell -ExecutionPolicy Bypass -File run/run_backend.ps1
-powershell -ExecutionPolicy Bypass -File run/run_node.ps1
+gunicorn uniguru.service.api:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --workers 4 --timeout 120
+npm --prefix node-backend start
 ```
 
 ## How To Check Health
@@ -53,5 +53,7 @@ powershell -ExecutionPolicy Bypass -File run/run_node.ps1
 ## Key Proof Files
 - `demo_logs/final_validation_live.json`
 - `demo_logs/live_restart_proof.json`
+- `demo_logs/live_integration_proof.json`
+- `demo_logs/llm_fallback_proof.json`
 - `docs/reports/FINAL_VALIDATION_LIVE.md`
 - `docs/reports/LIVE_RESTART_PROOF.md`

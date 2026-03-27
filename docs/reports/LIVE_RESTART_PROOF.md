@@ -1,6 +1,6 @@
 # Live Restart Proof
 
-Execution date (UTC): 2026-03-27T10:44:19.780229+00:00
+Execution date (UTC): 2026-03-27T12:10:52.411634+00:00
 
 ## Summary
 - Restart proof passed: True
@@ -10,5 +10,5 @@ Execution date (UTC): 2026-03-27T10:44:19.780229+00:00
 ## Health Snapshot
 - Before restart LLM available: True
 - After restart LLM available: True
-- Before restart auth mode: strict
-- After restart auth mode: strict
+- Before restart auth mode: disabled
+- After restart auth mode: disabled

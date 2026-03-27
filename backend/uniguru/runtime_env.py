@@ -22,6 +22,20 @@ def _parse_env_line(raw_line: str) -> tuple[str, str] | None:
     return key, value
 
 
+def _apply_env_aliases(override: bool = False) -> None:
+    aliases = {
+        "ASK_URL": "UNIGURU_ASK_URL",
+        "AUTH_ENABLED": "UNIGURU_API_AUTH_REQUIRED",
+        "PORT": "NODE_BACKEND_PORT",
+    }
+    for source_key, target_key in aliases.items():
+        source_value = os.getenv(source_key)
+        if source_value is None:
+            continue
+        if override or target_key not in os.environ:
+            os.environ[target_key] = source_value
+
+
 def load_project_env(override: bool = False) -> None:
     for env_path in _candidate_env_files():
         if not env_path.exists():
@@ -37,3 +51,4 @@ def load_project_env(override: bool = False) -> None:
             key, value = parsed
             if override or key not in os.environ:
                 os.environ[key] = value
+    _apply_env_aliases(override=override)

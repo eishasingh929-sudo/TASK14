@@ -155,6 +155,7 @@ export function buildSafeMiddlewareFallback({ query, reason, route = "ROUTE_LLM"
   const normalizedQuery = String(query || "").trim();
   const lower = normalizedQuery.toLowerCase();
   let body = "Please ask a specific question and I will explain step by step.";
+  let answerText = "";
   if (lower.includes("joke")) {
     body = "Here is one: Why did the function return early? It had a callback.";
   } else if (lower.includes("news") || lower.includes("current") || lower.includes("latest")) {
@@ -162,9 +163,14 @@ export function buildSafeMiddlewareFallback({ query, reason, route = "ROUTE_LLM"
   } else if (normalizedQuery) {
     body = `${normalizedQuery} can be explained through definition, context, and examples.`;
   }
+  if (route === "ROUTE_LLM") {
+    answerText = "System is temporarily busy. Please try again.";
+  } else {
+    answerText = `I am still learning this topic, but here is a basic explanation... ${body}`;
+  }
   const fallback = {
     decision: "answer",
-    answer: `I am still learning this topic, but here is a basic explanation... ${body}`,
+    answer: answerText,
     reason: reason || "Node middleware safe fallback activated.",
     verification_status: "UNVERIFIED",
     status_action: "ALLOW_WITH_DISCLAIMER",

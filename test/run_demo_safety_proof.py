@@ -23,6 +23,7 @@ OUTPUT_MD = ROOT / "docs" / "reports" / "DEMO_STABILITY_PROOF.md"
 KNOWLEDGE_DIR = ROOT / "backend" / "uniguru" / "knowledge"
 KNOWLEDGE_BACKUP = ROOT / "backend" / "uniguru" / "knowledge.__demo_backup"
 SAFE_PREFIX = "I am still learning this topic, but here is a basic explanation..."
+LLM_BUSY_MESSAGE = "System is temporarily busy. Please try again."
 
 
 def _wait_for_health(url: str, timeout_seconds: int = 40) -> None:
@@ -118,7 +119,7 @@ def _ask_node(query: str, case_name: str) -> Dict[str, Any]:
         "verification_status": data.get("verification_status"),
         "answer_preview": answer[:220],
         "non_empty_answer": bool(answer),
-        "fallback_prefix_present": SAFE_PREFIX in answer,
+        "fallback_prefix_present": SAFE_PREFIX in answer or LLM_BUSY_MESSAGE in answer,
         "latency_ms": latency_ms,
     }
 

@@ -12,7 +12,8 @@ load_project_env()
 def main() -> None:
     host = os.getenv("UNIGURU_HOST", "0.0.0.0")
     port = int(os.getenv("UNIGURU_PORT", "8000"))
-    uvicorn.run("uniguru.service.api:app", host=host, port=port, workers=1)
+    workers = int(os.getenv("UNIGURU_WORKERS", "1"))
+    uvicorn.run("uniguru.service.api:app", host=host, port=port, workers=workers)
 
 
 if __name__ == "__main__":

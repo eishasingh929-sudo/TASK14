@@ -112,6 +112,7 @@ _GENERAL_CHAT_PATTERNS = (
 SAFE_FALLBACK_PREFIX = "I am still learning this topic, but here is a basic explanation..."
 DEFAULT_LOCAL_OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
 DEFAULT_LOCAL_OLLAMA_MODEL = "llama3"
+LLM_BUSY_MESSAGE = "System is temporarily busy. Please try again."
 
 
 @dataclass(frozen=True)
@@ -430,10 +431,10 @@ class ConversationRouter:
     def _request_llm(self, query: str, session_id: Optional[str]) -> Dict[str, Any]:
         if not self._llm_url:
             return {
-                "answer": self._build_service_continuity_answer(query),
+                "answer": LLM_BUSY_MESSAGE,
                 "reason": "ROUTE_LLM selected but UNIGURU_LLM_URL is not configured.",
                 "governance_reason": "LLM route unavailable because no endpoint is configured.",
-                "details": "Service continuity mode returned a safe baseline answer because no external LLM endpoint is configured.",
+                "details": "The configured LLM endpoint is unavailable, so the busy fallback response was returned.",
                 "source_label": "LLM endpoint not configured",
                 "metadata": {
                     "provider": "unavailable",
@@ -472,10 +473,10 @@ class ConversationRouter:
                     payload["model"] = fallback_model
                 except Exception as retry_exc:
                     return {
-                        "answer": self._build_service_continuity_answer(query),
+                        "answer": LLM_BUSY_MESSAGE,
                         "reason": "ROUTE_LLM request to local Ollama endpoint failed.",
                         "governance_reason": f"Local Ollama route returned an integration failure: {retry_exc}",
-                        "details": "Service continuity mode kept the system responsive after the local LLM endpoint failed.",
+                        "details": "The configured LLM could not answer, so the busy fallback response was returned.",
                         "source_label": f"{payload['model']} via {self._llm_url}",
                         "metadata": {
                             "provider": "local-ollama",
@@ -486,10 +487,10 @@ class ConversationRouter:
                     }
             else:
                 return {
-                    "answer": self._build_service_continuity_answer(query),
+                    "answer": LLM_BUSY_MESSAGE,
                     "reason": "ROUTE_LLM request to local Ollama endpoint failed.",
                     "governance_reason": f"Local Ollama route returned an integration failure: {exc}",
-                    "details": "Service continuity mode kept the system responsive after the local LLM endpoint failed.",
+                    "details": "The configured LLM could not answer, so the busy fallback response was returned.",
                     "source_label": f"{payload['model']} via {self._llm_url}",
                     "metadata": {
                         "provider": "local-ollama",
@@ -516,7 +517,7 @@ class ConversationRouter:
 
         live_response = bool(answer)
         if not answer:
-            answer = self._build_service_continuity_answer(query)
+            answer = LLM_BUSY_MESSAGE
 
         return {
             "answer": answer,
@@ -534,21 +535,8 @@ class ConversationRouter:
 
     @staticmethod
     def _build_service_continuity_answer(query: str) -> str:
-        text = str(query or "").strip()
-        lower = text.lower()
-        if "joke" in lower:
-            body = "Here is one: Why did the developer go broke? Because they used up all their cache."
-        elif any(token in lower for token in ("news", "current", "latest", "happening in the world")):
-            body = (
-                "I cannot verify live internet updates in continuity mode, so please confirm current events with a trusted live source."
-            )
-        elif text:
-            body = (
-                f"{text} can be understood by starting with the core idea, then examples, and then practical usage."
-            )
-        else:
-            body = "Let us start with the basics and build up step by step."
-        return body
+        _ = query
+        return LLM_BUSY_MESSAGE
 
     def _build_router_contract_response(
         self,

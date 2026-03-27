@@ -23,22 +23,26 @@
 ## Required Env
 - `UNIGURU_API_TOKEN`
 - `UNIGURU_LLM_URL`
-- `UNIGURU_API_AUTH_REQUIRED`
-- `UNIGURU_ASK_URL`
+- `AUTH_ENABLED`
+- `ASK_URL`
+- `PORT`
 
 ## Recommended Env File
 ```env
 UNIGURU_HOST=0.0.0.0
 UNIGURU_PORT=8000
+PORT=3000
 NODE_BACKEND_PORT=3000
-UNIGURU_ASK_URL=http://127.0.0.1:8000/ask
+ASK_URL=http://localhost:8000/ask
+UNIGURU_ASK_URL=http://localhost:8000/ask
+AUTH_ENABLED=true
 UNIGURU_API_AUTH_REQUIRED=true
 UNIGURU_API_TOKEN=replace-with-strong-token
 UNIGURU_API_TOKENS=
 UNIGURU_ALLOWED_CALLERS=bhiv-assistant,gurukul-platform,samachar-platform,internal-testing,uniguru-frontend
 UNIGURU_LLM_URL=http://127.0.0.1:11434/api/generate
 UNIGURU_LLM_MODEL=gpt-oss:120b-cloud
-UNIGURU_LLM_TIMEOUT_SECONDS=20
+UNIGURU_LLM_TIMEOUT_SECONDS=12
 UNIGURU_REQUEST_TIMEOUT_MS=15000
 UNIGURU_ROUTER_QUEUE_LIMIT=200
 UNIGURU_ROUTER_LATENCY_THRESHOLD_MS=1200
@@ -61,14 +65,23 @@ curl -X POST http://127.0.0.1:3000/api/v1/chat/query ^
   -d "{\"query\":\"What is a qubit?\",\"context\":{\"caller\":\"bhiv-assistant\"}}"
 ```
 
-## Manual Path
+## Direct VM Path
 1. Backend:
-```powershell
-powershell -ExecutionPolicy Bypass -File run/run_backend.ps1
+```bash
+cd backend
+gunicorn uniguru.service.api:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --workers 4 --timeout 120
 ```
 2. Node:
-```powershell
-powershell -ExecutionPolicy Bypass -File run/run_node.ps1
+```bash
+cd node-backend
+npm install
+PORT=3000 ASK_URL=http://localhost:8000/ask npm start
+```
+On Windows PowerShell, use `npm.cmd install` and `npm.cmd start` if `npm` is blocked by execution policy.
+3. LLM:
+```bash
+ollama serve
+ollama pull gpt-oss:120b-cloud
 ```
 
 ## Validation Commands
@@ -94,11 +107,63 @@ python test/run_live_restart_proof.py
 - `docs/reports/FINAL_VALIDATION_LIVE.md`
 - `docs/reports/LIVE_RESTART_PROOF.md`
 
+## Nginx Reverse Proxy
+```nginx
+server {
+    listen 80;
+    server_name <PUBLIC-DOMAIN-OR-IP>;
+
+    location /ask {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /api/v1/ {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+## Curl Demo Proof
+Direct `/ask`:
+```bash
+curl -X POST http://<PUBLIC-IP>:8000/ask \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <UNIGURU_API_TOKEN>" \
+  -d '{"query":"What is a qubit?","context":{"caller":"uniguru-frontend"}}'
+```
+
+Node middleware:
+```bash
+curl -X POST http://<PUBLIC-IP>:3000/api/v1/chat/query \
+  -H "Content-Type: application/json" \
+  -d '{"query":"What is a qubit?","context":{"caller":"uniguru-frontend"}}'
+```
+
+Sample Node response:
+```json
+{
+  "status": "success",
+  "answer": "Qubit: Two-level quantum system represented by state vector ...",
+  "success": true
+}
+```
+
 ## Operational Notes
 - `UNIGURU_API_AUTH_REQUIRED=true` now returns real `401` for missing/invalid tokens.
 - Unknown callers now return real `403`. Allowed callers must match `UNIGURU_ALLOWED_CALLERS`.
 - `/health` stays available for monitoring even if the LLM is degraded.
 - `/ready` becomes `degraded` when the configured LLM is unreachable or the requested model is not loaded.
+- When the LLM fails, the API returns: `System is temporarily busy. Please try again.`
 
 ## Important Limitation
 This workspace can make the stack network-bind and deployment-ready, but it cannot create the final public NIC demo URL by itself. Alay still has to run the stack on the target host or VM and expose that host on the network.

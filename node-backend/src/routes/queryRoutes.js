@@ -65,12 +65,16 @@ router.post("/api/v1/chat/query", async (req, res) => {
 
     const engineResponse = formatEngineResponse(await callUniGuruAsk(payload));
     res.status(200).json({
+      status: "success",
+      answer: engineResponse.presentation?.body || engineResponse.answer || "",
       success: true,
       source: "uniguru-api",
       data: engineResponse,
     });
   } catch (error) {
     res.status(200).json({
+      status: "success",
+      answer: "System is temporarily busy. Please try again.",
       success: true,
       degraded: true,
       source: "node-backend-safe-fallback",
@@ -104,6 +108,8 @@ router.post("/api/v1/samachar/query", async (req, res) => {
 
     const engineResponse = formatEngineResponse(await callUniGuruAsk(payload));
     res.status(200).json({
+      status: "success",
+      answer: engineResponse.presentation?.body || engineResponse.answer || "",
       success: true,
       integration: "samachar",
       source: "uniguru-api",
@@ -111,6 +117,8 @@ router.post("/api/v1/samachar/query", async (req, res) => {
     });
   } catch (error) {
     res.status(200).json({
+      status: "success",
+      answer: "System is temporarily busy. Please try again.",
       success: true,
       degraded: true,
       integration: "samachar",
@@ -146,6 +154,8 @@ router.post("/api/v1/gurukul/query", async (req, res) => {
 
     const engineResponse = formatEngineResponse(await callUniGuruAsk(payload));
     res.status(200).json({
+      status: "success",
+      answer: engineResponse.presentation?.body || engineResponse.answer || "",
       success: true,
       integration: "gurukul",
       student_id: studentId || null,
@@ -154,6 +164,8 @@ router.post("/api/v1/gurukul/query", async (req, res) => {
     });
   } catch (error) {
     res.status(200).json({
+      status: "success",
+      answer: "System is temporarily busy. Please try again.",
       success: true,
       degraded: true,
       integration: "gurukul",

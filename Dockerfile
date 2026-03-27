@@ -13,4 +13,4 @@ COPY . /app
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "uvicorn uniguru.service.api:app --host ${UNIGURU_HOST:-0.0.0.0} --port ${UNIGURU_PORT:-8000} --workers ${UNIGURU_WORKERS:-4}"]
+CMD ["sh", "-c", "gunicorn uniguru.service.api:app -k uvicorn.workers.UvicornWorker --bind ${UNIGURU_HOST:-0.0.0.0}:${UNIGURU_PORT:-8000} --workers ${UNIGURU_WORKERS:-4} --timeout ${UNIGURU_GUNICORN_TIMEOUT_SECONDS:-120}"]
