@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const UNIGURU_ASK_URL = process.env.ASK_URL || process.env.UNIGURU_ASK_URL || "http://127.0.0.1:8000/ask";
+const UNIGURU_ASK_URL = process.env.UNIGURU_ASK_URL || process.env.ASK_URL || "http://127.0.0.1:8000/ask";
 const UNIGURU_API_TOKEN = String(process.env.UNIGURU_API_TOKEN || "").trim();
 const UNIGURU_DEMO_SERVICE_TOKEN = String(process.env.UNIGURU_DEMO_SERVICE_TOKEN || "uniguru-demo-token").trim();
 const RESOLVED_SERVICE_TOKEN = UNIGURU_API_TOKEN || UNIGURU_DEMO_SERVICE_TOKEN;

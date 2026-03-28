@@ -8,6 +8,7 @@ from uniguru.reasoning.graph_reasoner import GraphReasoner
 
 _MODULE_DIR = os.path.dirname(__file__)
 _KB_ROOT = os.path.normpath(os.path.join(_MODULE_DIR, "..", "knowledge"))
+_RUNTIME_INDEX_PATH = os.path.normpath(os.path.join(_KB_ROOT, "index", "master_index.json"))
 
 _BASE_KB_PATHS: Dict[str, str] = {
     "quantum": os.path.normpath(os.path.join(_KB_ROOT, "quantum")),
@@ -45,7 +46,17 @@ STOPWORDS = {
     "explain",
 }
 
-GENERIC_FILE_KEYWORDS = {"readme", "kb index", "kb_index", "index"}
+GENERIC_FILE_KEYWORDS = {
+    "readme",
+    "kb index",
+    "kb_index",
+    "index",
+    "algorithm",
+    "quantum",
+    "teachings",
+    "content",
+    "answer notes",
+}
 
 
 def _tokenize(text: str) -> List[str]:
@@ -106,6 +117,7 @@ class AdvancedRetriever:
         self.file_map: Dict[str, str] = {}
         self.path_map: Dict[str, str] = {}
         self._documents: List[Dict[str, Any]] = []
+        self._document_ids: set[tuple[str, str]] = set()
         self._load_memory()
 
     def _append_document(
@@ -130,6 +142,10 @@ class AdvancedRetriever:
         tag_list = tags or []
         title = (source_title or keyword).strip()
         is_generic = keyword in GENERIC_FILE_KEYWORDS
+        document_id = (relative_path, keyword)
+        if document_id in self._document_ids:
+            return
+        self._document_ids.add(document_id)
 
         self.knowledge_map[keyword] = content
         self.source_map[keyword] = source
@@ -223,6 +239,40 @@ class AdvancedRetriever:
                 tags=tags,
             )
 
+    def _load_runtime_index(self) -> None:
+        if not os.path.exists(_RUNTIME_INDEX_PATH):
+            return
+        try:
+            with open(_RUNTIME_INDEX_PATH, "r", encoding="utf-8") as handle:
+                payload = json.load(handle)
+        except (OSError, json.JSONDecodeError):
+            return
+
+        if not isinstance(payload, dict):
+            return
+
+        for keyword, entries in payload.items():
+            if not isinstance(entries, list):
+                continue
+            for entry in entries:
+                if not isinstance(entry, dict):
+                    continue
+                content = str(entry.get("content") or "").strip()
+                metadata = entry.get("metadata") if isinstance(entry.get("metadata"), dict) else {}
+                relative_path = str(metadata.get("path") or metadata.get("source") or f"index/{keyword}").strip()
+                relative_path = relative_path.replace("\\", "/")
+                file_name = os.path.basename(relative_path.split("#", 1)[0]) or f"{keyword}.md"
+                self._append_document(
+                    keyword=str(keyword).strip().lower(),
+                    content=content,
+                    source=str(metadata.get("category") or metadata.get("source") or "indexed_kb"),
+                    file_name=file_name,
+                    relative_path=relative_path,
+                    source_title=str(metadata.get("source") or keyword).strip(),
+                    aliases=[str(keyword).replace("_", " ")],
+                    tags=_coerce_list(metadata.get("category")),
+                )
+
     def _load_memory(self) -> None:
         for kb_name, kb_path in _kb_paths().items():
             if not os.path.exists(kb_path):
@@ -235,6 +285,7 @@ class AdvancedRetriever:
                         self._load_markdown_document(kb_name=kb_name, full_path=full_path, file_name=file_name)
                     elif lower.endswith(".json"):
                         self._load_json_document(kb_name=kb_name, full_path=full_path, file_name=file_name)
+        self._load_runtime_index()
 
     def retrieve_multi(self, query: str) -> List[Dict[str, Any]]:
         query_lower = str(query or "").lower()

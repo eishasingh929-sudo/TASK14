@@ -97,9 +97,13 @@ _SUPPORT_HINT_PATTERNS = (
     r"\bmahavira\b",
     r"\bahimsa\b",
     r"\bswaminarayan\b",
+    r"\bvachanamrut\b",
     r"\bswamini vato\b",
     r"\bvedic\b",
     r"\bnyaya\b",
+    r"\bgrover\b",
+    r"\bshor\b",
+    r"\bquantum algorithm\b",
 )
 
 _GENERAL_CHAT_PATTERNS = (
@@ -112,7 +116,7 @@ _GENERAL_CHAT_PATTERNS = (
 SAFE_FALLBACK_PREFIX = "I am still learning this topic, but here is a basic explanation..."
 DEFAULT_LOCAL_OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
 DEFAULT_LOCAL_OLLAMA_MODEL = "llama3"
-LLM_BUSY_MESSAGE = "System is temporarily busy. Please try again."
+LLM_BUSY_MESSAGE = "The configured LLM endpoint did not return a usable response."
 
 
 @dataclass(frozen=True)
@@ -164,6 +168,11 @@ class ConversationRouter:
         self._llm_url = self._normalize_llm_url(os.getenv("UNIGURU_LLM_URL", "").strip())
         self._llm_model = os.getenv("UNIGURU_LLM_MODEL", DEFAULT_LOCAL_OLLAMA_MODEL).strip() or DEFAULT_LOCAL_OLLAMA_MODEL
         self._llm_timeout = float(os.getenv("UNIGURU_LLM_TIMEOUT_SECONDS", "8"))
+        self._llm_max_tokens = int(os.getenv("UNIGURU_LLM_MAX_TOKENS", "160"))
+        self._llm_fast_max_tokens = int(os.getenv("UNIGURU_LLM_FAST_MAX_TOKENS", "96"))
+        self._llm_temperature = float(os.getenv("UNIGURU_LLM_TEMPERATURE", "0.2"))
+        self._llm_probe_ttl = float(os.getenv("UNIGURU_LLM_HEALTH_CACHE_SECONDS", "30"))
+        self._llm_probe_cache: Dict[str, Any] = {"checked_at": 0.0, "usable": False, "reason": "unprobed"}
 
     def llm_status(self) -> Dict[str, Any]:
         configured = bool(self._llm_url)
@@ -171,6 +180,10 @@ class ConversationRouter:
         reachable = bool(available_models)
         selected_model = self._select_fallback_model(self._llm_model) if configured else None
         model_loaded = bool(selected_model and selected_model in available_models)
+        probe = self._probe_llm_generation(selected_model or self._llm_model) if configured and model_loaded else {
+            "usable": False,
+            "reason": "Model not loaded.",
+        }
         return {
             "configured": configured,
             "endpoint": self._llm_url or None,
@@ -179,7 +192,9 @@ class ConversationRouter:
             "available_models": available_models,
             "reachable": reachable,
             "model_loaded": model_loaded,
-            "available": bool(reachable and model_loaded),
+            "usable": bool(probe.get("usable")),
+            "probe_reason": probe.get("reason"),
+            "available": bool(reachable and model_loaded and probe.get("usable")),
         }
 
     @staticmethod
@@ -191,10 +206,14 @@ class ConversationRouter:
         parsed = urlparse(candidate)
         if parsed.scheme not in {"http", "https"}:
             return DEFAULT_LOCAL_OLLAMA_URL
+        netloc = parsed.netloc
+        if parsed.hostname == "localhost":
+            port = f":{parsed.port}" if parsed.port else ""
+            netloc = f"127.0.0.1{port}"
         path = parsed.path or ""
         if path in {"", "/"}:
             path = "/api/generate"
-        return urlunparse((parsed.scheme, parsed.netloc, path, "", "", ""))
+        return urlunparse((parsed.scheme, netloc, path, "", "", ""))
 
     def _llm_tags_url(self) -> str:
         if not self._llm_url:
@@ -212,7 +231,7 @@ class ConversationRouter:
         if not tags_url:
             return []
         try:
-            response = requests.get(tags_url, timeout=min(5.0, self._llm_timeout))
+            response = requests.get(tags_url, timeout=min(1.0, self._llm_timeout))
             response.raise_for_status()
             data = response.json()
         except Exception:
@@ -243,9 +262,32 @@ class ConversationRouter:
     def route_query(self, query: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         started = time.perf_counter()
         context_map = dict(context or {})
+        session_id = context_map.get("session_id")
+
+        preflight_response = None
+        if hasattr(self._service, "preflight_response"):
+            preflight_response = self._service.preflight_response(
+                user_query=query,
+                session_id=session_id,
+                context=context_map,
+            )
+        if preflight_response is not None:
+            resolved_route = self._resolve_preflight_route(query=query, response=preflight_response)
+            routing_latency = (time.perf_counter() - started) * 1000
+            query_type = (
+                QueryRoutingType.SYSTEM_QUERY
+                if resolved_route == RouteTarget.ROUTE_SYSTEM.value
+                else QueryRoutingType.KNOWLEDGE_QUERY
+            )
+            preflight_response["routing"] = {
+                "query_type": query_type.value,
+                "route": resolved_route,
+                "router_latency_ms": round(routing_latency, 3),
+            }
+            return preflight_response
+
         query_type = self.classify(query=query, context=context_map)
         target = self.select_route(query_type=query_type)
-        session_id = context_map.get("session_id")
 
         if target == RouteTarget.ROUTE_SYSTEM:
             response = self._build_system_block_response(query_type=query_type, session_id=session_id)
@@ -285,7 +327,12 @@ class ConversationRouter:
             return QueryRoutingType.GENERAL_LLM_QUERY
 
         upstream_type = classify_query(text)
-        if upstream_type in {QueryType.KNOWLEDGE_QUERY, QueryType.CONCEPT_QUERY, QueryType.EXPLANATION_QUERY, QueryType.WEB_LOOKUP}:
+        if upstream_type in {
+            QueryType.KNOWLEDGE_QUERY,
+            QueryType.CONCEPT_QUERY,
+            QueryType.EXPLANATION_QUERY,
+            QueryType.WEB_LOOKUP,
+        }:
             if self._has_support_hint(text) and (
                 any(re.search(pattern, text) for pattern in _KNOWLEDGE_PATTERNS)
                 or upstream_type != QueryType.KNOWLEDGE_QUERY
@@ -296,6 +343,14 @@ class ConversationRouter:
     @staticmethod
     def _has_support_hint(text: str) -> bool:
         return any(re.search(pattern, text) for pattern in _SUPPORT_HINT_PATTERNS)
+
+    @staticmethod
+    def _resolve_preflight_route(query: str, response: Dict[str, Any]) -> str:
+        text = str(query or "").lower()
+        governance_flags = response.get("governance_flags") or {}
+        if any(re.search(pattern, text) for pattern in _SYSTEM_PATTERNS) or governance_flags.get("safety"):
+            return RouteTarget.ROUTE_SYSTEM.value
+        return RouteTarget.ROUTE_UNIGURU.value
 
     @staticmethod
     def select_route(query_type: QueryRoutingType) -> RouteTarget:
@@ -331,7 +386,7 @@ class ConversationRouter:
             response = self._service.ask(
                 user_query=query,
                 session_id=session_id,
-                context=context,
+                context={**context, "preflight_checked": True},
                 allow_web_retrieval=effective_allow_web,
             )
         except Exception as exc:
@@ -350,11 +405,14 @@ class ConversationRouter:
         if decision == "answer" and has_answer:
             return response
 
+        if not self._allow_unverified_fallback:
+            return response
+
         return self._build_llm_response(
             query=query,
             query_type=query_type,
             session_id=session_id,
-            warning=None,
+            warning=str(response.get("reason") or "").strip() or None,
         )
 
     def _build_system_block_response(
@@ -429,12 +487,13 @@ class ConversationRouter:
         )
 
     def _request_llm(self, query: str, session_id: Optional[str]) -> Dict[str, Any]:
+        status = self.llm_status()
         if not self._llm_url:
             return {
                 "answer": LLM_BUSY_MESSAGE,
                 "reason": "ROUTE_LLM selected but UNIGURU_LLM_URL is not configured.",
                 "governance_reason": "LLM route unavailable because no endpoint is configured.",
-                "details": "The configured LLM endpoint is unavailable, so the busy fallback response was returned.",
+                "details": "The configured LLM endpoint is unavailable. No simulated fallback answer was used.",
                 "source_label": "LLM endpoint not configured",
                 "metadata": {
                     "provider": "unavailable",
@@ -443,40 +502,56 @@ class ConversationRouter:
                     "live_response": False,
                 },
             }
+        if status.get("reachable") and status.get("model_loaded") and not status.get("available"):
+            selected_model = status.get("selected_model") or self._llm_model
+            return {
+                "answer": LLM_BUSY_MESSAGE,
+                "reason": "ROUTE_LLM selected but the configured LLM endpoint is not currently usable.",
+                "governance_reason": f"LLM health probe failed: {status.get('probe_reason')}",
+                "details": "The LLM endpoint did not pass a live generation probe, so UniGuru returned an explicit availability error instead of a fabricated answer.",
+                "source_label": f"{selected_model} via {self._llm_url}",
+                "metadata": {
+                    "provider": "local-ollama",
+                    "endpoint": self._llm_url,
+                    "model": selected_model,
+                    "live_response": False,
+                    "usable": False,
+                },
+            }
 
-        payload = {
-            "model": self._llm_model or DEFAULT_LOCAL_OLLAMA_MODEL,
-            "prompt": query,
-            "stream": False,
-        }
+        payload = self._build_llm_payload(
+            model_name=self._llm_model or DEFAULT_LOCAL_OLLAMA_MODEL,
+            query=query,
+            max_tokens=self._llm_max_tokens,
+        )
 
-        def _call_local_ollama(model_name: str) -> Dict[str, Any]:
+        def _call_llm(request_payload: Dict[str, Any]) -> Dict[str, Any]:
             response = requests.post(
                 self._llm_url,
-                json={
-                    "model": model_name,
-                    "prompt": query,
-                    "stream": False,
-                },
+                json=request_payload,
                 timeout=self._llm_timeout,
             )
             response.raise_for_status()
             return response.json()
 
         try:
-            data = _call_local_ollama(payload["model"])
+            data = _call_llm(payload)
         except Exception as exc:
             fallback_model = self._select_fallback_model(payload["model"])
             if fallback_model and fallback_model != payload["model"]:
                 try:
-                    data = _call_local_ollama(fallback_model)
-                    payload["model"] = fallback_model
+                    payload = self._build_llm_payload(
+                        model_name=fallback_model,
+                        query=query,
+                        max_tokens=self._llm_fast_max_tokens,
+                    )
+                    data = _call_llm(payload)
                 except Exception as retry_exc:
                     return {
                         "answer": LLM_BUSY_MESSAGE,
                         "reason": "ROUTE_LLM request to local Ollama endpoint failed.",
                         "governance_reason": f"Local Ollama route returned an integration failure: {retry_exc}",
-                        "details": "The configured LLM could not answer, so the busy fallback response was returned.",
+                        "details": "The configured LLM endpoint timed out or returned no usable content.",
                         "source_label": f"{payload['model']} via {self._llm_url}",
                         "metadata": {
                             "provider": "local-ollama",
@@ -490,7 +565,7 @@ class ConversationRouter:
                     "answer": LLM_BUSY_MESSAGE,
                     "reason": "ROUTE_LLM request to local Ollama endpoint failed.",
                     "governance_reason": f"Local Ollama route returned an integration failure: {exc}",
-                    "details": "The configured LLM could not answer, so the busy fallback response was returned.",
+                    "details": "The configured LLM endpoint timed out or returned no usable content.",
                     "source_label": f"{payload['model']} via {self._llm_url}",
                     "metadata": {
                         "provider": "local-ollama",
@@ -532,6 +607,60 @@ class ConversationRouter:
                 "live_response": live_response,
             },
         }
+
+    def _build_llm_payload(self, *, model_name: str, query: str, max_tokens: int) -> Dict[str, Any]:
+        payload: Dict[str, Any] = {
+            "model": model_name,
+            "prompt": query,
+            "stream": False,
+        }
+        parsed = urlparse(self._llm_url)
+        is_local_generate = parsed.hostname in {"127.0.0.1", "localhost"} and parsed.path.endswith("/api/generate")
+        if is_local_generate:
+            payload["options"] = {
+                "num_predict": max(32, int(max_tokens)),
+                "temperature": self._llm_temperature,
+            }
+        return payload
+
+    def _probe_llm_generation(self, model_name: str) -> Dict[str, Any]:
+        now = time.monotonic()
+        cached_at = float(self._llm_probe_cache.get("checked_at", 0.0) or 0.0)
+        if now - cached_at < self._llm_probe_ttl:
+            return {
+                "usable": bool(self._llm_probe_cache.get("usable")),
+                "reason": str(self._llm_probe_cache.get("reason") or "cached"),
+            }
+
+        payload = self._build_llm_payload(
+            model_name=model_name or self._llm_model,
+            query="Reply with one word: ready",
+            max_tokens=min(self._llm_fast_max_tokens, 24),
+        )
+        try:
+            response = requests.post(
+                self._llm_url,
+                json=payload,
+                timeout=min(2.5, self._llm_timeout),
+            )
+            response.raise_for_status()
+            data = response.json()
+            answer = str(
+                data.get("answer")
+                or data.get("response")
+                or data.get("output")
+                or data.get("content")
+                or (data.get("message") or {}).get("content")
+                or ""
+            ).strip()
+            usable = bool(answer)
+            reason = "Generation probe succeeded." if usable else "Generation probe returned empty content."
+        except Exception as exc:
+            usable = False
+            reason = f"Generation probe failed: {exc}"
+
+        self._llm_probe_cache = {"checked_at": now, "usable": usable, "reason": reason}
+        return {"usable": usable, "reason": reason}
 
     @staticmethod
     def _build_service_continuity_answer(query: str) -> str:

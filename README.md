@@ -2,6 +2,13 @@
 
 UniGuru is a demo-safe AI backend stack with deterministic KB routing, LLM fallback, and guaranteed response behavior.
 
+Canonical architecture references:
+
+- [`UNIFIED_SYSTEM_MAP.md`](/c:/Users/Yass0/OneDrive/Desktop/TASK14/UNIFIED_SYSTEM_MAP.md)
+- [`FINAL_PIPELINE_DIAGRAM.md`](/c:/Users/Yass0/OneDrive/Desktop/TASK14/FINAL_PIPELINE_DIAGRAM.md)
+- [`CLEAN_REPO_STRUCTURE.md`](/c:/Users/Yass0/OneDrive/Desktop/TASK14/CLEAN_REPO_STRUCTURE.md)
+- [`FINAL_UNIFIED_VALIDATION.json`](/c:/Users/Yass0/OneDrive/Desktop/TASK14/FINAL_UNIFIED_VALIDATION.json)
+
 ## 3-Step Startup
 
 1. Configure environment values from [`config/env/.env.example`](/c:/Users/Yass0/OneDrive/Desktop/TASK14/config/env/.env.example).
@@ -65,7 +72,7 @@ Output:
 
 ## Canonical Flow
 
-`UI -> Node (:3000 /api/v1/chat/query) -> Python (:8000 /ask) -> ConversationRouter -> KB or ROUTE_LLM -> Safe fallback`
+`UI -> Node (:3000 /api/v1/chat/query) -> Python (:8000 /ask) -> ConversationRouter -> ROUTE_UNIGURU or ROUTE_LLM -> response`
 
 Additional integration routes:
 
