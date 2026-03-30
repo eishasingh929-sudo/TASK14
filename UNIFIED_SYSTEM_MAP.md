@@ -1,75 +1,120 @@
 # Unified UniGuru System Map
 
-## Canonical Decision
+## Status: UNIFIED — One System, One Pipeline
 
-UniGuru now has one active execution path:
+This document is the canonical architecture reference for UniGuru after full system unification.
 
-`UI -> Node middleware -> FastAPI /ask -> ConversationRouter -> deterministic KB or LLM fallback -> response`
+---
 
-The old "legacy bridge -> rule engine -> downstream legacy backend" model is no longer the active runtime architecture.
+## Single Execution Path
 
-## What Survives
+```
+UI
+ └─► Node middleware (:3000)
+       └─► FastAPI /ask (:8000)
+             └─► ConversationRouter
+                   ├─► ROUTE_UNIGURU → LiveUniGuruService → deterministic KB answer
+                   ├─► ROUTE_LLM    → configured LLM endpoint (Ollama / Groq / local)
+                   ├─► ROUTE_WORKFLOW → workflow delegation response
+                   └─► ROUTE_SYSTEM  → deterministic refusal
+```
 
-- Deterministic routing in [`backend/uniguru/router/conversation_router.py`](./backend/uniguru/router/conversation_router.py)
-- Canonical KB engine in [`backend/uniguru/service/live_service.py`](./backend/uniguru/service/live_service.py)
-- Dataset ingestion in [`scripts/ingest_kb.py`](./scripts/ingest_kb.py) and [`backend/uniguru/loaders/ingestor.py`](./backend/uniguru/loaders/ingestor.py)
-- Node middleware integration in [`node-backend/src/routes/queryRoutes.js`](./node-backend/src/routes/queryRoutes.js)
-- Real LLM fallback wiring in [`backend/uniguru/router/conversation_router.py`](./backend/uniguru/router/conversation_router.py)
+No other execution path exists. The old VectorDB/RAG bridge and RuleEngine are retired.
 
-## What Was Unified
+---
 
-- Markdown KB, JSON datasets, and the old runtime keyword index now flow through one retriever in [`backend/uniguru/retrieval/retriever.py`](./backend/uniguru/retrieval/retriever.py)
-- Preflight governance is shared through [`backend/uniguru/service/governance_preflight.py`](./backend/uniguru/service/governance_preflight.py)
-- Compatibility helpers now delegate into the canonical path:
-  - [`backend/uniguru/retrieval/kb_engine.py`](./backend/uniguru/retrieval/kb_engine.py)
-  - [`backend/uniguru/truth/truth_validator.py`](./backend/uniguru/truth/truth_validator.py)
-  - [`backend/uniguru/bridge/server.py`](./backend/uniguru/bridge/server.py)
+## What Was Unified (This Task)
 
-## What No Longer Owns Runtime Flow
+| Old System | New System | Outcome |
+|---|---|---|
+| `RuleEngine` in `core/engine.py` | `ConversationRouter` + `LiveUniGuruService` | RuleEngine retired, marked deprecated |
+| `bridge/server.py` as runtime entrypoint | `service/api.py` as sole entrypoint | Bridge marked compatibility-only, not deployed |
+| `UNIGURU_BRIDGE_URL` env var pointing to `:8002` | Removed from `.env` | No second system target exists |
+| Parallel KB retrieval paths | Single `AdvancedRetriever` in `retrieval/retriever.py` | One retriever, one KB layer |
 
-- `RuleEngine` is no longer the primary `/ask` execution pipeline
-- The bridge is compatibility-only, not the canonical entrypoint
-- The old standalone KB engine is now a wrapper, not a separate retriever
-- "Legacy system processing" is no longer the fallback contract
+---
 
-## Final Execution Flow
+## Where Each Concern Lives
 
-1. Node receives product traffic on `/api/v1/chat/query`, `/api/v1/gurukul/query`, or `/api/v1/samachar/query`.
-2. Node normalizes payload shape, caller identity, auth token, and upstream `/ask` target.
-3. FastAPI `/ask` validates schema, caller, auth, throttling, and metrics.
-4. `ConversationRouter` runs preflight governance and picks exactly one route:
-   - `ROUTE_UNIGURU`
-   - `ROUTE_LLM`
-   - `ROUTE_WORKFLOW`
-   - `ROUTE_SYSTEM`
-5. `ROUTE_UNIGURU` calls the canonical deterministic KB engine.
-6. If KB cannot answer and fallback is allowed, router sends the query to the configured LLM endpoint.
-7. Response metadata, verification status, enforcement signature, and presentation payload are returned to Node and then to the UI.
+| Concern | File |
+|---|---|
+| API entrypoint | `backend/uniguru/service/api.py` |
+| Routing logic | `backend/uniguru/router/conversation_router.py` |
+| KB engine | `backend/uniguru/service/live_service.py` |
+| Retriever | `backend/uniguru/retrieval/retriever.py` |
+| Knowledge storage | `backend/uniguru/knowledge/` |
+| KB ingestion | `scripts/ingest_kb.py` |
+| Node middleware | `node-backend/src/routes/queryRoutes.js` |
+| Node upstream client | `node-backend/src/services/uniguruClient.js` |
+| Governance preflight | `backend/uniguru/service/governance_preflight.py` |
 
-## Responsibility Map
+---
 
-- Routing: [`backend/uniguru/router/conversation_router.py`](./backend/uniguru/router/conversation_router.py)
-- KB and verification: [`backend/uniguru/service/live_service.py`](./backend/uniguru/service/live_service.py)
-- Knowledge storage:
-  - [`backend/uniguru/knowledge/`](./backend/uniguru/knowledge/)
-  - [`backend/uniguru/knowledge/index/master_index.json`](./backend/uniguru/knowledge/index/master_index.json)
-- Ingestion: [`scripts/ingest_kb.py`](./scripts/ingest_kb.py)
-- Node integration: [`node-backend/src/services/uniguruClient.js`](./node-backend/src/services/uniguruClient.js)
-- API entrypoint: [`backend/uniguru/service/api.py`](./backend/uniguru/service/api.py)
+## KB Layer
 
-## LLM Placement
+- Markdown files: `backend/uniguru/knowledge/` (quantum, jain, swaminarayan, gurukul)
+- JSON datasets: `backend/uniguru/knowledge/datasets/` (ankita, nupur)
+- Runtime index: `backend/uniguru/knowledge/index/master_index.json`
+- All sources loaded by one retriever: `AdvancedRetriever` in `retrieval/retriever.py`
+- Confidence threshold: `UNIGURU_KB_CONFIDENCE_THRESHOLD=0.25` (env-configurable)
 
-- LLM calls happen only inside router fallback handling.
-- The deterministic KB path never calls the LLM.
-- Health and readiness now fast-fail LLM discovery instead of blocking service startup.
+---
+
+## LLM Layer
+
+- LLM is called only when KB cannot answer (`ROUTE_LLM` fallback)
+- Endpoint: `UNIGURU_LLM_URL` (default: `http://127.0.0.1:11434/api/generate`)
+- Model: `UNIGURU_LLM_MODEL` (default: `llama3`)
+- If LLM is unreachable: safe fallback phrase returned, no 503
+- Safe fallback phrase: `"I am still learning this topic, but here is a basic explanation..."`
+
+---
+
+## Node Integration Routes
+
+| Route | Caller identity |
+|---|---|
+| `POST /api/v1/chat/query` | `uniguru-frontend` |
+| `POST /api/v1/gurukul/query` | `gurukul-platform` |
+| `POST /api/v1/samachar/query` | `samachar-platform` |
+
+All three routes forward to the same `POST /ask` on the Python backend.
+
+---
+
+## Retired / Compatibility-Only
+
+These files exist but are NOT part of the active runtime:
+
+- `backend/uniguru/core/engine.py` — RuleEngine, deprecated header added
+- `backend/uniguru/bridge/server.py` — compatibility bridge, deprecated header added, not deployed
+- `backend/uniguru/retrieval/kb_engine.py` — wrapper, delegates to canonical retriever
+- `backend/uniguru/truth/truth_validator.py` — compatibility wrapper
+
+---
 
 ## Deployable Entry Points
 
-- Python API: `python -m uvicorn uniguru.service.api:app`
-- Node middleware: `node node-backend/src/server.js`
+```bash
+# Python backend
+python -m uvicorn uniguru.service.api:app --host 0.0.0.0 --port 8000
 
-## Validation Sources
+# Node middleware
+node node-backend/src/server.js
+```
 
-- [`demo_logs/final_validation_20_queries.json`](./demo_logs/final_validation_20_queries.json)
-- [`demo_logs/final_validation_live.json`](./demo_logs/final_validation_live.json)
-- [`FINAL_UNIFIED_VALIDATION.json`](./FINAL_UNIFIED_VALIDATION.json)
+Or via run scripts:
+```
+run/run_backend.ps1   (Windows)
+run/run_backend.sh    (Linux/macOS)
+run/run_node.ps1      (Windows)
+run/run_node.sh       (Linux/macOS)
+```
+
+---
+
+## Validation
+
+- 20-query validation (20/20): `demo_logs/final_validation_20_queries.json`
+- 30-query live validation (30/30): `demo_logs/final_validation_live.json`
+- Unified summary: `FINAL_UNIFIED_VALIDATION.json`

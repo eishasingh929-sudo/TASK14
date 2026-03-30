@@ -1,4 +1,9 @@
-﻿import time
+# DEPRECATED — RuleEngine is no longer the active execution pipeline.
+# The canonical path is: FastAPI /ask -> ConversationRouter -> LiveUniGuruService.
+# This file is retained only to preserve imports from older tooling.
+# Do not start or call this engine directly.
+
+import time
 import uuid
 from typing import Dict, Any, Optional
 
