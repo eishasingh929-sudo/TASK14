@@ -24,6 +24,7 @@ from uniguru.service.response_format import build_presentation_metadata, build_s
 from uniguru.service.live_service import LiveUniGuruService
 from uniguru.service.query_classifier import QueryType, classify_query
 from uniguru.stt import STTEngine, STTUnavailableError
+from uniguru.signals.pipeline import run_signal_pipeline
 
 load_project_env()
 
@@ -711,6 +712,38 @@ def ask(request: AskRequest, raw_request: Request) -> Dict[str, Any]:
             session_id=request.session_id,
             reason=f"/ask recovered from runtime failure: {exc}",
         )
+    finally:
+        _leave_ask_queue()
+
+
+@app.post("/ask/signal")
+def ask_signal(request: AskRequest, raw_request: Request) -> Dict[str, Any]:
+    """
+    Signal-driven pipeline endpoint.
+    Query → CoreRequest → Signals → Aggregation → FinalResponse → BucketLog.
+    Returns structured signal response instead of raw answer.
+    """
+    if not _try_enter_ask_queue():
+        return {
+            "final_answer": "[DEGRADED] Queue saturation — signal pipeline unavailable.",
+            "supporting_signals": [],
+            "confidence": 0.0,
+            "reasoning_trace": ["Step 1: Queue limit reached.", "Step 2: Pipeline skipped."],
+            "degradation_flag": True,
+        }
+    try:
+        _enforce_service_auth(raw_request)
+        return run_signal_pipeline(request.query)
+    except HTTPException as exc:
+        if exc.status_code in {401, 403}:
+            raise
+        return {
+            "final_answer": f"[ERROR] {exc.detail}",
+            "supporting_signals": [],
+            "confidence": 0.0,
+            "reasoning_trace": [f"Step 1: HTTP error {exc.status_code}."],
+            "degradation_flag": True,
+        }
     finally:
         _leave_ask_queue()
 
